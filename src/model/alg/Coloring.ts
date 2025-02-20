@@ -1,10 +1,10 @@
-import { Graph, Edge } from "../ds/Graph";
+import { Graph, Edge } from "@/model/ds/Graph";
 
 /**
  * See https://en.wikipedia.org/wiki/Recursive_largest_first_algorithm
- * 
+ *
  * runtime probably O(V * E)
- * 
+ *
  * @param G
  * @returns
  */

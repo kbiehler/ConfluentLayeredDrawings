@@ -1,5 +1,3 @@
-import { Graph, Edge } from "../../../src/model/ds/Graph";
-
 import { rlfColoring } from "../../../src/model/alg/Coloring";
 
 import { describe, it, expect, beforeEach } from "vitest";
