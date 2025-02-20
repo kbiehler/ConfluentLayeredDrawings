@@ -1,10 +1,10 @@
 export class Edge<V> {
-  start: V;
+  source: V;
   target: V;
   weight: number;
 
   constructor(start: V, target: V, weight: number = 1) {
-    this.start = start;
+    this.source = start;
     this.target = target;
     this.weight = weight;
   }
@@ -28,7 +28,7 @@ export class Graph<V, E extends Edge<V>> {
 
   addEdge(edge: E): void {
     this.edges.add(edge);
-    this.adj.get(edge.start)!.add(edge);
+    this.adj.get(edge.source)!.add(edge);
     this.adj.get(edge.target)!.add(edge);
   }
 
@@ -42,7 +42,7 @@ export class Graph<V, E extends Edge<V>> {
 
   getAdjacent(vertex: V): V[] {
     return Array.from(this.adj.get(vertex)!).map((edge) => {
-      return edge.start === vertex ? edge.target : edge.start;
+      return edge.source === vertex ? edge.target : edge.source;
     });
   }
 
@@ -60,7 +60,7 @@ export class Graph<V, E extends Edge<V>> {
 
   deleteEdge(edge: E): void {
     this.edges.delete(edge);
-    this.adj.get(edge.start)!.delete(edge);
+    this.adj.get(edge.source)!.delete(edge);
     this.adj.get(edge.target)!.delete(edge);
   }
 
