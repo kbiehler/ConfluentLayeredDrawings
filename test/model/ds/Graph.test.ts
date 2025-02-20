@@ -1,4 +1,4 @@
-import { Graph, Edge } from "../../../src/model/graphDs/Graph";
+import { Graph, Edge } from "../../../src/model/ds/Graph";
 
 import { describe, it, expect, beforeEach } from "vitest";
 

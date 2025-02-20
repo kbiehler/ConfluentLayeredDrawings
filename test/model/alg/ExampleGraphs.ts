@@ -1,4 +1,4 @@
-import { Graph, Edge } from "../../../src/model/graphDs/Graph";
+import { Graph, Edge } from "../../../src/model/ds/Graph";
 
 export const createWheelGraph = (n: number): Graph<Number, Edge<Number>> => {
   const wheelGraph = new Graph<Number, Edge<Number>>();

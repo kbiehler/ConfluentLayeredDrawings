@@ -70,4 +70,11 @@ export class Graph<V, E extends Edge<V>> {
     }
     this.vertices.delete(vertex);
   }
+
+  copy(): Graph<V, E> {
+    const newGraph = new Graph<V, E>();
+    this.vertices.forEach((vertex) => newGraph.addVertex(vertex));
+    this.edges.forEach((edge) => newGraph.addEdge(edge));
+    return newGraph;
+  }
 }

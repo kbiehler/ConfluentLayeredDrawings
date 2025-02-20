@@ -1,11 +1,12 @@
-import { Graph, Edge } from "../graphDs/Graph";
+import { Graph, Edge } from "../ds/Graph";
 
 /**
  * See https://en.wikipedia.org/wiki/Recursive_largest_first_algorithm
- * @param G 
- * @returns 
+ * @param G
+ * @returns
  */
 export function rlfColoring<V, E extends Edge<V>>(G: Graph<V, E>): Set<V>[] {
+  G = G.copy();
   const res: Set<V>[] = [];
   while (G.getVertices().length > 0) {
     const S = new Set<V>(); //next color
@@ -13,7 +14,7 @@ export function rlfColoring<V, E extends Edge<V>>(G: Graph<V, E>): Set<V>[] {
     //all vertices not adjacent to S
     const U = new Set<V>(G.getVertices());
 
-    //#of neighbours in S for any vertex
+    //neighbours of S
     const neighbourS = new Set<V>();
 
     //first vertex = max degree

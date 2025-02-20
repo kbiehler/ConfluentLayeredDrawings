@@ -1,4 +1,4 @@
-import { Graph, Edge } from "../../../src/model/graphDs/Graph";
+import { Graph, Edge } from "../../../src/model/ds/Graph";
 
 import { rlfColoring } from "../../../src/model/alg/Coloring";
 
@@ -18,6 +18,8 @@ describe("RLF Coloring", () => {
       const wheelGraph = createWheelGraph(7);
       const coloring = rlfColoring(wheelGraph);
       expect(coloring.length).toBe(3);
+      console.log(wheelGraph.getVertices().length);
+      expect(wheelGraph.getVertices().length).toBe(7);
     });
 
     it("n = 1000 => 4 colors", () => {
