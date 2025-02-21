@@ -39,6 +39,13 @@ export class LayerGraph<V, E extends Edge<V>> extends Graph<V, E> {
     return this.vertexToLayer.get(vertex)!;
   }
 
+  getNumLayers(): number {
+    if (this.vertexToLayer.size === 0) {
+      return 0;
+    }
+    return Math.max(...Array.from(this.vertexToLayer.values())) + 1;
+  }
+
   deleteVertex(vertex: V): void {
     super.deleteVertex(vertex);
     const layer = this.getLayer(vertex);

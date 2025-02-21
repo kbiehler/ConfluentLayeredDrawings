@@ -1,5 +1,6 @@
-import { Graph, Edge } from "../../../src/model/ds/Graph";
-import { BipartiteGraph } from "../../../src/model/ds/BiGraph";
+import { Graph, Edge } from "./ds/Graph";
+import { BipartiteGraph } from "./ds/BiGraph";
+import { LayerGraph } from "./ds/LayerGraph";
 
 export const createWheelGraph = (n: number): Graph<Number, Edge<Number>> => {
   const G = new Graph<Number, Edge<Number>>();
@@ -48,4 +49,31 @@ export const createRandomBiGraph = (nA: number, nB: number, p: number): Bipartit
     }
   }
   return randomBiGraph;
+};
+
+export const createRandomLayeredGraph = (verticesPerLayer: number[], p: number): LayerGraph<Number, Edge<Number>> => {
+  const randomLayeredGraph = new LayerGraph<Number, Edge<Number>>();
+  let vertexId = 0;
+
+  for (let layer = 0; layer < verticesPerLayer.length; layer++) {
+    for (let i = 0; i < verticesPerLayer[layer]; i++) {
+      randomLayeredGraph.addVertexToLayer(vertexId, layer);
+      vertexId++;
+    }
+  }
+
+  for (let layer = 0; layer < verticesPerLayer.length - 1; layer++) {
+    const currentLayerVertices = randomLayeredGraph.getVerticesInLayer(layer);
+    const nextLayerVertices = randomLayeredGraph.getVerticesInLayer(layer + 1);
+
+    for (const u of currentLayerVertices) {
+      for (const v of nextLayerVertices) {
+        if (Math.random() < p) {
+          randomLayeredGraph.addEdge(new Edge(u, v));
+        }
+      }
+    }
+  }
+
+  return randomLayeredGraph;
 };
