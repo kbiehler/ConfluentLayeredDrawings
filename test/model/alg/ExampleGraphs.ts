@@ -1,4 +1,5 @@
 import { Graph, Edge } from "../../../src/model/ds/Graph";
+import { BipartiteGraph } from "../../../src/model/ds/BiGraph";
 
 export const createWheelGraph = (n: number): Graph<Number, Edge<Number>> => {
   const G = new Graph<Number, Edge<Number>>();
@@ -29,4 +30,22 @@ export const createRandomGraph = (n: number, p: number): Graph<Number, Edge<Numb
     }
   }
   return randomGraph;
+};
+
+export const createRandomBiGraph = (nA: number, nB: number, p: number): BipartiteGraph<Number, Edge<Number>> => {
+  const randomBiGraph = new BipartiteGraph<Number, Edge<Number>>();
+  for (let i = 0; i < nA; i++) {
+    randomBiGraph.addVertexA(i);
+  }
+  for (let j = 0; j < nB; j++) {
+    randomBiGraph.addVertexB(nA + j);
+  }
+  for (let i = 0; i < nA; i++) {
+    for (let j = 0; j < nB; j++) {
+      if (Math.random() < p) {
+        randomBiGraph.addEdge(new Edge(i, nA + j));
+      }
+    }
+  }
+  return randomBiGraph;
 };

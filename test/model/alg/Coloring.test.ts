@@ -2,7 +2,7 @@ import { rlfColoring } from "../../../src/model/alg/Coloring";
 
 import { describe, it, expect, beforeEach } from "vitest";
 
-import { createWheelGraph, createRandomGraph } from "./ExampleGraphs";
+import { createWheelGraph, createRandomGraph, createRandomBiGraph } from "./ExampleGraphs";
 
 describe("RLF Coloring", () => {
   describe("Wheel Graph should be colored optimally", () => {
@@ -16,7 +16,6 @@ describe("RLF Coloring", () => {
       const wheelGraph = createWheelGraph(7);
       const coloring = rlfColoring(wheelGraph);
       expect(coloring.length).toBe(3);
-      console.log(wheelGraph.getVertices().length);
       expect(wheelGraph.getVertices().length).toBe(7);
     });
 
@@ -41,6 +40,22 @@ describe("RLF Coloring", () => {
         const uColor = coloring.findIndex((set) => set.has(edge.target));
         expect(uColor).not.toBe(vColor);
       });
+    });
+  });
+
+  describe("Bipartite Graph should be colored optimally", () => {
+    it("2 colors", () => {
+      const biGraph = createRandomBiGraph(18, 4, 0.4);
+      const graph = biGraph.copy();
+      const coloring = rlfColoring(graph);
+      expect(coloring.length).toBe(2);
+    });
+
+    it("2 colors", () => {
+      const biGraph = createRandomBiGraph(22, 28, 0.4);
+      const graph = biGraph.copy();
+      const coloring = rlfColoring(graph);
+      expect(coloring.length).toBe(2);
     });
   });
 });
