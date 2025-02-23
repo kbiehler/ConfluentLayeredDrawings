@@ -5,7 +5,6 @@ export class VertexPositionCfg {
   barycenterRandomStart: boolean = false;
   layerSpacing: number = 400;
   vertexSpacing: number = 100;
-  layerShift: number = 50;
 }
 
 export class VertexPositioner {
@@ -121,21 +120,19 @@ export class VertexPositioner {
     return layout;
   }
 
-
   private computeSpacing<V>(layers: Map<V, number>[]): Map<V, { x: number; y: number }> {
     const xSpacing = this.cfg.layerSpacing;
     const ySpacing = this.cfg.vertexSpacing;
-    const layerShift = this.cfg.layerShift;
+    const layerShift = ySpacing / 2;
 
     const vertexPositions = new Map<V, { x: number; y: number }>();
     layers.forEach((vertices, i_layer) => {
       vertices.forEach((position, vertex) => {
         let x = i_layer * xSpacing;
-        let y = position * ySpacing + i_layer * layerShift;
+        let y = position * ySpacing + (i_layer % 2) * layerShift;
         vertexPositions.set(vertex, { x, y });
       });
     });
     return vertexPositions;
   }
-
 }

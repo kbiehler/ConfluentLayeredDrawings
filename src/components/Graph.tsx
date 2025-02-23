@@ -13,6 +13,7 @@ const Graph: React.FC<GraphProps> = ({ graphDrawing, title }) => {
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
+    svg.selectAll("*").remove();
 
     let [width, height] = graphDrawing.getSize();
 
@@ -58,7 +59,7 @@ const Graph: React.FC<GraphProps> = ({ graphDrawing, title }) => {
       .attr("d", (d: EdgeDrawing) => {
         return lineGenerator(d.points);
       });
-  }, [selectedVertices]);
+  }, [selectedVertices, graphDrawing]);
 
   return (
     <div style={{ display: "inline-block" }}>
