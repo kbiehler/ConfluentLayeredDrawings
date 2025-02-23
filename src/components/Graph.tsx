@@ -2,12 +2,18 @@ import * as d3 from "d3";
 import { EdgeDrawing, GraphDrawing, VertexDrawing } from "@/model/drawing/GraphDrawing";
 import React, { useEffect, useRef, useState } from "react";
 
-interface GraphProps {
-  graphDrawing: GraphDrawing;
-  title: string;
+export interface DrawCfg {
+  vertexColor: string;
+  highlightColor: string;
 }
 
-const Graph: React.FC<GraphProps> = ({ graphDrawing, title }) => {
+interface DrawingProps {
+  graphDrawing: GraphDrawing;
+  title: string;
+  drawCfg: DrawCfg;
+}
+
+const Graph: React.FC<DrawingProps> = ({ graphDrawing, title, drawCfg }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [selectedVertices, setSelectedVertices] = useState(new Set<String>());
 
@@ -30,7 +36,7 @@ const Graph: React.FC<GraphProps> = ({ graphDrawing, title }) => {
       .attr("r", 10)
       .attr("cx", (v) => v.x)
       .attr("cy", (v) => v.y)
-      .style("fill", (d: any) => (selectedVertices.has(d.id) ? "blue" : "red"));
+      .style("fill", (d: any) => (selectedVertices.has(d.id) ? drawCfg.highlightColor : drawCfg.vertexColor));
     g.selectAll<SVGCircleElement, VertexDrawing>("circle").on("click", (event, value) => {
       selectedVertices.add(value.id);
       setSelectedVertices(new Set(selectedVertices));

@@ -1,23 +1,33 @@
 import Graph from "@/components/Graph";
 import { createRandomLayeredGraph } from "./model/ExampleGraphs";
-import { straightLineDrawing } from "./model/drawing/SimpleDrawer";
+import { straightLineDrawing } from "./model/drawing/Drawer";
 import { useEffect, useState } from "react";
-import { VertexPositionCfg } from "./model/drawing/VertexPositioner";
-import ConfigPanel from "./components/ConfigPanel";
+import ConfigPanel from "./components/config/ConfigPanel";
+import { ConfigDto, mapToDrawCfg, mapToDrawingAlgorithmCfg } from "./model/cfg/ConfigDtos";
 
 function App() {
   const G = createRandomLayeredGraph([5, 5, 5], 0.5);
-  const [config, setConfig] = useState(new VertexPositionCfg());
-  const [drawing, setDrawing] = useState(straightLineDrawing(G, config));
+  const [config, setConfig] = useState(new ConfigDto());
+  const [drawing, setDrawing] = useState(straightLineDrawing(G, mapToDrawingAlgorithmCfg(config)));
+  const [drawCfg, setDrawCfg] = useState(mapToDrawCfg(config));
+
   useEffect(() => {
-    setDrawing(straightLineDrawing(G, config));
+    setDrawing(straightLineDrawing(G, mapToDrawingAlgorithmCfg(config)));
+    setDrawCfg(mapToDrawCfg(config));
   }, [config]);
 
   return (
-    <>
-      <ConfigPanel cfg={config} setConfig={setConfig} />
-      <Graph graphDrawing={drawing} title={"test"} />
-    </>
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+      {" "}
+      <div style={{ flexShrink: 0 }}>
+        {" "}
+        <ConfigPanel config={config} setConfig={setConfig} />{" "}
+      </div>{" "}
+      <div style={{ flexGrow: 1 }}>
+        {" "}
+        <Graph graphDrawing={drawing} title={"test"} drawCfg={drawCfg} />{" "}
+      </div>{" "}
+    </div>
   );
 }
 

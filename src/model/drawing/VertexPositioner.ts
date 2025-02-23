@@ -1,4 +1,5 @@
 import { LayerGraph } from "@/model/ds/LayerGraph";
+import _ from "lodash";
 
 export class VertexPositionCfg {
   barycenterDepth: number = 0;
@@ -105,10 +106,10 @@ export class VertexPositioner {
     const layout: Map<V, number>[] = [];
 
     for (let layer = 0; layer < layeredGraph.getNumLayers(); layer++) {
-      const vertices = Array.from(layeredGraph.getVerticesInLayer(layer));
+      let vertices = Array.from(layeredGraph.getVerticesInLayer(layer));
 
       if (this.cfg.barycenterRandomStart) {
-        vertices.sort(() => Math.random() - 0.5);
+        vertices = _.shuffle(vertices);
       }
       const vertexToPosition = new Map();
       vertices.forEach((v, i) => {

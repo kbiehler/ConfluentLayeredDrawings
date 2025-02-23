@@ -2,7 +2,6 @@
     padding: 20px;
     border: 2px solid #007bff;
     border-radius: 5px;
-    max-width: 400px;
     background-color: #f0f8ff;
   }
   
@@ -43,3 +42,36 @@
     background-color: #0056b3;
   }
   
+  /* Styling for the toggle button */
+  .panel-toggle {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s;
+  }
+  
+  .panel-toggle:hover {
+    background-color: #0056b3;
+  }
+  
+  .panel-toggle:active {
+    transform: scale(0.98);
+  }
+  
+  /* Animation for opening and closing the panel */
+  .panel.closed .panel-content {
+    display: none;
+  }
+  
+  .panel.open .panel-content {
+    display: block;
+  }
+
