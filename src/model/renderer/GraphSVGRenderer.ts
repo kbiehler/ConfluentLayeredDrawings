@@ -1,6 +1,5 @@
 import { EdgeLayout, GraphLayout, VertexLayout } from "@/model/layout/GraphLayout";
 import * as d3 from "d3";
-import { highlight } from "vitest/utils.js";
 
 export interface RenderCfg {
   vertexColor: string;

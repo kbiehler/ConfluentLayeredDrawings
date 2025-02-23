@@ -1,20 +1,18 @@
 import { VertexLayout } from "../layout/GraphLayout";
-import { InteractionState } from "./InteractionManager";
+import { InteractionManager } from "./InteractionManager";
 
 export class SvgEventController {
-  interactionState: InteractionState;
-  setInteractionState: (interactionState: InteractionState) => void;
 
-  constructor(interactionState: InteractionState, setInteractionState: (interactionState: InteractionState) => void) {
-    this.interactionState = interactionState;
-    this.setInteractionState = setInteractionState;
+  interactionManager: InteractionManager;
+
+  constructor(interactionManager: InteractionManager) {
+    this.interactionManager = interactionManager;
   }
 
   attachListeners(svg: d3.Selection<SVGGElement, unknown, null, undefined>) {
     svg.selectAll<SVGCircleElement, VertexLayout>("circle").on("click", (event, value: VertexLayout) => {
-      const newInteractionState = { ...this.interactionState };
-      newInteractionState.selectedVertices.add(value.id);
-      this.setInteractionState(newInteractionState);
+      this.interactionManager.vertexClicked(value.id, event.ctrlKey);
     });
   }
+  
 }

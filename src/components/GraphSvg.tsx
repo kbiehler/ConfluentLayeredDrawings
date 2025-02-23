@@ -12,25 +12,16 @@ interface DrawingProps {
 
 const GraphSvg: React.FC<DrawingProps> = ({ graphDrawing, renderCfg }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const [interactionState, setInteractionState] = useState(new InteractionState());
+
+  const interactionManager = new InteractionManager();
+  interactionManager.on("redraw", () => {
+    draw(svgRef!, graphDrawing, renderCfg, interactionManager);
+  });
 
   useEffect(() => {
-    const svg = d3.select(svgRef.current);
-    svg.selectAll("*").remove();
-
-    let [width, height] = graphDrawing.getSize();
-
-    width += 100;
-    height += 100;
-
-    svg.attr("width", width).attr("height", height);
-    //g contains actual drawing, shifted by 50, 50
-    const g = svg.append("g").attr("transform", `translate(50, 50)`);
-
-    const interactionManager = new InteractionManager(interactionState);
-    new GraphSVGRenderer().render(g, graphDrawing, renderCfg, (vertexId) => interactionManager.highlightVertex(vertexId));
-    new SvgEventController(interactionState, setInteractionState).attachListeners(g);
-  }, [interactionState, graphDrawing]);
+    interactionManager.reset();
+    draw(svgRef!, graphDrawing, renderCfg, interactionManager);
+  }, [graphDrawing]);
 
   return (
     <div style={{ display: "inline-block" }}>
@@ -38,5 +29,27 @@ const GraphSvg: React.FC<DrawingProps> = ({ graphDrawing, renderCfg }) => {
     </div>
   );
 };
+
+function draw(
+  svgRef: React.RefObject<SVGSVGElement | null>, //
+  graphDrawing: GraphLayout,
+  renderCfg: RenderCfg,
+  interactionManager: InteractionManager
+) {
+  const svg = d3.select(svgRef.current);
+  svg.selectAll("*").remove();
+
+  let [width, height] = graphDrawing.getSize();
+
+  width += 100;
+  height += 100;
+
+  svg.attr("width", width).attr("height", height);
+  //g contains actual drawing, shifted by 50, 50
+  const g = svg.append("g").attr("transform", `translate(50, 50)`);
+
+  new GraphSVGRenderer().render(g, graphDrawing, renderCfg, (vertexId) => interactionManager.highlightVertex(vertexId));
+  new SvgEventController(interactionManager).attachListeners(g);
+}
 
 export default GraphSvg;
