@@ -1,16 +1,15 @@
+import { Point2d } from "../types/Point";
+
 export interface VertexDrawing {
   id: string;
   draw: boolean;
-  x: number;
-  y: number;
-  label: String;
+  position: Point2d;
+  label: string;
 }
 
 export interface EdgeDrawing {
   id: string;
-  sourceVertex: string | null;
-  targetVertex: string | null;
-  points: [number, number][];
+  points: Point2d[];
 }
 
 export class GraphDrawing {
@@ -22,9 +21,9 @@ export class GraphDrawing {
     this.edges = edges;
   }
 
-  addVertex(id: string, x: number, y: number, draw: boolean, label: String = ""): void {
+  addVertex(id: string, position: Point2d, draw: boolean, label: string = ""): void {
     if (!this.vertices.has(id)) {
-      this.vertices.set(id, { id, x, y, draw, label });
+      this.vertices.set(id, { id, position, draw, label });
     } else {
       throw new Error(`Vertex with id ${id} already exists.`);
     }
@@ -46,8 +45,8 @@ export class GraphDrawing {
     if (this.vertices.size === 0) {
       return [0, 0];
     }
-    const maxX = Math.max(...Array.from(this.vertices.values()).map((v) => v.x));
-    const maxY = Math.max(...Array.from(this.vertices.values()).map((v) => v.y));
+    const maxX = Math.max(...Array.from(this.vertices.values()).map((v) => v.position.x));
+    const maxY = Math.max(...Array.from(this.vertices.values()).map((v) => v.position.y));
     return [maxX, maxY];
   }
 }

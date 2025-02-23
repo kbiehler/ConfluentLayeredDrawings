@@ -1,16 +1,23 @@
 import { LayerGraph } from "@/model/ds/LayerGraph";
 import { GraphDrawing } from "./GraphDrawing";
 import { VertexPositioner, VertexPositionCfg } from "./VertexPositioner";
+import { v4 as uuidv4 } from "uuid";
 
 export type DrawingAlgorithmCfg = {
   vertexPosition: VertexPositionCfg;
 };
 
-export function straightLineDrawing(g: LayerGraph<any, any>, cfg: DrawingAlgorithmCfg): GraphDrawing {
+export function straightLineDrawing<V>(g: LayerGraph<V, any>, cfg: DrawingAlgorithmCfg): GraphDrawing {
   const drawing = new GraphDrawing();
 
-  new VertexPositioner(cfg.vertexPosition).barycenterPositions(g).forEach((pos, vertex) => {
-    drawing.addVertex(vertex, pos.x, pos.y, true, vertex.toString());
+  const vertexPositions = new VertexPositioner(cfg.vertexPosition).barycenterPositions(g);
+
+  vertexPositions.forEach((pos, vertex) => {
+    drawing.addVertex(String(vertex), pos, true, String(vertex));
+  });
+
+  g.getEdges().forEach((edge) => {
+    drawing.addEdgeDrawing({ id: uuidv4(), points: [vertexPositions.get(edge.source)!, vertexPositions.get(edge.target)!] });
   });
 
   return drawing;

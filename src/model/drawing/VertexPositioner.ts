@@ -1,5 +1,6 @@
 import { LayerGraph } from "@/model/ds/LayerGraph";
 import _ from "lodash";
+import { Point2d } from "../types/Point";
 
 export class VertexPositionCfg {
   barycenterDepth: number = 0;
@@ -15,7 +16,7 @@ export class VertexPositioner {
     this.cfg = cfg;
   }
 
-  public barycenterPositions<V>(layeredGraph: LayerGraph<V, any>): Map<V, { x: number; y: number }> {
+  public barycenterPositions<V>(layeredGraph: LayerGraph<V, any>): Map<V, Point2d> {
     const nLayers = layeredGraph.getNumLayers();
     const layout = this.initLayout(layeredGraph);
 

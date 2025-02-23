@@ -9,11 +9,10 @@ export interface DrawCfg {
 
 interface DrawingProps {
   graphDrawing: GraphDrawing;
-  title: string;
   drawCfg: DrawCfg;
 }
 
-const Graph: React.FC<DrawingProps> = ({ graphDrawing, title, drawCfg }) => {
+const Graph: React.FC<DrawingProps> = ({ graphDrawing, drawCfg }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [selectedVertices, setSelectedVertices] = useState(new Set<String>());
 
@@ -34,24 +33,24 @@ const Graph: React.FC<DrawingProps> = ({ graphDrawing, title, drawCfg }) => {
       .data(graphDrawing.getVertices())
       .join("circle")
       .attr("r", 10)
-      .attr("cx", (v) => v.x)
-      .attr("cy", (v) => v.y)
-      .style("fill", (d: any) => (selectedVertices.has(d.id) ? drawCfg.highlightColor : drawCfg.vertexColor));
+      .attr("cx", (v) => v.position.x)
+      .attr("cy", (v) => v.position.y)
+      .style("fill", (d: VertexDrawing) => (selectedVertices.has(d.id) ? drawCfg.highlightColor : drawCfg.vertexColor));
     g.selectAll<SVGCircleElement, VertexDrawing>("circle").on("click", (event, value) => {
       selectedVertices.add(value.id);
       setSelectedVertices(new Set(selectedVertices));
     });
 
-    g.selectAll(".circle-label")
-      .data(graphDrawing.getVertices().filter((d: any) => d.label.length < 10))
+    g.selectAll<SVGCircleElement, VertexDrawing>(".circle-label")
+      .data(graphDrawing.getVertices().filter((d: VertexDrawing) => d.label.length < 10))
       .enter()
       .append("text")
       .attr("class", "vertex-label")
-      .attr("x", (d: any) => d.x)
-      .attr("y", (d: any) => d.y)
+      .attr("x", (d) => d.position.x)
+      .attr("y", (d) => d.position.y)
       .attr("dy", -15)
       .attr("text-anchor", "middle")
-      .text((d: any) => d.label);
+      .text((d) => d.label);
 
     const lineGenerator = d3.line<[number, number]>().curve(d3.curveBasis);
 
@@ -63,13 +62,12 @@ const Graph: React.FC<DrawingProps> = ({ graphDrawing, title, drawCfg }) => {
       .attr("stroke", "#999")
       .attr("stroke-width", 1)
       .attr("d", (d: EdgeDrawing) => {
-        return lineGenerator(d.points);
+        return lineGenerator(d.points.map((p) => [p.x, p.y]));
       });
   }, [selectedVertices, graphDrawing]);
 
   return (
     <div style={{ display: "inline-block" }}>
-      <p>{title}</p>
       <svg ref={svgRef}></svg>
     </div>
   );
