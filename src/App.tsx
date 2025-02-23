@@ -1,6 +1,6 @@
-import Graph from "@/components/Graph";
+import GraphSvg from "@/components/GraphSvg";
 import { createRandomLayeredGraph } from "./model/ExampleGraphs";
-import { straightLineDrawing } from "./model/drawing/Drawer";
+import { straightLineDrawing } from "./model/layout/GraphLayoutGenerator";
 import { useEffect, useState } from "react";
 import ConfigPanel from "./components/config/ConfigPanel";
 import { ConfigDto, mapToDrawCfg, mapToDrawingAlgorithmCfg } from "./model/cfg/ConfigDtos";
@@ -25,7 +25,7 @@ function App() {
       </div>{" "}
       <div style={{ flexGrow: 1 }}>
         {" "}
-        <Graph graphDrawing={drawing} title={"test"} drawCfg={drawCfg} />{" "}
+        <GraphSvg graphDrawing={drawing} title={"test"} renderCfg={drawCfg} />{" "}
       </div>{" "}
     </div>
   );

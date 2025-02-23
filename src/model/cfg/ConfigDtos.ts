@@ -1,5 +1,5 @@
-import { DrawCfg } from "@/components/Graph";
-import { DrawingAlgorithmCfg } from "../drawing/Drawer";
+import { DrawCfg } from "@/components/GraphSvg";
+import { DrawingAlgorithmCfg } from "../layout/GraphLayoutGenerator";
 /**
  * Data Transfer Object (DTO) for configuration settings.
  *

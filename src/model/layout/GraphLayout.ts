@@ -1,22 +1,22 @@
 import { Point2d } from "../types/Point";
 
-export interface VertexDrawing {
+export interface VertexLayout {
   id: string;
   draw: boolean;
   position: Point2d;
   label: string;
 }
 
-export interface EdgeDrawing {
+export interface EdgeLayout {
   id: string;
   points: Point2d[];
 }
 
-export class GraphDrawing {
-  private vertices: Map<string, VertexDrawing>;
-  private edges: EdgeDrawing[];
+export class GraphLayout {
+  private vertices: Map<string, VertexLayout>;
+  private edges: EdgeLayout[];
 
-  constructor(vertices: Map<string, VertexDrawing> = new Map<string, VertexDrawing>(), edges: EdgeDrawing[] = []) {
+  constructor(vertices: Map<string, VertexLayout> = new Map<string, VertexLayout>(), edges: EdgeLayout[] = []) {
     this.vertices = vertices;
     this.edges = edges;
   }
@@ -29,15 +29,15 @@ export class GraphDrawing {
     }
   }
 
-  addEdgeDrawing(e: EdgeDrawing): void {
+  addEdgeDrawing(e: EdgeLayout): void {
     this.edges.push(e);
   }
 
-  getVertices(): VertexDrawing[] {
+  getVertices(): VertexLayout[] {
     return Array.from(this.vertices.values());
   }
 
-  getEdgeDrawings(): EdgeDrawing[] {
+  getEdgeDrawings(): EdgeLayout[] {
     return this.edges;
   }
 
