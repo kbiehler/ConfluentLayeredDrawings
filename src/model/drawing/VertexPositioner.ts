@@ -15,11 +15,7 @@ export class VertexPositioner {
     this.cfg = cfg;
   }
 
-  public computeVertexPositions<V>(layeredGraph: LayerGraph<V, any>): Map<V, { x: number; y: number }> {
-    return this.computeBarycenter(layeredGraph);
-  }
-
-  private computeBarycenter<V>(layeredGraph: LayerGraph<V, any>): Map<V, { x: number; y: number }> {
+  public barycenterPositions<V>(layeredGraph: LayerGraph<V, any>): Map<V, { x: number; y: number }> {
     const nLayers = layeredGraph.getNumLayers();
     const layout = this.initLayout(layeredGraph);
 
