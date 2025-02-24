@@ -1,4 +1,3 @@
-import { BipartiteGraph } from "./BiGraph";
 import { Graph, Edge } from "./Graph";
 
 export class LayerGraph<V, E extends Edge<V>> extends Graph<V, E> {
@@ -11,7 +10,7 @@ export class LayerGraph<V, E extends Edge<V>> extends Graph<V, E> {
     this.layerToVertex = new Map<number, Set<V>>();
   }
 
-  addVertex(vertex: V): void {
+  addVertex(_: V): void {
     throw new Error("Use addVertexToLayer for layerGraphs");
   }
 

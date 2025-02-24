@@ -18,8 +18,8 @@ export class ConfigDto {
 }
 
 export class GraphCfgDto {
-  type: "example" | "random" = "random";
-  example_type: ExampleGraphs = ExampleGraphs.GRAPH_1;
+  type: "example" | "random" = "example";
+  example_type: ExampleGraphs = ExampleGraphs.GRAPH_13;
 }
 
 export class VertexPositionCfgDto {
@@ -30,7 +30,7 @@ export class VertexPositionCfgDto {
 }
 
 export class EdgeDrawingCfgDto {
-  alg: EdgeDrawingAlgorithm = EdgeDrawingAlgorithm.STRAIGHT_LINE;
+  alg: EdgeDrawingAlgorithm = EdgeDrawingAlgorithm.VERTICAL_BUNDELING_ORDERING;
 }
 
 export class UiCfgDto {

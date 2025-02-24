@@ -52,7 +52,7 @@ function edgeToVerticalWithColoring<V>(g: LayerGraph<V, any>, vertexPositions: M
     const conflictGraph = createConflictGraph(layerToBipartite(g, layer), vertexPositions);
     let edgeColoring = rlfColoring(conflictGraph);
     if (ordering) {
-      edgeColoring = verticalLayerOrdering(g, vertexPositions, edgeColoring);
+      edgeColoring = verticalLayerOrdering(vertexPositions, edgeColoring);
     }
     const layerSpacing = vertexPositions.get(g.getVerticesInLayer(layer + 1)[0])!.x - vertexPositions.get(g.getVerticesInLayer(layer)[0])!.x;
 
