@@ -1,14 +1,20 @@
 import { EventEmitter } from "events";
 
+export interface InteractionInfo {
+  adjEdges: Map<any, Set<string>>;
+}
+
 export class InteractionState {
-  selectedVertices: Set<string> = new Set();
+  selectedVertices: Set<any> = new Set();
 }
 
 export class InteractionManager extends EventEmitter {
   state = new InteractionState();
+  interactionInfo: InteractionInfo;
 
-  constructor() {
+  constructor(interactionInfo: InteractionInfo) {
     super();
+    this.interactionInfo = interactionInfo;
   }
 
   vertexClicked(vertexId: string, ctrlKey: boolean) {
@@ -31,6 +37,10 @@ export class InteractionManager extends EventEmitter {
 
   highlightVertex(vertexId: string): boolean {
     return this.state.selectedVertices.has(vertexId);
+  }
+
+  highlightEdge(edgeId: string): boolean {
+    return Array.from(this.state.selectedVertices).some((v) => this.interactionInfo.adjEdges.get(v)?.has(edgeId));
   }
 
   reset() {

@@ -2,18 +2,19 @@ import * as d3 from "d3";
 import { GraphLayout } from "@/model/layout/GraphLayout";
 import React, { useEffect, useRef } from "react";
 import { GraphSVGRenderer, RenderCfg } from "@/model/renderer/GraphSVGRenderer";
-import { InteractionManager } from "@/model/renderer/InteractionManager";
+import { InteractionInfo, InteractionManager } from "@/model/renderer/InteractionManager";
 import { SvgEventController } from "@/model/renderer/SvgEventController";
 
 interface DrawingProps {
-  graphDrawing: GraphLayout;
+  graphLayout: GraphLayout;
   renderCfg: RenderCfg;
+  interactionInfo: InteractionInfo;
 }
 
-const GraphSvg: React.FC<DrawingProps> = ({ graphDrawing, renderCfg }) => {
+const GraphSvg: React.FC<DrawingProps> = ({ graphLayout: graphDrawing, renderCfg, interactionInfo }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
-  const interactionManager = new InteractionManager();
+  const interactionManager = new InteractionManager(interactionInfo);
   interactionManager.on("redraw", () => {
     draw(svgRef!, graphDrawing, renderCfg, interactionManager);
   });
@@ -48,7 +49,13 @@ function draw(
   //g contains actual drawing, shifted by 50, 50
   const g = svg.append("g").attr("transform", `translate(50, 50)`);
 
-  new GraphSVGRenderer().render(g, graphDrawing, renderCfg, (vertexId) => interactionManager.highlightVertex(vertexId));
+  new GraphSVGRenderer().render(
+    g,
+    graphDrawing,
+    renderCfg,
+    (vertexId) => interactionManager.highlightVertex(vertexId),
+    (edgeId) => interactionManager.highlightEdge(edgeId)
+  );
   new SvgEventController(interactionManager).attachListeners(g);
 }
 

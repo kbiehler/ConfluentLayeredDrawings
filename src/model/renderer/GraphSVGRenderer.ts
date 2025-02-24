@@ -11,7 +11,8 @@ export class GraphSVGRenderer {
     svg: d3.Selection<SVGGElement, unknown, null, undefined>, //
     graphLayout: GraphLayout,
     renderCfg: RenderCfg,
-    highlightVertex: (vertexId: string) => boolean
+    highlightVertex: (vertexId: string) => boolean,
+    highlightEdge: (edgeId: string) => boolean
   ) {
     svg
       .selectAll<SVGCircleElement, VertexLayout>("circle")
@@ -42,8 +43,8 @@ export class GraphSVGRenderer {
       .join("path")
       .attr("class", "link")
       .attr("fill", "none")
-      .attr("stroke", "#999")
-      .attr("stroke-width", 1)
+      .attr("stroke", (d: EdgeLayout) => (highlightEdge(d.id) ? "blue" : "#999"))
+      .attr("stroke-width", (d: EdgeLayout) => (highlightEdge(d.id) ? 2 : 1))
       .attr("d", (d: EdgeLayout) => {
         return lineGenerator(d.points.map((p) => [p.x, p.y]));
       });

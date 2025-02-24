@@ -1,7 +1,7 @@
 import { Point2d } from "../types/Point";
 
 export interface VertexLayout {
-  id: string;
+  id: any;
   draw: boolean;
   position: Point2d;
   label: string;
@@ -21,7 +21,7 @@ export class GraphLayout {
     this.edges = edges;
   }
 
-  addVertex(id: string, position: Point2d, draw: boolean, label: string = ""): void {
+  addVertex(id: any, position: Point2d, draw: boolean, label: string = ""): void {
     if (!this.vertices.has(id)) {
       this.vertices.set(id, { id, position, draw, label });
     } else {

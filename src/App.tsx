@@ -26,7 +26,7 @@ function App() {
       </div>{" "}
       <div style={{ flexGrow: 1 }}>
         {" "}
-        <GraphSvg graphDrawing={drawing} renderCfg={drawCfg} />{" "}
+        <GraphSvg graphLayout={drawing[0]} renderCfg={drawCfg} interactionInfo={drawing[1]} />{" "}
       </div>{" "}
     </div>
   );
