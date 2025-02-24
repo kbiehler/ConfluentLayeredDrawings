@@ -1,5 +1,6 @@
 import { RenderCfg } from "@/model/renderer/GraphSVGRenderer";
-import { GraphLayoutCfg } from "../layout/GraphLayoutGenerator";
+import { GraphLayoutCfg } from "../model/layout/GraphLayoutGenerator";
+import { ExampleGraphs } from "@/examples/ExampleGraphs";
 /**
  * Data Transfer Object (DTO) for configuration settings.
  *
@@ -9,8 +10,14 @@ import { GraphLayoutCfg } from "../layout/GraphLayoutGenerator";
  * configuration used by individual components and algorithms.
  */
 export class ConfigDto {
+  graphCfg: GraphCfgDto = new GraphCfgDto();
   vertexPositionCfg: VertexPositionCfgDto = new VertexPositionCfgDto();
-  uiConfig: UiCfgDto = new UiCfgDto();
+  uiCfg: UiCfgDto = new UiCfgDto();
+}
+
+export class GraphCfgDto {
+  type: "example" | "random" = "random";
+  example_type: ExampleGraphs = ExampleGraphs.GRAPH_1;
 }
 
 export class VertexPositionCfgDto {
@@ -31,8 +38,8 @@ export class UiCfgDto {
 
 export function mapToDrawCfg(cfgDto: ConfigDto): RenderCfg {
   return {
-    vertexColor: cfgDto.uiConfig.vertexColor,
-    highlightColor: cfgDto.uiConfig.highlightColor,
+    vertexColor: cfgDto.uiCfg.vertexColor,
+    highlightColor: cfgDto.uiCfg.highlightColor,
   };
 }
 

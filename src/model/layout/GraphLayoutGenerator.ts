@@ -1,4 +1,4 @@
-import { LayerGraph } from "@/model/ds/";
+import { LayerGraph, layerToBipartite } from "@/model/ds/";
 import { GraphLayout } from "./GraphLayout";
 import { VertexPositioner, VertexPositionCfg } from "./VertexPositioner";
 import { Point2d } from "@/model/types/Point";
@@ -9,7 +9,7 @@ export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
 };
 
-export function straightLineDrawing<V>(g: LayerGraph<V, any>, cfg: GraphLayoutCfg): GraphLayout {
+export function generateLayout<V>(g: LayerGraph<V, any>, cfg: GraphLayoutCfg): GraphLayout {
   const drawing = new GraphLayout();
 
   const vertexPositions = new VertexPositioner(cfg.vertexPosition).barycenterPositions(g);
@@ -18,7 +18,7 @@ export function straightLineDrawing<V>(g: LayerGraph<V, any>, cfg: GraphLayoutCf
     drawing.addVertex(String(vertex), pos, true, String(vertex));
   });
 
-  createConflictGraph(g.getAsBipartite(0), vertexPositions);
+  createConflictGraph(layerToBipartite(g, 0), vertexPositions);
 
   // drawStaightLine(drawing, vertexPositions, g);
 

@@ -1,8 +1,9 @@
 import "./ConfigPanel.css";
 import React, { useState } from "react";
-import { ConfigDto } from "@/model/cfg/ConfigDtos";
-import UiConfigComponent from "./UiCfgPanel";
+import { ConfigDto } from "@/cfg/ConfigDtos";
+import UiConfigPanel from "./UiCfgPanel";
 import VertexPositionCfgPanel from "./VertexPositionCfgPanel";
+import GraphConfigPanel from "./GraphCfgPanel";
 
 type Props = {
   config: ConfigDto;
@@ -33,7 +34,8 @@ const ConfigPanel: React.FC<Props> = ({ config, setConfig }) => {
       {isOpen && (
         <div className="panel-content">
           <div className="config-grid" style={{ display: "flex", gap: "50px" }}>
-            <UiConfigComponent config={localConfig.uiConfig} handleChange={(field, value) => handleChange("uiConfig", field, value)} />
+            <GraphConfigPanel config={localConfig.graphCfg} handleChange={(field, value) => handleChange("graphCfg", field, value)} />
+            <UiConfigPanel config={localConfig.uiCfg} handleChange={(field, value) => handleChange("uiCfg", field, value)} />
             <VertexPositionCfgPanel config={localConfig.vertexPositionCfg} handleChange={(field, value) => handleChange("vertexPositionCfg", field, value)} />
           </div>
           <button className="redraw-button" onClick={handleApply}>

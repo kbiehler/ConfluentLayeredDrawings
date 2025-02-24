@@ -1,5 +1,5 @@
 import React from "react";
-import { VertexPositionCfgDto } from "@/model/cfg/ConfigDtos";
+import { VertexPositionCfgDto } from "@/cfg/ConfigDtos";
 
 type Props = {
   config: VertexPositionCfgDto;

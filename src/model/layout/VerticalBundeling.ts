@@ -25,11 +25,12 @@ export function createConflictGraph<V, E extends Edge<V>>(layerGraph: BipartiteG
     for (let j = i + 1; j < edges.length; j++) {
       const intervalA = edgeToInterval.get(edges[i])!;
       const intervalB = edgeToInterval.get(edges[j])!;
-      if (intervalA[1] > intervalB[0]) {
+      if (intervalA[1] < intervalB[0]) {
         // Since edges are sorted, no need to check further
         break;
       }
-      if (intervalA[0] != intervalB[0] && intervalA[1] != intervalB[1]) {
+      if (intervalA[0] != intervalB[0] && intervalA[1] != intervalB[1] && intervalA[1] != intervalB[0]) {
+        console.log(edges[i].source, edges[i].target, "<->", edges[j].source, edges[j].target);
         conflictGraph.addEdge(new Edge(edges[i], edges[j]));
       }
     }

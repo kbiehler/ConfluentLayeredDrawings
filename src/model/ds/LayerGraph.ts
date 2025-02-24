@@ -49,25 +49,6 @@ export class LayerGraph<V, E extends Edge<V>> extends Graph<V, E> {
     return this.getVerticesInLayer(layer).flatMap((vertex) => this.getIncidentDirected(vertex));
   }
 
-  /**
-   *
-   * @param layer bipartite graph with vertices in layer and layer+1
-   * @returns
-   */
-  getAsBipartite(layer: number): BipartiteGraph<V, E> {
-    const g = new BipartiteGraph<V, E>();
-    this.getVerticesInLayer(layer).forEach((vertex) => {
-      g.addVertexA(vertex);
-    });
-    this.getVerticesInLayer(layer + 1).forEach((vertex) => {
-      g.addVertexB(vertex);
-    });
-    this.getEdgesBetween(layer).forEach((edge) => {
-      g.addEdge(edge);
-    });
-    return g;
-  }
-
   getNumLayers(): number {
     if (this.vertexToLayer.size === 0) {
       return 0;

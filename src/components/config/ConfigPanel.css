@@ -75,3 +75,34 @@
     display: block;
   }
 
+  /* Styling for select dropdowns */
+select {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Focus effect for better user experience */
+select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Styling for select options */
+select option {
+  padding: 5px;
+  font-size: 14px;
+}
+
+/* Optional: Make dropdowns visually appealing */
+select:hover {
+  border-color: #0056b3;
+}
+
+

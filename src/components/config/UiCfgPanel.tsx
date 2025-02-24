@@ -1,12 +1,12 @@
 import React from "react";
-import { UiCfgDto } from "@/model/cfg/ConfigDtos";
+import { UiCfgDto } from "@/cfg/ConfigDtos";
 
 type Props = {
   config: UiCfgDto;
   handleChange: (field: keyof UiCfgDto, value: any) => void;
 };
 
-const UiConfigComponent: React.FC<Props> = ({ config, handleChange }) => {
+const UiConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
   return (
     <div>
       <h3>Ui Configuration</h3>
@@ -30,4 +30,4 @@ const UiConfigComponent: React.FC<Props> = ({ config, handleChange }) => {
   );
 };
 
-export default UiConfigComponent;
+export default UiConfigPanel;

@@ -1,6 +1,6 @@
-import { Graph, Edge } from "./ds/Graph";
-import { BipartiteGraph } from "./ds/BiGraph";
-import { LayerGraph } from "./ds/LayerGraph";
+import { Graph, Edge } from "../model/ds/Graph";
+import { BipartiteGraph } from "../model/ds/BiGraph";
+import { LayerGraph } from "../model/ds/LayerGraph";
 
 export const createWheelGraph = (n: number): Graph<Number, Edge<Number>> => {
   const G = new Graph<Number, Edge<Number>>();

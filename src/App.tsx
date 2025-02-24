@@ -1,18 +1,19 @@
 import GraphSvg from "@/components/GraphSvg";
-import { createRandomLayeredGraph } from "./model/ExampleGraphs";
-import { straightLineDrawing } from "./model/layout/GraphLayoutGenerator";
+import { generateLayout } from "@/model/layout/GraphLayoutGenerator";
 import { useEffect, useState } from "react";
-import ConfigPanel from "./components/config/ConfigPanel";
-import { ConfigDto, mapToDrawCfg, mapToGraphLayoutCfg } from "./model/cfg/ConfigDtos";
+import ConfigPanel from "@/components/config/ConfigPanel";
+import { ConfigDto, mapToDrawCfg, mapToGraphLayoutCfg } from "./cfg/ConfigDtos";
+import { loadFromCfg } from "@/model/input/GraphLoader";
+import { LayerGraph } from "@/model/ds";
 
 function App() {
-  const G = createRandomLayeredGraph([5, 5, 5], 0.2);
   const [config, setConfig] = useState(new ConfigDto());
-  const [drawing, setDrawing] = useState(straightLineDrawing(G, mapToGraphLayoutCfg(config)));
+  const G: LayerGraph<Number, any> = loadFromCfg(config.graphCfg) as LayerGraph<Number, any>;
+  const [drawing, setDrawing] = useState(generateLayout(G, mapToGraphLayoutCfg(config)));
   const [drawCfg, setDrawCfg] = useState(mapToDrawCfg(config));
 
   useEffect(() => {
-    setDrawing(straightLineDrawing(G, mapToGraphLayoutCfg(config)));
+    setDrawing(generateLayout(G, mapToGraphLayoutCfg(config)));
     setDrawCfg(mapToDrawCfg(config));
   }, [config]);
 
@@ -25,7 +26,7 @@ function App() {
       </div>{" "}
       <div style={{ flexGrow: 1 }}>
         {" "}
-        <GraphSvg graphDrawing={drawing} title={"test"} renderCfg={drawCfg} />{" "}
+        <GraphSvg graphDrawing={drawing} renderCfg={drawCfg} />{" "}
       </div>{" "}
     </div>
   );
