@@ -1,5 +1,5 @@
-import { DrawCfg } from "@/components/GraphSvg";
-import { DrawingAlgorithmCfg } from "../layout/GraphLayoutGenerator";
+import { RenderCfg } from "@/model/renderer/GraphSVGRenderer";
+import { GraphLayoutCfg } from "../layout/GraphLayoutGenerator";
 /**
  * Data Transfer Object (DTO) for configuration settings.
  *
@@ -20,19 +20,23 @@ export class VertexPositionCfgDto {
   vertexSpacing: number = 100;
 }
 
+export class EdgeDrawingDto {
+  alg: "straightLine" | "singleVerticalLayer" = "straightLine";
+}
+
 export class UiCfgDto {
   vertexColor: string = "#FF0000";
   highlightColor: string = "#0000FF";
 }
 
-export function mapToDrawCfg(cfgDto: ConfigDto): DrawCfg {
+export function mapToDrawCfg(cfgDto: ConfigDto): RenderCfg {
   return {
     vertexColor: cfgDto.uiConfig.vertexColor,
     highlightColor: cfgDto.uiConfig.highlightColor,
   };
 }
 
-export function mapToDrawingAlgorithmCfg(cfgDto: ConfigDto): DrawingAlgorithmCfg {
+export function mapToGraphLayoutCfg(cfgDto: ConfigDto): GraphLayoutCfg {
   return {
     vertexPosition: {
       barycenterDepth: cfgDto.vertexPositionCfg.barycenterDepth,

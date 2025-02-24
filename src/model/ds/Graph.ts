@@ -14,26 +14,30 @@ export class Graph<V, E extends Edge<V>> {
   private vertices: Set<V>;
   private edges: Set<E>;
   private adj: Map<V, Set<E>>;
+  private adjDirected: Map<V, Set<E>>;
 
   constructor() {
     this.vertices = new Set<V>();
     this.edges = new Set<E>();
     this.adj = new Map<V, Set<E>>();
+    this.adjDirected = new Map<V, Set<E>>();
   }
 
   addVertex(vertex: V): void {
     this.vertices.add(vertex);
     this.adj.set(vertex, new Set<E>());
+    this.adjDirected.set(vertex, new Set<E>());
   }
 
   addEdge(edge: E): void {
     this.edges.add(edge);
     this.adj.get(edge.source)!.add(edge);
     this.adj.get(edge.target)!.add(edge);
+    this.adjDirected.get(edge.source)!.add(edge);
   }
 
-  getEdges(): Set<E> {
-    return this.edges;
+  getEdges(): E[] {
+    return Array.from(this.edges);
   }
 
   getVertices(): V[] {
@@ -46,8 +50,16 @@ export class Graph<V, E extends Edge<V>> {
     });
   }
 
-  getIncident(vertex: V): Set<E> {
-    return this.adj.get(vertex)!;
+  getIncident(vertex: V): E[] {
+    return Array.from(this.adj.get(vertex)!);
+  }
+
+  /**
+   * returns the set of edges starting at a vertex
+   * @param vertex
+   */
+  getIncidentDirected(vertex: V): E[] {
+    return Array.from(this.adjDirected.get(vertex)!);
   }
 
   containsVertex(vertex: V): boolean {
@@ -62,6 +74,7 @@ export class Graph<V, E extends Edge<V>> {
     this.edges.delete(edge);
     this.adj.get(edge.source)!.delete(edge);
     this.adj.get(edge.target)!.delete(edge);
+    this.adjDirected.get(edge.source)!.delete(edge);
   }
 
   deleteVertex(vertex: V): void {

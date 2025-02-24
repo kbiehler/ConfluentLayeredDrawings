@@ -1,8 +1,8 @@
 import * as d3 from "d3";
-import { GraphLayout, VertexLayout } from "@/model/layout/GraphLayout";
-import React, { useEffect, useRef, useState } from "react";
+import { GraphLayout } from "@/model/layout/GraphLayout";
+import React, { useEffect, useRef } from "react";
 import { GraphSVGRenderer, RenderCfg } from "@/model/renderer/GraphSVGRenderer";
-import { InteractionManager, InteractionState } from "@/model/renderer/InteractionManager";
+import { InteractionManager } from "@/model/renderer/InteractionManager";
 import { SvgEventController } from "@/model/renderer/SvgEventController";
 
 interface DrawingProps {

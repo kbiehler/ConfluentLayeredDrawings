@@ -3,16 +3,16 @@ import { createRandomLayeredGraph } from "./model/ExampleGraphs";
 import { straightLineDrawing } from "./model/layout/GraphLayoutGenerator";
 import { useEffect, useState } from "react";
 import ConfigPanel from "./components/config/ConfigPanel";
-import { ConfigDto, mapToDrawCfg, mapToDrawingAlgorithmCfg } from "./model/cfg/ConfigDtos";
+import { ConfigDto, mapToDrawCfg, mapToGraphLayoutCfg } from "./model/cfg/ConfigDtos";
 
 function App() {
-  const G = createRandomLayeredGraph([5, 5, 5], 0.5);
+  const G = createRandomLayeredGraph([5, 5, 5], 0.2);
   const [config, setConfig] = useState(new ConfigDto());
-  const [drawing, setDrawing] = useState(straightLineDrawing(G, mapToDrawingAlgorithmCfg(config)));
+  const [drawing, setDrawing] = useState(straightLineDrawing(G, mapToGraphLayoutCfg(config)));
   const [drawCfg, setDrawCfg] = useState(mapToDrawCfg(config));
 
   useEffect(() => {
-    setDrawing(straightLineDrawing(G, mapToDrawingAlgorithmCfg(config)));
+    setDrawing(straightLineDrawing(G, mapToGraphLayoutCfg(config)));
     setDrawCfg(mapToDrawCfg(config));
   }, [config]);
 

@@ -1,3 +1,4 @@
+import { BipartiteGraph } from "./BiGraph";
 import { Graph, Edge } from "./Graph";
 
 export class LayerGraph<V, E extends Edge<V>> extends Graph<V, E> {
@@ -37,6 +38,34 @@ export class LayerGraph<V, E extends Edge<V>> extends Graph<V, E> {
 
   getLayer(vertex: V): number {
     return this.vertexToLayer.get(vertex)!;
+  }
+
+  /**
+   *
+   * @param layer all edges between layer and next layer
+   * @returns
+   */
+  getEdgesBetween(layer: number): E[] {
+    return this.getVerticesInLayer(layer).flatMap((vertex) => this.getIncidentDirected(vertex));
+  }
+
+  /**
+   *
+   * @param layer bipartite graph with vertices in layer and layer+1
+   * @returns
+   */
+  getAsBipartite(layer: number): BipartiteGraph<V, E> {
+    const g = new BipartiteGraph<V, E>();
+    this.getVerticesInLayer(layer).forEach((vertex) => {
+      g.addVertexA(vertex);
+    });
+    this.getVerticesInLayer(layer + 1).forEach((vertex) => {
+      g.addVertexB(vertex);
+    });
+    this.getEdgesBetween(layer).forEach((edge) => {
+      g.addEdge(edge);
+    });
+    return g;
   }
 
   getNumLayers(): number {
