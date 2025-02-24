@@ -4,6 +4,7 @@ import { VertexPositioner, VertexPositionCfg } from "./VertexPositioner";
 import { Point2d } from "@/model/types/Point";
 import { v4 as uuidv4 } from "uuid";
 import { createConflictGraph } from "./VerticalBundeling";
+import { rlfColoring } from "../alg/Coloring";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -18,19 +19,22 @@ export function generateLayout<V>(g: LayerGraph<V, any>, cfg: GraphLayoutCfg): G
     drawing.addVertex(String(vertex), pos, true, String(vertex));
   });
 
-  createConflictGraph(layerToBipartite(g, 0), vertexPositions);
-
   // drawStaightLine(drawing, vertexPositions, g);
 
   const nLayers = g.getNumLayers();
 
   for (let layer = 0; layer < nLayers - 1; layer++) {
-    const edges = g.getEdgesBetween(layer);
-    const diff = (cfg.vertexPosition.layerSpacing - 100) / (edges.length + 1);
+    const conflictGraph = createConflictGraph(layerToBipartite(g, 0), vertexPositions);
+    const edgeColoring = rlfColoring(conflictGraph);
+
+    const diff = (cfg.vertexPosition.layerSpacing - 100) / (edgeColoring.length + 1);
     let x = vertexPositions.get(g.getVerticesInLayer(layer)[0])!.x + 50;
-    edges.forEach((edge) => {
-      drawOnGrid(drawing, vertexPositions.get(edge.source)!, vertexPositions.get(edge.target)!, x);
+
+    edgeColoring.forEach((color, i) => {
       x += diff;
+      color.forEach((edge) => {
+        drawOnGrid(drawing, vertexPositions.get(edge.source)!, vertexPositions.get(edge.target)!, x);
+      });
     });
   }
 
