@@ -117,6 +117,7 @@ export function generateExampleGraph(id: string): BipartiteGraph<Number, Edge<Nu
         [0, 0],
         [1, 1],
         [2, 2],
+        [2, 3],
         [4, 0],
         [4, 1],
         [4, 2],

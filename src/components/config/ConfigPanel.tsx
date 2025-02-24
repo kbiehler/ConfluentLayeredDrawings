@@ -4,6 +4,7 @@ import { ConfigDto } from "@/cfg/ConfigDtos";
 import UiConfigPanel from "./UiCfgPanel";
 import VertexPositionCfgPanel from "./VertexPositionCfgPanel";
 import GraphConfigPanel from "./GraphCfgPanel";
+import EdgeDrawingConfigPanel from "./EdgeCfgPanel";
 
 type Props = {
   config: ConfigDto;
@@ -37,6 +38,7 @@ const ConfigPanel: React.FC<Props> = ({ config, setConfig }) => {
             <GraphConfigPanel config={localConfig.graphCfg} handleChange={(field, value) => handleChange("graphCfg", field, value)} />
             <UiConfigPanel config={localConfig.uiCfg} handleChange={(field, value) => handleChange("uiCfg", field, value)} />
             <VertexPositionCfgPanel config={localConfig.vertexPositionCfg} handleChange={(field, value) => handleChange("vertexPositionCfg", field, value)} />
+            <EdgeDrawingConfigPanel config={localConfig.edgeCfg} handleChange={(field, value) => handleChange("edgeCfg", field, value)} />
           </div>
           <button className="redraw-button" onClick={handleApply}>
             Apply

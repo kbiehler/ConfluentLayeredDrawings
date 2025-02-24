@@ -1,6 +1,7 @@
 import { RenderCfg } from "@/model/renderer/GraphSVGRenderer";
 import { GraphLayoutCfg } from "../model/layout/GraphLayoutGenerator";
 import { ExampleGraphs } from "@/examples/ExampleGraphs";
+import { EdgeDrawingAlgorithm } from "@/model/layout/EdgeDrawer";
 /**
  * Data Transfer Object (DTO) for configuration settings.
  *
@@ -13,6 +14,7 @@ export class ConfigDto {
   graphCfg: GraphCfgDto = new GraphCfgDto();
   vertexPositionCfg: VertexPositionCfgDto = new VertexPositionCfgDto();
   uiCfg: UiCfgDto = new UiCfgDto();
+  edgeCfg: EdgeDrawingCfgDto = new EdgeDrawingCfgDto();
 }
 
 export class GraphCfgDto {
@@ -27,8 +29,8 @@ export class VertexPositionCfgDto {
   vertexSpacing: number = 100;
 }
 
-export class EdgeDrawingDto {
-  alg: "straightLine" | "singleVerticalLayer" = "straightLine";
+export class EdgeDrawingCfgDto {
+  alg: EdgeDrawingAlgorithm = EdgeDrawingAlgorithm.STRAIGHT_LINE;
 }
 
 export class UiCfgDto {
@@ -51,5 +53,6 @@ export function mapToGraphLayoutCfg(cfgDto: ConfigDto): GraphLayoutCfg {
       layerSpacing: cfgDto.vertexPositionCfg.layerSpacing,
       vertexSpacing: cfgDto.vertexPositionCfg.vertexSpacing,
     },
+    edgeAlg: cfgDto.edgeCfg.alg,
   };
 }
