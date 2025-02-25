@@ -8,6 +8,20 @@ type Props = {
 };
 
 const GraphConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Process the file (e.g., read contents)
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          handleChange("fileContent", e.target.result);
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
   return (
     <div>
       <h3>Graph Configuration</h3>
@@ -16,12 +30,14 @@ const GraphConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
           <tr>
             <td>Graph Type:</td>
             <td>
-              <select value={config.type} onChange={(e) => handleChange("type", e.target.value as "example" | "random")}>
+              <select value={config.type} onChange={(e) => handleChange("type", e.target.value as "example" | "random" | "file")}>
                 <option value="example">Example</option>
                 <option value="random">Random</option>
+                <option value="file">File</option>
               </select>
             </td>
           </tr>
+
           {config.type === "example" && (
             <tr>
               <td>Example Type:</td>
@@ -33,6 +49,15 @@ const GraphConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
                     </option>
                   ))}
                 </select>
+              </td>
+            </tr>
+          )}
+
+          {config.type === "file" && (
+            <tr>
+              <td>Upload File:</td>
+              <td>
+                <input type="file" accept=".dot" onChange={handleFileUpload} />
               </td>
             </tr>
           )}

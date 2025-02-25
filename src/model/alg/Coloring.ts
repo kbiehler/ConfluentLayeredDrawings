@@ -21,7 +21,7 @@ export function rlfColoring<V, E extends Edge<V>>(G: Graph<V, E>): Set<V>[] {
     const neighbourS = new Set<V>();
 
     //first vertex = max degree
-    let v = Array.from(U).reduce((a, b) => (G.getDegree(a) > G.getDegree(b) ? a : b));
+    let v = Array.from(U).reduce((a, b) => (G.degree(a) > G.degree(b) ? a : b));
     let hasNext = true;
     while (hasNext) {
       S.add(v);

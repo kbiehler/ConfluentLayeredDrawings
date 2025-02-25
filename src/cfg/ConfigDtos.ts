@@ -18,8 +18,9 @@ export class ConfigDto {
 }
 
 export class GraphCfgDto {
-  type: "example" | "random" = "example";
+  type: "example" | "random" | "file" = "file";
   example_type: ExampleGraphs = ExampleGraphs.GRAPH_13;
+  fileContent?: string; // Store uploaded file contents
 }
 
 export class VertexPositionCfgDto {

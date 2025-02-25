@@ -27,7 +27,6 @@ export function verticalLayerOrdering<V, E extends Edge<V>>(vertexPositions: Map
       const setA = finalOrder[i];
       const setB = finalOrder[j];
       //crossing if A before B / crossing if B before A
-      console.log(calculateCrossingCounts(setA, setB, vertexPositions).crossingsAthenB);
       totalCrossings += calculateCrossingCounts(setA, setB, vertexPositions).crossingsAthenB;
     }
   }

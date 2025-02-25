@@ -30,7 +30,6 @@ export function createConflictGraph<V, E extends Edge<V>>(layerGraph: BipartiteG
         break;
       }
       if (intervalA[0] != intervalB[0] && intervalA[1] != intervalB[1] && intervalA[1] != intervalB[0]) {
-        console.log(edges[i].source, edges[i].target, "<->", edges[j].source, edges[j].target);
         conflictGraph.addEdge(new Edge(edges[i], edges[j]));
       }
     }

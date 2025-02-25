@@ -2,7 +2,7 @@ import { rlfColoring } from "../../../src/model/alg/Coloring";
 
 import { describe, it, expect, beforeEach } from "vitest";
 
-import { createWheelGraph, createRandomGraph, createRandomBiGraph } from "../../../src/model/ExampleGraphs";
+import { createWheelGraph, createRandomGraph, createRandomBiGraph } from "../../../src/examples/GraphGenerator";
 
 describe("RLF Coloring", () => {
   describe("Wheel Graph should be colored optimally", () => {

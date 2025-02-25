@@ -66,8 +66,16 @@ export class Graph<V, E extends Edge<V>> {
     return this.vertices.has(vertex);
   }
 
-  getDegree(vertex: V): number {
+  degree(vertex: V): number {
     return this.adj.get(vertex)!.size;
+  }
+
+  outDegree(vertex: V): number {
+    return this.adjDirected.get(vertex)!.size;
+  }
+
+  inDegree(vertex: V): number {
+    return this.degree(vertex) - this.outDegree(vertex);
   }
 
   deleteEdge(edge: E): void {
@@ -78,7 +86,7 @@ export class Graph<V, E extends Edge<V>> {
   }
 
   deleteVertex(vertex: V): void {
-    if (this.getDegree(vertex) > 0) {
+    if (this.degree(vertex) > 0) {
       throw new Error("Cannot remove vertex with edges");
     }
     this.vertices.delete(vertex);
