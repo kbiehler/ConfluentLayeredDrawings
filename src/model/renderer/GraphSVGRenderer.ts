@@ -24,8 +24,8 @@ export class GraphSVGRenderer {
       .style("fill", (d: VertexLayout) => (highlightVertex(d.id) ? renderCfg.highlightColor : renderCfg.vertexColor));
 
     svg
-      .selectAll<SVGCircleElement, VertexLayout>(".circle-label")
-      .data(graphLayout.getVertices().filter((d: VertexLayout) => d.label.length < 10))
+      .selectAll<SVGTextElement, VertexLayout>(".vertex-label")
+      .data(graphLayout.getVertices())
       .enter()
       .append("text")
       .attr("class", "vertex-label")
@@ -33,7 +33,7 @@ export class GraphSVGRenderer {
       .attr("y", (d) => d.position.y)
       .attr("dy", -15)
       .attr("text-anchor", "middle")
-      .text((d) => d.label);
+      .text((d) => d.label.substring(0, 15));
 
     const lineGenerator = d3.line<[number, number]>().curve(d3.curveBasis);
 

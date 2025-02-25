@@ -1,8 +1,8 @@
 import * as graphlibDot from "graphlib-dot";
-import { Graph as G, alg } from "graphlib";
+import { Graph as G } from "graphlib";
 import { Graph, Edge } from "@/model/ds";
 
-export function readDotFile(dotContent: string) {
+export function parseDotFile(dotContent: string) {
   const graph = new Graph<string, Edge<string>>();
 
   // 2. Parse the `.dot` file into a Graph object
@@ -12,13 +12,9 @@ export function readDotFile(dotContent: string) {
     graph.addVertex(node);
   });
 
-  
-
   graphlibGraph.edges().forEach((edge) => {
     graph.addEdge(new Edge(edge.v, edge.w));
   });
 
-  const sorted = alg.topsort(graphlibGraph);
-
-  return { graph, sorted };
+  return graph;
 }

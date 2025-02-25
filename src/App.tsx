@@ -3,12 +3,11 @@ import { generateLayout } from "@/model/layout/GraphLayoutGenerator";
 import { useEffect, useState } from "react";
 import ConfigPanel from "@/components/config/ConfigPanel";
 import { ConfigDto, mapToDrawCfg, mapToGraphLayoutCfg } from "./cfg/ConfigDtos";
-import { loadFromCfg } from "@/model/input/GraphLoader";
-import { LayerGraph } from "@/model/ds";
+import { loadFromCfg } from "@/input/GraphLoader";
 
 function App() {
   const [config, setConfig] = useState(new ConfigDto());
-  const G: LayerGraph<Number, any> = loadFromCfg(config.graphCfg) as LayerGraph<Number, any>;
+  const G = loadFromCfg(config.graphCfg);
   const [drawing, setDrawing] = useState(generateLayout(G, mapToGraphLayoutCfg(config)));
   const [drawCfg, setDrawCfg] = useState(mapToDrawCfg(config));
 

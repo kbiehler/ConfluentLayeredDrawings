@@ -1,9 +1,8 @@
 import { GraphCfgDto } from "@/cfg/ConfigDtos";
-import { Graph, Edge } from "@/model/ds";
+import { Graph } from "@/model/ds";
 import { createRandomLayeredGraph } from "@/examples/GraphGenerator";
 import { generateExampleGraph } from "@/examples/ExampleGraphs";
-import { readDotFile } from "./DotReader";
-import { readGraphFromDot } from "./GraphParser";
+import { parseDotFile } from "./DotParser";
 
 export function loadFromCfg(cfg: GraphCfgDto): Graph<any, any> {
   if (cfg.type === "example") {
@@ -14,7 +13,7 @@ export function loadFromCfg(cfg: GraphCfgDto): Graph<any, any> {
     if (!cfg.fileContent) {
       return createRandomLayeredGraph([5, 5, 5], 0.2);
     } else {
-      return readGraphFromDot(cfg.fileContent!);
+      return parseDotFile(cfg.fileContent!);
     }
   }
 
