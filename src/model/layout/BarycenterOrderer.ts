@@ -1,0 +1,82 @@
+import { LayerGraph } from "@/model/ds/LayerGraph";
+import _ from "lodash";
+
+export class BarycenterCfg {
+  barycenterDepth: number = 0;
+  barycenterRandomStart: boolean = false;
+}
+
+export class BarycenterOrderer {
+  cfg: BarycenterCfg;
+
+  constructor(cfg: BarycenterCfg) {
+    this.cfg = cfg;
+  }
+
+  public barycenterOrdering<V>(layeredGraph: LayerGraph<V, any>): V[][] {
+    const nLayers = layeredGraph.getNumLayers();
+    const layout = this.initLayout(layeredGraph);
+
+    let iteration = 0;
+    let change = true;
+    while (change && iteration < this.cfg.barycenterDepth) {
+      const oldLayout = _.cloneDeep(layout);
+      //walk up
+      for (let layer = 0; layer < nLayers - 1; layer++) {
+        this.permute(layeredGraph, layout, layer, layer + 1);
+      }
+      //walk down
+      for (let layer = nLayers - 1; layer > 0; layer--) {
+        this.permute(layeredGraph, layout, layer, layer - 1);
+      }
+      iteration++;
+
+      change = !_.isEqual(oldLayout, layout);
+    }
+
+    console.log("Barycenter iterations: ", iteration);
+
+    return layout;
+  }
+
+  private permute<V>(layeredGraph: LayerGraph<V, any>, layout: V[][], iFix: number, iPermute: number) {
+    let newLayer = this.computeNewLayer(layeredGraph, layout[iFix], layout[iPermute]);
+    layout[iPermute] = newLayer;
+  }
+
+  private computeNewLayer<V>(layeredGraph: LayerGraph<V, any>, fixLayer: V[], changeLayer: V[]): V[] {
+    let optimalPositions = new Map<V, number>();
+    let fixLayerMap = new Map<V, number>();
+
+    fixLayer.forEach((v, i) => fixLayerMap.set(v, i));
+
+    changeLayer.forEach((v, i) => {
+      const adjacent = Array.from(layeredGraph.getAdjacent(v)).filter((v) => fixLayerMap.has(v));
+      //maintain current position
+      if (adjacent.length == 0) {
+        optimalPositions.set(v, i);
+      } else {
+        const sum = _.sum(adjacent.map((v) => fixLayerMap.get(v)!));
+        optimalPositions.set(v, sum / adjacent.length);
+      }
+    });
+    const newLayer = _.sortBy(_.shuffle(changeLayer), [(v: V) => optimalPositions.get(v)]);
+    return newLayer;
+  }
+
+  /*
+  inits an inital layout for the barycenter, 
+  random if barycenterRandomStart is set, otherwise order the layeredGraph returns
+  */
+  private initLayout<V>(layeredGraph: LayerGraph<V, any>): V[][] {
+    const layout: V[][] = [];
+    for (let layer = 0; layer < layeredGraph.getNumLayers(); layer++) {
+      let vertices = Array.from(layeredGraph.getVerticesInLayer(layer));
+      if (this.cfg.barycenterRandomStart) {
+        vertices = _.shuffle(vertices);
+      }
+      layout.push(vertices);
+    }
+    return layout;
+  }
+}

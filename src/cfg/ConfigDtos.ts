@@ -24,8 +24,8 @@ export class GraphCfgDto {
 }
 
 export class VertexPositionCfgDto {
-  barycenterDepth: number = 0;
-  barycenterRandomStart: boolean = false;
+  barycenterDepth: number = 5;
+  barycenterRandomStart: boolean = true;
   layerSpacing: number = 400;
   vertexSpacing: number = 100;
 }

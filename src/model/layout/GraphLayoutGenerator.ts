@@ -22,7 +22,7 @@ export function generateLayout<V>(g: Graph<V, any>, cfg: GraphLayoutCfg): [Graph
 
   const layerGraph = assignLayers(g);
 
-  const vertexPositions = new VertexPositioner(cfg.vertexPosition).barycenterPositions(layerGraph);
+  const vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(layerGraph);
 
   vertexPositions.forEach((pos, vertex) => {
     drawing.addVertex(vertex, pos, true, String(vertex));
