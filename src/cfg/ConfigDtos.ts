@@ -18,14 +18,14 @@ export class ConfigDto {
 }
 
 export class GraphCfgDto {
-  type: "example" | "random" | "file" = "file";
-  example_type: ExampleGraphs = ExampleGraphs.GRAPH_13;
+  type: "example" | "random" | "file" = "example";
+  example_type: ExampleGraphs = ExampleGraphs.POS_4;
   fileContent?: string; // Store uploaded file contents
 }
 
 export class VertexPositionCfgDto {
-  barycenterDepth: number = 5;
-  barycenterRandomStart: boolean = true;
+  barycenterDepth: number = 0;
+  barycenterRandomStart: boolean = false;
   layerSpacing: number = 400;
   vertexSpacing: number = 100;
 }

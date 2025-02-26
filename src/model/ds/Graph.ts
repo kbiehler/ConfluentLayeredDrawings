@@ -62,6 +62,10 @@ export class Graph<V, E extends Edge<V>> {
     return Array.from(this.adjDirected.get(vertex)!);
   }
 
+  getIngoing(vertex: V): E[] {
+    return Array.from(this.adj.get(vertex)!).filter((edge) => edge.target === vertex);
+  }
+
   containsVertex(vertex: V): boolean {
     return this.vertices.has(vertex);
   }

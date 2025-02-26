@@ -20,7 +20,7 @@ export function verticalLayerOrdering<V, E extends Edge<V>>(vertexPositions: Map
     }
   }
 
-  const finalOrder = greedyFAS(crossingGraph).reverse();
+  const finalOrder = greedyFAS(crossingGraph);
   let totalCrossings = 0;
   for (let i = 0; i < finalOrder.length; i++) {
     for (let j = i + 1; j < finalOrder.length; j++) {

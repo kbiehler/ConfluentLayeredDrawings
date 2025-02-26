@@ -2,6 +2,7 @@ import { LayerGraph } from "@/model/ds/LayerGraph";
 import _ from "lodash";
 import { Point2d } from "../types/Point";
 import { BarycenterOrderer } from "./BarycenterOrderer";
+import { straightenEdges } from "./EdgeStraightener";
 
 export class VertexPositionCfg {
   barycenterDepth: number = 0;
@@ -20,10 +21,11 @@ export class VertexPositioner {
   public computePositions<V>(layeredGraph: LayerGraph<V, any>): Map<V, Point2d> {
     const baryOrderer = new BarycenterOrderer({ barycenterDepth: this.cfg.barycenterDepth, barycenterRandomStart: this.cfg.barycenterRandomStart });
     const layout = baryOrderer.barycenterOrdering(layeredGraph);
-    return this.computeSpacing(layout);
+    const yPos = straightenEdges(layeredGraph, layout);
+    return this.computeSpacing(layout, yPos);
   }
 
-  private computeSpacing<V>(layers: V[][]): Map<V, { x: number; y: number }> {
+  private computeSpacing<V>(layers: V[][], yPos: Map<V, number>): Map<V, { x: number; y: number }> {
     const xSpacing = this.cfg.layerSpacing;
     const ySpacing = this.cfg.vertexSpacing;
     const layerShift = ySpacing / 2;
@@ -32,7 +34,7 @@ export class VertexPositioner {
     layers.forEach((vertices, i_layer) => {
       vertices.forEach((vertex, position) => {
         let x = i_layer * xSpacing;
-        let y = position * ySpacing + (i_layer % 2) * layerShift;
+        let y = yPos.get(vertex)! * ySpacing + (i_layer % 2) * layerShift;
         vertexPositions.set(vertex, { x, y });
       });
     });
