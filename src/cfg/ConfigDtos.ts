@@ -26,7 +26,7 @@ export class GraphCfgDto {
 export class VertexPositionCfgDto {
   barycenterDepth: number = 0;
   barycenterRandomStart: boolean = false;
-  layerSpacing: number = 400;
+  layerSpacing: number = 600;
   vertexSpacing: number = 100;
 }
 
@@ -35,14 +35,16 @@ export class EdgeDrawingCfgDto {
 }
 
 export class UiCfgDto {
-  vertexColor: string = "#FF0000";
-  highlightColor: string = "#0000FF";
+  vertexColor: string = "#ADD8E6";
+  highlightColor: string = "#FF6347";
+  edgeColor: string = "#999";
 }
 
 export function mapToDrawCfg(cfgDto: ConfigDto): RenderCfg {
   return {
     vertexColor: cfgDto.uiCfg.vertexColor,
     highlightColor: cfgDto.uiCfg.highlightColor,
+    edgeColor: cfgDto.uiCfg.edgeColor,
   };
 }
 

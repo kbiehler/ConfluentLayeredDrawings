@@ -42,12 +42,12 @@ function draw(
 
   let [width, height] = graphDrawing.getSize();
 
-  width += 100;
-  height += 100;
+  width += 250;
+  height += 250;
 
   svg.attr("width", width).attr("height", height);
-  //g contains actual drawing, shifted by 50, 50
-  const g = svg.append("g").attr("transform", `translate(50, 50)`);
+  //g contains actual drawing, shifted by 150, 150
+  const g = svg.append("g").attr("transform", `translate(150, 150)`);
 
   new GraphSVGRenderer().render(
     g,
