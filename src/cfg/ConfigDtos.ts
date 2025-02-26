@@ -12,7 +12,7 @@ import { EdgeDrawingAlgorithm } from "@/model/layout/EdgeDrawer";
  */
 export class ConfigDto {
   graphCfg: GraphCfgDto = new GraphCfgDto();
-  vertexPositionCfg: VertexPositionCfgDto = new VertexPositionCfgDto();
+  barycenterCfg: BarycenterCfgDto = new BarycenterCfgDto();
   uiCfg: UiCfgDto = new UiCfgDto();
   edgeCfg: EdgeDrawingCfgDto = new EdgeDrawingCfgDto();
 }
@@ -23,11 +23,9 @@ export class GraphCfgDto {
   fileContent?: string; // Store uploaded file contents
 }
 
-export class VertexPositionCfgDto {
+export class BarycenterCfgDto {
   barycenterDepth: number = 0;
-  barycenterRandomStart: boolean = false;
-  layerSpacing: number = 600;
-  vertexSpacing: number = 100;
+  barycenterRandomInit: boolean = false;
 }
 
 export class EdgeDrawingCfgDto {
@@ -37,7 +35,9 @@ export class EdgeDrawingCfgDto {
 export class UiCfgDto {
   vertexColor: string = "#ADD8E6";
   highlightColor: string = "#FF6347";
-  edgeColor: string = "#999";
+  edgeColor: string = "#999999";
+  layerSpacing: number = 600;
+  vertexSpacing: number = 100;
 }
 
 export function mapToDrawCfg(cfgDto: ConfigDto): RenderCfg {
@@ -51,10 +51,10 @@ export function mapToDrawCfg(cfgDto: ConfigDto): RenderCfg {
 export function mapToGraphLayoutCfg(cfgDto: ConfigDto): GraphLayoutCfg {
   return {
     vertexPosition: {
-      barycenterDepth: cfgDto.vertexPositionCfg.barycenterDepth,
-      barycenterRandomStart: cfgDto.vertexPositionCfg.barycenterRandomStart,
-      layerSpacing: cfgDto.vertexPositionCfg.layerSpacing,
-      vertexSpacing: cfgDto.vertexPositionCfg.vertexSpacing,
+      baryDepth: cfgDto.barycenterCfg.barycenterDepth,
+      baryInitRandom: cfgDto.barycenterCfg.barycenterRandomInit,
+      layerSpacing: cfgDto.uiCfg.layerSpacing,
+      vertexSpacing: cfgDto.uiCfg.vertexSpacing,
     },
     edgeAlg: cfgDto.edgeCfg.alg,
   };

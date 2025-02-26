@@ -56,8 +56,8 @@ function edgeToVerticalWithColoring<V>(g: LayerGraph<V, any>, vertexPositions: M
     }
     const layerSpacing = vertexPositions.get(g.getVerticesInLayer(layer + 1)[0])!.x - vertexPositions.get(g.getVerticesInLayer(layer)[0])!.x;
 
-    const diff = (layerSpacing - 100) / (edgeColoring.length + 1);
-    let x = vertexPositions.get(g.getVerticesInLayer(layer)[0])!.x + 50;
+    const diff = (layerSpacing - 150) / (edgeColoring.length + 1);
+    let x = vertexPositions.get(g.getVerticesInLayer(layer)[0])!.x + 75;
 
     edgeColoring.forEach((color, _) => {
       x += diff;

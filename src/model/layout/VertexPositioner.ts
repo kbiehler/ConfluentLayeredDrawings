@@ -5,9 +5,9 @@ import { BarycenterOrderer } from "./BarycenterOrderer";
 import { straightenEdges } from "./EdgeStraightener";
 
 export class VertexPositionCfg {
-  barycenterDepth: number = 0;
-  barycenterRandomStart: boolean = false;
-  layerSpacing: number = 400;
+  baryDepth: number = 0;
+  baryInitRandom: boolean = false;
+  layerSpacing: number = 600;
   vertexSpacing: number = 100;
 }
 
@@ -19,7 +19,7 @@ export class VertexPositioner {
   }
 
   public computePositions<V>(layeredGraph: LayerGraph<V, any>): Map<V, Point2d> {
-    const baryOrderer = new BarycenterOrderer({ barycenterDepth: this.cfg.barycenterDepth, barycenterRandomStart: this.cfg.barycenterRandomStart });
+    const baryOrderer = new BarycenterOrderer(this.cfg.baryDepth, this.cfg.baryInitRandom);
     const layout = baryOrderer.barycenterOrdering(layeredGraph);
     const yPos = straightenEdges(layeredGraph, layout);
     return this.computeSpacing(layout, yPos);

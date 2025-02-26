@@ -20,11 +20,18 @@
   input[type="number"],
   input[type="checkbox"] {
     margin-top: 5px;
-    width: 100%;
+    width: 60px;
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 3px;
   }
+
+  .config-table input[type="color"] {
+    width: 70px; /* Adjust width as needed */
+    height: 25px; /* Optional: Adjust height for better appearance */
+    padding: 0px; /* Optional: Adds a little spacing inside */
+  }
+  
   
   .redraw-button {
     display: block;

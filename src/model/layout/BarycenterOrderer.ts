@@ -1,16 +1,13 @@
 import { LayerGraph } from "@/model/ds/LayerGraph";
 import _ from "lodash";
 
-export class BarycenterCfg {
-  barycenterDepth: number = 0;
-  barycenterRandomStart: boolean = false;
-}
-
 export class BarycenterOrderer {
-  cfg: BarycenterCfg;
+  depth: number;
+  initRandom: boolean;
 
-  constructor(cfg: BarycenterCfg) {
-    this.cfg = cfg;
+  constructor(depth: number, randomStart: boolean) {
+    this.depth = depth;
+    this.initRandom = randomStart;
   }
 
   public barycenterOrdering<V>(layeredGraph: LayerGraph<V, any>): V[][] {
@@ -19,7 +16,7 @@ export class BarycenterOrderer {
 
     let iteration = 0;
     let change = true;
-    while (change && iteration < this.cfg.barycenterDepth) {
+    while (change && iteration < this.depth) {
       const oldLayout = _.cloneDeep(layout);
       //walk up
       for (let layer = 0; layer < nLayers - 1; layer++) {
@@ -72,7 +69,7 @@ export class BarycenterOrderer {
     const layout: V[][] = [];
     for (let layer = 0; layer < layeredGraph.getNumLayers(); layer++) {
       let vertices = Array.from(layeredGraph.getVerticesInLayer(layer));
-      if (this.cfg.barycenterRandomStart) {
+      if (this.initRandom) {
         vertices = _.shuffle(vertices);
       }
       layout.push(vertices);
