@@ -24,8 +24,8 @@ export class GraphCfgDto {
 }
 
 export class BarycenterCfgDto {
-  barycenterDepth: number = 0;
-  barycenterRandomInit: boolean = false;
+  barycenterDepth: number = 10;
+  barycenterRandomInit: boolean = true;
 }
 
 export class EdgeDrawingCfgDto {
@@ -36,7 +36,7 @@ export class UiCfgDto {
   vertexColor: string = "#ADD8E6";
   highlightColor: string = "#FF6347";
   edgeColor: string = "#999999";
-  layerSpacing: number = 600;
+  layerSpacing: number = 500;
   vertexSpacing: number = 100;
 }
 

@@ -64,12 +64,6 @@ export function straightenEdges<V>(layeredGraph: LayerGraph<V, any>, layout: V[]
           let currentPosition = yPos.get(v)!;
           let sum = _.sum(layeredGraph.getIngoing(v).map((e) => yPos.get(e.source)!));
           let optimalPosition = Math.round(sum / layeredGraph.inDegree(v));
-          if (v == "Motor Mode 1 not possible") {
-            console.log(Array.from(layeredGraph.getIngoing(v).map((e) => e.source)));
-            console.log(Array.from(layeredGraph.getIngoing(v).map((e) => yPos.get(e.source)!)));
-            console.log("currentPosition", currentPosition);
-            console.log("optimalPosition", optimalPosition);
-          }
           if (currentPosition > optimalPosition) {
             shiftUp(layerChange, v, fixed, yPos, optimalPosition);
           } else if (currentPosition < optimalPosition) {
@@ -79,13 +73,7 @@ export function straightenEdges<V>(layeredGraph: LayerGraph<V, any>, layout: V[]
         fixed.add(v);
       });
     }
-
-    // compressYs(yPos);
   }
-
-  try {
-    console.log(layeredGraph.getIngoing("Motor Mode 1 not possible").map((e) => yPos.get(e.source)!));
-  } catch (e) {}
 
   const y_min = Math.min(...Array.from(yPos.values()));
   yPos.forEach((value, key) => {
@@ -93,23 +81,6 @@ export function straightenEdges<V>(layeredGraph: LayerGraph<V, any>, layout: V[]
   });
 
   return yPos;
-}
-
-function compressYs<V>(yPos: Map<V, number>) {
-  const yToV = new Map<number, Set<V>>();
-  yPos.forEach((value, key) => {
-    if (!yToV.has(value)) {
-      yToV.set(value, new Set());
-    }
-    yToV.get(value)!.add(key);
-  });
-  let y_pos = 0;
-  _.sortBy(Array.from(yToV.keys())).forEach((y, i) => {
-    yToV.get(y)!.forEach((v) => {
-      yPos.set(v, y_pos);
-    });
-    y_pos++;
-  });
 }
 
 function shiftUp<V>(layerChange: V[], v: V, fixed: Set<V>, yPos: Map<V, number>, optimalPosition: number) {

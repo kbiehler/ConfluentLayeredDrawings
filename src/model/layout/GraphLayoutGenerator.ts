@@ -29,6 +29,7 @@ export function generateLayout<V>(g: Graph<V, any>, cfg: GraphLayoutCfg): [Graph
   });
 
   let adjEdges = drawEdges(cfg.edgeAlg, layerGraph, vertexPositions, drawing);
-
-  return [drawing, { adjEdges }];
+  let adjVertices = new Map<V, Set<V>>();
+  layerGraph.getVertices().forEach((v) => adjVertices.set(v, new Set(g.getAdjacent(v))));
+  return [drawing, { adjEdges, adjVertices }];
 }

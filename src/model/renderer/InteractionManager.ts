@@ -2,6 +2,7 @@ import { EventEmitter } from "events";
 
 export interface InteractionInfo {
   adjEdges: Map<any, Set<string>>;
+  adjVertices: Map<any, Set<any>>;
 }
 
 export class InteractionState {
@@ -36,7 +37,14 @@ export class InteractionManager extends EventEmitter {
   }
 
   highlightVertex(vertexId: string): boolean {
-    return this.state.selectedVertices.has(vertexId);
+    if (this.state.selectedVertices.has(vertexId)) {
+      return true;
+    }
+    const isAdj = Array.from(this.state.selectedVertices).find((v) => this.interactionInfo.adjVertices.get(v)?.has(vertexId)) != undefined;
+    if (isAdj) {
+      return true;
+    }
+    return false;
   }
 
   highlightEdge(edgeId: string): boolean {
