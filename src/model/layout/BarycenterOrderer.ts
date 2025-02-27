@@ -1,18 +1,42 @@
 import { LayerGraph } from "@/model/ds/LayerGraph";
 import _ from "lodash";
+import { findComponents } from "../alg/Components";
 
 export class BarycenterOrderer {
   depth: number;
   initRandom: boolean;
+  identConnected: boolean;
 
-  constructor(depth: number, randomStart: boolean) {
+  constructor(depth: number, randomStart: boolean, identConnected = true) {
     this.depth = depth;
     this.initRandom = randomStart;
+    this.identConnected = identConnected;
   }
 
   public barycenterOrdering<V>(layeredGraph: LayerGraph<V, any>): V[][] {
+    const layout: V[][] = [];
+    for (let i = 0; i < layeredGraph.getLayerCount(); i++) {
+      layout.push([]);
+    }
+    let components;
+    if (this.identConnected) {
+      components = findComponents(layeredGraph).sort((a, b) => a.size - b.size);
+    } else {
+      //treat graph as single component
+      components = [new Set<V>(layeredGraph.getVertices())];
+    }
+    for (const component of components) {
+      const tmpLayout = this.orderComponent<V>(layeredGraph, component);
+      for (let i = 0; i < tmpLayout.length; i++) {
+        layout[i].push(...tmpLayout[i]);
+      }
+    }
+    return layout;
+  }
+
+  private orderComponent<V>(layeredGraph: LayerGraph<V, any>, component: Set<V>): V[][] {
     const nLayers = layeredGraph.getLayerCount();
-    const layout = this.initLayout(layeredGraph);
+    const layout = this.initLayout(layeredGraph, component);
 
     let iteration = 0;
     let change = true;
@@ -60,13 +84,13 @@ export class BarycenterOrderer {
   }
 
   /*
-  inits an inital layout for the barycenter, 
+  inits an inital layout for the barycenter, containing only vertices of verticesConsider 
   random if barycenterRandomStart is set, otherwise order the layeredGraph returns
   */
-  private initLayout<V>(layeredGraph: LayerGraph<V, any>): V[][] {
+  private initLayout<V>(layeredGraph: LayerGraph<V, any>, verticesConsider: Set<V>): V[][] {
     const layout: V[][] = [];
     for (let layer = 0; layer < layeredGraph.getLayerCount(); layer++) {
-      let vertices = Array.from(layeredGraph.getVerticesInLayer(layer));
+      let vertices = Array.from(layeredGraph.getVerticesInLayer(layer).filter((v) => verticesConsider.has(v)));
       if (this.initRandom) {
         vertices = _.shuffle(vertices);
       }

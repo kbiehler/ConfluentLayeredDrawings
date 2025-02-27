@@ -13,6 +13,7 @@ export enum VertexPositionAlgorithm {
 export class VertexPositionCfg {
   baryDepth: number = 0;
   baryInitRandom: boolean = false;
+  baryIdentConnected: boolean = true;
   layerSpacing: number = 600;
   vertexSpacing: number = 100;
   alg: VertexPositionAlgorithm = VertexPositionAlgorithm.LP;
@@ -26,7 +27,7 @@ export class VertexPositioner {
   }
 
   public computePositions<V>(layeredGraph: LayerGraph<V, any>): Map<V, Point2d> {
-    const baryOrderer = new BarycenterOrderer(this.cfg.baryDepth, this.cfg.baryInitRandom);
+    const baryOrderer = new BarycenterOrderer(this.cfg.baryDepth, this.cfg.baryInitRandom, this.cfg.baryIdentConnected);
     const layout = baryOrderer.barycenterOrdering(layeredGraph);
 
     let yPos;

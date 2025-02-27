@@ -27,6 +27,7 @@ export class GraphCfgDto {
 export class BarycenterCfgDto {
   barycenterDepth: number = 100;
   barycenterRandomInit: boolean = true;
+  identConnected: boolean = true;
 }
 
 export class AlgorithmCfgDto {
@@ -55,6 +56,7 @@ export function mapToGraphLayoutCfg(cfgDto: ConfigDto): GraphLayoutCfg {
     vertexPosition: {
       baryDepth: cfgDto.barycenterCfg.barycenterDepth,
       baryInitRandom: cfgDto.barycenterCfg.barycenterRandomInit,
+      baryIdentConnected: cfgDto.barycenterCfg.identConnected,
       layerSpacing: cfgDto.uiCfg.layerSpacing,
       vertexSpacing: cfgDto.uiCfg.vertexSpacing,
       alg: cfgDto.algCfg.vertexPositioning,

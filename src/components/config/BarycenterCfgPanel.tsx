@@ -24,6 +24,12 @@ const BarycenterCfgPanel: React.FC<Props> = ({ config, handleChange }) => {
               <input type="checkbox" checked={config.barycenterRandomInit} onChange={(e) => handleChange("barycenterRandomInit", e.target.checked)} />
             </td>
           </tr>
+          <tr>
+            <td>Ident connect. Comp.:</td>
+            <td>
+              <input type="checkbox" checked={config.identConnected} onChange={(e) => handleChange("identConnected", e.target.checked)} />
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
