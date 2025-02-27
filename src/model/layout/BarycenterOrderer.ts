@@ -31,8 +31,6 @@ export class BarycenterOrderer {
       change = !_.isEqual(oldLayout, layout);
     }
 
-    console.log("Barycenter iterations: ", iteration);
-
     return layout;
   }
 

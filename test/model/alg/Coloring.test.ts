@@ -29,7 +29,6 @@ describe("RLF Coloring", () => {
   describe("Random Graph should be valid colored", () => {
     const graph = createRandomGraph(250, 0.4);
     const coloring = rlfColoring(graph);
-    console.log(coloring.length);
     it("All vertices should be colored", () => {
       expect(coloring.reduce((acc, set) => acc + set.size, 0)).toBe(250);
     });
