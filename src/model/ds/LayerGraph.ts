@@ -44,11 +44,11 @@ export class LayerGraph<V, E extends Edge<V>> extends Graph<V, E> {
    * @param layer all edges between layer and next layer
    * @returns
    */
-  getEdgesBetween(layer: number): E[] {
-    return this.getVerticesInLayer(layer).flatMap((vertex) => this.getIncidentDirected(vertex));
+  getInterLayerEdges(layer: number): E[] {
+    return this.getVerticesInLayer(layer).flatMap((vertex) => this.getIncidentOut(vertex));
   }
 
-  getNumLayers(): number {
+  getLayerCount(): number {
     if (this.vertexToLayer.size === 0) {
       return 0;
     }

@@ -23,7 +23,7 @@ export class Graph<V, E extends Edge<V>> {
     this.adjDirected = new Map<V, Set<E>>();
   }
 
-  addVertex(vertex: V): void {
+  public addVertex(vertex: V): void {
     this.vertices.add(vertex);
     this.adj.set(vertex, new Set<E>());
     this.adjDirected.set(vertex, new Set<E>());
@@ -58,11 +58,11 @@ export class Graph<V, E extends Edge<V>> {
    * returns the set of edges starting at a vertex
    * @param vertex
    */
-  getIncidentDirected(vertex: V): E[] {
+  getIncidentOut(vertex: V): E[] {
     return Array.from(this.adjDirected.get(vertex)!);
   }
 
-  getIngoing(vertex: V): E[] {
+  getIncendentIn(vertex: V): E[] {
     return Array.from(this.adj.get(vertex)!).filter((edge) => edge.target === vertex);
   }
 

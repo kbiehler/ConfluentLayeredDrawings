@@ -1,7 +1,6 @@
 import { LayerGraph } from "@/model/ds/LayerGraph";
 import _ from "lodash";
 
-
 /**
  * https://link.springer.com/content/pdf/10.1007/3-540-45848-4_3
  * page 4, Iterative heuristic
@@ -18,8 +17,7 @@ import _ from "lodash";
  * @returns y-values of each vertex as described. all values are integers, values start at 0
  */
 export function positionIterative<V>(layeredGraph: LayerGraph<V, any>, layout: V[][]): Map<V, number> {
-
-  const nLayers = layeredGraph.getNumLayers();
+  const nLayers = layeredGraph.getLayerCount();
 
   const yPos = new Map<V, number>();
   const max_layer_size = Math.max(...layout.map((layer) => layer.length));
@@ -41,7 +39,7 @@ export function positionIterative<V>(layeredGraph: LayerGraph<V, any>, layout: V
         if (layeredGraph.outDegree(v) > 0) {
           //otherwise dont change anything
           let currentPosition = yPos.get(v)!;
-          let sum = _.sum(layeredGraph.getIncidentDirected(v).map((e) => yPos.get(e.target)!));
+          let sum = _.sum(layeredGraph.getIncidentOut(v).map((e) => yPos.get(e.target)!));
           let optimalPosition = Math.round(sum / layeredGraph.outDegree(v));
           if (currentPosition > optimalPosition) {
             shiftUp(layerChange, v, fixed, yPos, optimalPosition);
@@ -64,7 +62,7 @@ export function positionIterative<V>(layeredGraph: LayerGraph<V, any>, layout: V
         if (layeredGraph.inDegree(v) > 0) {
           //otherwise dont change anything
           let currentPosition = yPos.get(v)!;
-          let sum = _.sum(layeredGraph.getIngoing(v).map((e) => yPos.get(e.source)!));
+          let sum = _.sum(layeredGraph.getIncendentIn(v).map((e) => yPos.get(e.source)!));
           let optimalPosition = Math.round(sum / layeredGraph.inDegree(v));
           if (currentPosition > optimalPosition) {
             shiftUp(layerChange, v, fixed, yPos, optimalPosition);

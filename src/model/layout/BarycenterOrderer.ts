@@ -11,7 +11,7 @@ export class BarycenterOrderer {
   }
 
   public barycenterOrdering<V>(layeredGraph: LayerGraph<V, any>): V[][] {
-    const nLayers = layeredGraph.getNumLayers();
+    const nLayers = layeredGraph.getLayerCount();
     const layout = this.initLayout(layeredGraph);
 
     let iteration = 0;
@@ -65,7 +65,7 @@ export class BarycenterOrderer {
   */
   private initLayout<V>(layeredGraph: LayerGraph<V, any>): V[][] {
     const layout: V[][] = [];
-    for (let layer = 0; layer < layeredGraph.getNumLayers(); layer++) {
+    for (let layer = 0; layer < layeredGraph.getLayerCount(); layer++) {
       let vertices = Array.from(layeredGraph.getVerticesInLayer(layer));
       if (this.initRandom) {
         vertices = _.shuffle(vertices);

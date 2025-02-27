@@ -34,11 +34,11 @@ function deleteVertex<V>(g: Graph<V, any>, sink: NonNullable<V>) {
 }
 
 function findSink<V>(g: Graph<V, any>) {
-  return g.getVertices().find((v) => g.getIncidentDirected(v).length === 0);
+  return g.getVertices().find((v) => g.getIncidentOut(v).length === 0);
 }
 
 function findSource<V>(g: Graph<V, any>) {
-  return g.getVertices().find((v) => g.getIncident(v).length === g.getIncidentDirected(v).length);
+  return g.getVertices().find((v) => g.getIncident(v).length === g.getIncidentOut(v).length);
 }
 
 /**
@@ -61,7 +61,7 @@ function maxNetWeightDegree<V>(g: Graph<V, any>): V | undefined {
 }
 
 function netWeightDegree<V>(g: Graph<V, any>, v: V) {
-  const currentOutWeight = g.getIncidentDirected(v).reduce((sum, e) => sum + e.weight, 0);
+  const currentOutWeight = g.getIncidentOut(v).reduce((sum, e) => sum + e.weight, 0);
   const currentFullWeight = g.getIncident(v).reduce((sum, e) => sum + e.weight, 0);
   const currentInWeight = currentFullWeight - currentOutWeight;
   const diffWeight = currentOutWeight - currentInWeight;

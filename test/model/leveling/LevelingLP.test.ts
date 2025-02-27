@@ -1,4 +1,4 @@
-import { solveLp } from "../../../src/model/leveling/LP";
+import { solveLp } from "../../../src/model/leveling/LevelingLP";
 import { Graph, Edge } from "../../../src/model/ds/Graph";
 
 import { describe, it, expect, beforeEach } from "vitest";

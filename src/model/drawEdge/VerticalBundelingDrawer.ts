@@ -15,7 +15,7 @@ const RADIUS = 25;
 export function drawVerticalBundeling<V>(g: LayerGraph<V, any>, vertexPositions: Map<V, Point2d>, layout: GraphLayout): Map<V, Set<string>> {
   let edgeToX = new Map<Edge<V>, number>();
 
-  const nLayers = g.getNumLayers();
+  const nLayers = g.getLayerCount();
   for (let layer = 0; layer < nLayers - 1; layer++) {
     const biGraph = convertLayerToBiGraph(g, layer);
     const relativeAssignment = assignLayers(biGraph, vertexPositions);

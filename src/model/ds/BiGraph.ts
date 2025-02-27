@@ -25,10 +25,6 @@ export class BipartiteGraph<V, E extends Edge<V>> extends LayerGraph<V, E> {
     super.addVertexToLayer(vertex, 1);
   }
 
-  addEdge(edge: E): void {
-    super.addEdge(edge);
-  }
-
   getVerticesA(): V[] {
     return super.getVerticesInLayer(0);
   }
@@ -51,7 +47,7 @@ export function convertLayerToBiGraph<V, E extends Edge<V>>(layerGraph: LayerGra
   layerGraph.getVerticesInLayer(layer + 1).forEach((vertex) => {
     g.addVertexB(vertex);
   });
-  layerGraph.getEdgesBetween(layer).forEach((edge) => {
+  layerGraph.getInterLayerEdges(layer).forEach((edge) => {
     g.addEdge(edge);
   });
   return g;
