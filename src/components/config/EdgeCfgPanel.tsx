@@ -1,23 +1,36 @@
 import React from "react";
-import { EdgeDrawingCfgDto } from "@/cfg/ConfigDtos";
+import { AlgorithmCfgDto } from "@/cfg/ConfigDtos";
 import { EdgeDrawingAlgorithm } from "@/model/layout/EdgeDrawer";
+import { VertexPositionAlgorithm } from "@/model/positioning/VertexPositioner";
 
 type Props = {
-  config: EdgeDrawingCfgDto;
-  handleChange: (field: keyof EdgeDrawingCfgDto, value: any) => void;
+  config: AlgorithmCfgDto;
+  handleChange: (field: keyof AlgorithmCfgDto, value: any) => void;
 };
 
 const EdgeDrawingConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
   return (
     <div>
-      <h3>Edge Drawing Configuration</h3>
+      <h3>Algorithms:</h3>
       <table className="config-table">
         <tbody>
           <tr>
-            <td>Algorithm:</td>
+            <td>Edge Drawing:</td>
             <td>
-              <select value={config.alg} onChange={(e) => handleChange("alg", e.target.value as EdgeDrawingCfgDto["alg"])}>
+              <select value={config.edgeDrawing} onChange={(e) => handleChange("edgeDrawing", e.target.value as AlgorithmCfgDto["edgeDrawing"])}>
                 {Object.values(EdgeDrawingAlgorithm).map((alg) => (
+                  <option key={alg} value={alg}>
+                    {alg}
+                  </option>
+                ))}
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Vertex Positioning</td>
+            <td>
+              <select value={config.vertexPositioning} onChange={(e) => handleChange("vertexPositioning", e.target.value as AlgorithmCfgDto["vertexPositioning"])}>
+                {Object.values(VertexPositionAlgorithm).map((alg) => (
                   <option key={alg} value={alg}>
                     {alg}
                   </option>

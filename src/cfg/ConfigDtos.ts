@@ -2,6 +2,7 @@ import { RenderCfg } from "@/model/renderer/GraphSVGRenderer";
 import { GraphLayoutCfg } from "../model/layout/GraphLayoutGenerator";
 import { ExampleGraphs } from "@/examples/ExampleGraphs";
 import { EdgeDrawingAlgorithm } from "@/model/layout/EdgeDrawer";
+import { VertexPositionAlgorithm } from "@/model/positioning/VertexPositioner";
 /**
  * Data Transfer Object (DTO) for configuration settings.
  *
@@ -14,7 +15,7 @@ export class ConfigDto {
   graphCfg: GraphCfgDto = new GraphCfgDto();
   barycenterCfg: BarycenterCfgDto = new BarycenterCfgDto();
   uiCfg: UiCfgDto = new UiCfgDto();
-  edgeCfg: EdgeDrawingCfgDto = new EdgeDrawingCfgDto();
+  algCfg: AlgorithmCfgDto = new AlgorithmCfgDto();
 }
 
 export class GraphCfgDto {
@@ -28,8 +29,9 @@ export class BarycenterCfgDto {
   barycenterRandomInit: boolean = true;
 }
 
-export class EdgeDrawingCfgDto {
-  alg: EdgeDrawingAlgorithm = EdgeDrawingAlgorithm.VERTICAL_BUNDELING_ORDERING;
+export class AlgorithmCfgDto {
+  edgeDrawing: EdgeDrawingAlgorithm = EdgeDrawingAlgorithm.VERTICAL_BUNDELING_ORDERING;
+  vertexPositioning: VertexPositionAlgorithm = VertexPositionAlgorithm.LP;
 }
 
 export class UiCfgDto {
@@ -55,7 +57,8 @@ export function mapToGraphLayoutCfg(cfgDto: ConfigDto): GraphLayoutCfg {
       baryInitRandom: cfgDto.barycenterCfg.barycenterRandomInit,
       layerSpacing: cfgDto.uiCfg.layerSpacing,
       vertexSpacing: cfgDto.uiCfg.vertexSpacing,
+      alg: cfgDto.algCfg.vertexPositioning,
     },
-    edgeAlg: cfgDto.edgeCfg.alg,
+    edgeAlg: cfgDto.algCfg.edgeDrawing,
   };
 }

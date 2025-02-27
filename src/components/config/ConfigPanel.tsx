@@ -38,7 +38,7 @@ const ConfigPanel: React.FC<Props> = ({ config, setConfig }) => {
             <GraphConfigPanel config={localConfig.graphCfg} handleChange={(field, value) => handleChange("graphCfg", field, value)} />
             <UiConfigPanel config={localConfig.uiCfg} handleChange={(field, value) => handleChange("uiCfg", field, value)} />
             <BarycenterCfgPanel config={localConfig.barycenterCfg} handleChange={(field, value) => handleChange("barycenterCfg", field, value)} />
-            <EdgeDrawingConfigPanel config={localConfig.edgeCfg} handleChange={(field, value) => handleChange("edgeCfg", field, value)} />
+            <EdgeDrawingConfigPanel config={localConfig.algCfg} handleChange={(field, value) => handleChange("algCfg", field, value)} />
           </div>
           <button className="redraw-button" onClick={handleApply}>
             Apply

@@ -5,12 +5,17 @@ import { BarycenterOrderer } from "../layout/BarycenterOrderer";
 import { positionIterative } from "./PositionIterativ";
 import { solveLp } from "./PositionLP";
 
+export enum VertexPositionAlgorithm {
+  LP = "LP",
+  iterative = "iterative",
+}
+
 export class VertexPositionCfg {
   baryDepth: number = 0;
   baryInitRandom: boolean = false;
   layerSpacing: number = 600;
   vertexSpacing: number = 100;
-  alg: "LP" | "iterative" = "LP";
+  alg: VertexPositionAlgorithm = VertexPositionAlgorithm.LP;
 }
 
 export class VertexPositioner {
