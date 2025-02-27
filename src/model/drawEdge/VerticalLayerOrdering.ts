@@ -4,6 +4,13 @@ import { greedyFAS } from "../alg/FAS";
 
 type Interval = [number, number];
 
+/**
+ * orders vertical layers with a greedy FAS algorithm to minimize crossings
+ *
+ * @param vertexPositions
+ * @param verticalLayers each entry of this list -> set of edges bundled on same layer. The list is ordered
+ * @returns
+ */
 export function verticalLayerOrdering<V, E extends Edge<V>>(vertexPositions: Map<V, Point2d>, verticalLayers: Set<E>[]): Set<E>[] {
   const crossingGraph = new Graph<Set<E>, any>();
   verticalLayers.forEach((layer, _) => {

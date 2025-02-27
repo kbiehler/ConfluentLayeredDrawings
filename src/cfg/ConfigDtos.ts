@@ -1,7 +1,7 @@
 import { RenderCfg } from "@/model/renderer/GraphSVGRenderer";
 import { GraphLayoutCfg } from "../model/layout/GraphLayoutGenerator";
 import { ExampleGraphs } from "@/examples/ExampleGraphs";
-import { EdgeDrawingAlgorithm } from "@/model/layout/EdgeDrawer";
+import { EdgeDrawingAlgorithm } from "@/model/drawEdge/EdgeDrawer";
 import { VertexPositionAlgorithm } from "@/model/positioning/VertexPositioner";
 /**
  * Data Transfer Object (DTO) for configuration settings.
@@ -30,7 +30,7 @@ export class BarycenterCfgDto {
 }
 
 export class AlgorithmCfgDto {
-  edgeDrawing: EdgeDrawingAlgorithm = EdgeDrawingAlgorithm.VERTICAL_BUNDELING_ORDERING;
+  edgeDrawing: EdgeDrawingAlgorithm = EdgeDrawingAlgorithm.VERTICAL_BUNDELING;
   vertexPositioning: VertexPositionAlgorithm = VertexPositionAlgorithm.LP;
 }
 

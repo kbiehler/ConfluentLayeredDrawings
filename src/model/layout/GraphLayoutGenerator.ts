@@ -3,7 +3,7 @@ import { GraphLayout } from "./GraphLayout";
 import { VertexPositioner, VertexPositionCfg } from "../positioning/VertexPositioner";
 
 import { InteractionInfo } from "../renderer/InteractionManager";
-import { EdgeDrawingAlgorithm, drawEdges } from "./EdgeDrawer";
+import { EdgeDrawingAlgorithm, drawEdges } from "../drawEdge/EdgeDrawer";
 import { assignLayers } from "../leveling/LevelAssigner";
 
 export type GraphLayoutCfg = {

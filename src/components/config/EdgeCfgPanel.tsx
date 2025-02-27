@@ -1,6 +1,6 @@
 import React from "react";
 import { AlgorithmCfgDto } from "@/cfg/ConfigDtos";
-import { EdgeDrawingAlgorithm } from "@/model/layout/EdgeDrawer";
+import { EdgeDrawingAlgorithm } from "@/model/drawEdge/EdgeDrawer";
 import { VertexPositionAlgorithm } from "@/model/positioning/VertexPositioner";
 
 type Props = {

@@ -17,14 +17,20 @@ export class GraphSVGRenderer {
   ) {
     const lineGenerator = d3.line<[number, number]>().curve(d3.curveBasis);
 
+    //draw first non-highlighed edges, then highlighted
+    const edges = graphLayout.getEdgeDrawings().sort((a, b) => {
+      if (highlightEdge(a.id) === highlightEdge(b.id)) return 0;
+      return highlightEdge(a.id) ? 1 : -1;
+    });
+
     svg
       .selectAll<SVGPathElement, EdgeLayout>("path")
-      .data(graphLayout.getEdgeDrawings())
+      .data(edges)
       .join("path")
       .attr("class", "link")
       .attr("fill", "none")
       .attr("stroke", (d: EdgeLayout) => (highlightEdge(d.id) ? renderCfg.highlightColor : renderCfg.edgeColor))
-      .attr("stroke-width", (d: EdgeLayout) => (highlightEdge(d.id) ? 2 : 1))
+      .attr("stroke-width", (d: EdgeLayout) => (highlightEdge(d.id) ? 5 : 1))
       .attr("d", (d: EdgeLayout) => {
         return lineGenerator(d.points.map((p) => [p.x, p.y]));
       });

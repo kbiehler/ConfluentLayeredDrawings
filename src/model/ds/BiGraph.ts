@@ -43,7 +43,7 @@ export class BipartiteGraph<V, E extends Edge<V>> extends LayerGraph<V, E> {
  * @param layer bipartite graph with vertices in layer and layer+1
  * @returns
  */
-export function layerToBipartite<V, E extends Edge<V>>(layerGraph: LayerGraph<V, E>, layer: number): BipartiteGraph<V, E> {
+export function convertLayerToBiGraph<V, E extends Edge<V>>(layerGraph: LayerGraph<V, E>, layer: number): BipartiteGraph<V, E> {
   const g = new BipartiteGraph<V, E>();
   layerGraph.getVerticesInLayer(layer).forEach((vertex) => {
     g.addVertexA(vertex);
