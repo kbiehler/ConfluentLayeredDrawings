@@ -2,25 +2,26 @@ import * as d3 from "d3";
 import { GraphLayout } from "@/model/layout/GraphLayout";
 import React, { useEffect, useRef } from "react";
 import { GraphSVGRenderer, RenderCfg } from "@/model/renderer/GraphSVGRenderer";
-import { InteractionInfo, InteractionManager } from "@/model/renderer/InteractionManager";
+import { InteractionManager } from "@/model/renderer/InteractionManager";
 import { SvgEventController } from "@/model/renderer/SvgEventController";
 
 interface DrawingProps {
   graphLayout: GraphLayout;
   renderCfg: RenderCfg;
-  interactionInfo: InteractionInfo;
+  interactionManager: InteractionManager;
 }
 
-const GraphSvg: React.FC<DrawingProps> = ({ graphLayout: graphDrawing, renderCfg, interactionInfo }) => {
+const GraphSvg: React.FC<DrawingProps> = ({ graphLayout: graphDrawing, renderCfg, interactionManager }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
-  const interactionManager = new InteractionManager(interactionInfo);
+  interactionManager.removeAllListeners("redraw");
   interactionManager.on("redraw", () => {
+    console.log("redraw");
     draw(svgRef!, graphDrawing, renderCfg, interactionManager);
   });
 
   useEffect(() => {
-    interactionManager.reset();
+    // interactionManager.reset();
     draw(svgRef!, graphDrawing, renderCfg, interactionManager);
   }, [graphDrawing]);
 
@@ -54,7 +55,9 @@ function draw(
     graphDrawing,
     renderCfg,
     (vertexId) => interactionManager.highlightVertex(vertexId),
-    (edgeId) => interactionManager.highlightEdge(edgeId)
+    (edgeId) => interactionManager.highlightEdge(edgeId),
+    (vertexId) => interactionManager.isSelectedVertex(vertexId),
+    (vertexID) => interactionManager.markVertex(vertexID)
   );
   new SvgEventController(interactionManager).attachListeners(g);
 }

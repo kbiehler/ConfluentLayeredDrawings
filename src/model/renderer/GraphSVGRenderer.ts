@@ -1,5 +1,6 @@
 import { EdgeLayout, GraphLayout, VertexLayout } from "@/model/layout/GraphLayout";
 import * as d3 from "d3";
+import { V } from "vitest/dist/chunks/environment.d8YfPkTm.js";
 
 export interface RenderCfg {
   vertexColor: string;
@@ -13,7 +14,9 @@ export class GraphSVGRenderer {
     graphLayout: GraphLayout,
     renderCfg: RenderCfg,
     highlightVertex: (vertexId: string) => boolean,
-    highlightEdge: (edgeId: string) => boolean
+    highlightEdge: (edgeId: string) => boolean,
+    isSelectedVertex: (vertexId: string) => boolean,
+    markVertex: (vertexId: string) => boolean
   ) {
     const lineGenerator = d3.line<[number, number]>().curve(d3.curveBasis);
 
@@ -46,7 +49,7 @@ export class GraphSVGRenderer {
       .attr("rx", 5) // Smooth corners
       .attr("ry", 5) // Smooth corners
       .attr("stroke", "black")
-      .attr("stroke-width", 2)
+      .attr("stroke-width", (d) => (isSelectedVertex(d.id) || markVertex(d.id) ? 3 : 1))
       .style("fill", (d: VertexLayout) => (highlightVertex(d.id) ? renderCfg.highlightColor : renderCfg.vertexColor))
       .on("mouseover", function (event, d) {
         d3.select(this).append("title").text(d.label);

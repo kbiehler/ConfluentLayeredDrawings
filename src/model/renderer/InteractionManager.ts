@@ -13,9 +13,9 @@ export class InteractionManager extends EventEmitter {
   state = new InteractionState();
   interactionInfo: InteractionInfo;
 
-  constructor(interactionInfo: InteractionInfo) {
+  constructor(interactionInfo?: InteractionInfo) {
     super();
-    this.interactionInfo = interactionInfo;
+    this.interactionInfo = interactionInfo || { adjEdges: new Map(), adjVertices: new Map() };
   }
 
   vertexClicked(vertexId: string, ctrlKey: boolean) {
@@ -34,6 +34,19 @@ export class InteractionManager extends EventEmitter {
       }
     }
     this.triggerRedraw();
+  }
+
+  /**
+   * only available in MarkVertexInteractionManager
+   * @param vertexId
+   * @returns
+   */
+  markVertex(vertexId: string): boolean {
+    return false;
+  }
+
+  isSelectedVertex(vertexId: string): boolean {
+    return this.state.selectedVertices.has(vertexId);
   }
 
   highlightVertex(vertexId: string): boolean {
@@ -57,5 +70,33 @@ export class InteractionManager extends EventEmitter {
 
   triggerRedraw() {
     this.emit("redraw");
+  }
+
+  copy(): InteractionManager {
+    const newInstance = new InteractionManager();
+    newInstance.state = this.state;
+    newInstance.interactionInfo = this.interactionInfo;
+    return newInstance;
+  }
+}
+
+/**
+ * InteractionManager that does not allow to select vertices
+ * only the markVertex are marked
+ */
+export class MarkVertexInteractionManager extends InteractionManager {
+  vertexMark: Set<any>;
+
+  constructor(vertexMark: Set<any>) {
+    super();
+    this.vertexMark = vertexMark;
+  }
+
+  vertexClicked(vertexId: string, ctrlKey: boolean): void {
+    return;
+  }
+
+  markVertex(vertexId: string): boolean {
+    return this.vertexMark.has(vertexId);
   }
 }

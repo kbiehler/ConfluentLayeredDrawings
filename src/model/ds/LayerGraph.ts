@@ -61,4 +61,11 @@ export class LayerGraph<V, E extends Edge<V>> extends Graph<V, E> {
     this.vertexToLayer.delete(vertex);
     this.layerToVertex.get(layer)!.delete(vertex);
   }
+
+  copy(): Graph<V, E> {
+    const newGraph = new LayerGraph<V, E>();
+    this.vertexToLayer.forEach((layer, vertex) => newGraph.addVertexToLayer(vertex, layer));
+    this.getEdges().forEach((edge) => newGraph.addEdge(edge));
+    return newGraph;
+  }
 }
