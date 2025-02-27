@@ -30,10 +30,10 @@ export class VertexPositioner {
     const layout = baryOrderer.barycenterOrdering(layeredGraph);
 
     let yPos;
-    if (this.cfg.alg == "LP") {
-      yPos = positionIterative(layeredGraph, layout);
-    } else {
+    if (this.cfg.alg == VertexPositionAlgorithm.LP) {
       yPos = solveLp(layeredGraph, layout);
+    } else {
+      yPos = positionIterative(layeredGraph, layout);
     }
     return this.computeSpacing(layout, yPos);
   }

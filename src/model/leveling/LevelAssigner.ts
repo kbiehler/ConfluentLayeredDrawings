@@ -1,5 +1,5 @@
 import { Graph, Edge, LayerGraph } from "@/model/ds";
-import { solveLp } from "./LP";
+import { solveLp } from "./LevelingLP";
 
 /**
  * so far only assign layers to minimize total edge length

@@ -1,5 +1,5 @@
 import { solveLp } from "../../../src/model/positioning/PositionLP";
-import { Edge, LayerGraph } from "../../../src/model/ds/";
+import { Edge, LayerGraph } from "../../../src/model/ds";
 
 import { describe, it, expect, beforeEach } from "vitest";
 import {} from "../../../src/model/ds/LayerGraph";
