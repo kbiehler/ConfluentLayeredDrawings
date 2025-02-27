@@ -3,7 +3,7 @@ import GraphSvg from "@/components/GraphSvg";
 import { generateLayout } from "@/model/layout/GraphLayoutGenerator";
 import { useEffect, useState } from "react";
 import { ConfigDto, mapToRenderCfg, mapToGraphLayoutCfg } from "@/cfg/ConfigDtos";
-import { loadFromCfg, loadFromSelection } from "@/input/GraphLoader";
+import { loadFromCfg, loadFromSelectionImpl, loadFromSelectionNbr } from "@/input/GraphLoader";
 import { GraphLayout } from "@/model/layout/GraphLayout";
 import { InteractionManager, MarkVertexInteractionManager } from "@/model/renderer/InteractionManager";
 import { Graph } from "@/model/ds";
@@ -17,7 +17,7 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
   const [graph, setGraph] = useState(() => new Graph());
   const [interactMgr, setInteractMgr] = useState(() => new InteractionManager());
   const [renderCfg, setRenderCfg] = useState(() => mapToRenderCfg(config));
-  const [panelSelect, setPanelSelect] = useState<"main" | "nbr">("main");
+  const [panelSelect, setPanelSelect] = useState<"main" | "nbr" | "impl">("main");
 
   useEffect(() => {
     const G = loadFromCfg(config.graphCfg);
@@ -29,16 +29,24 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
   }, [config]);
 
   const [nbrLayout, setNbrLayout] = useState(() => new GraphLayout());
-  const [nbrInteractMgr, setNbrInteractManager] = useState(() => new InteractionManager());
+  const [nbrInteractMgr, setNbrInteractMgr] = useState(() => new InteractionManager());
+
+  const [implLayout, setImplLayout] = useState(() => new GraphLayout());
+  const [implInteractMgr, setImplInteractMgr] = useState(() => new InteractionManager());
 
   useEffect(() => {
     if (panelSelect === "main") {
       return;
     } else if (panelSelect === "nbr") {
-      const G = loadFromSelection(graph, interactMgr.state.selectedVertices);
+      const G = loadFromSelectionNbr(graph, interactMgr.state.selectedVertices);
       const [tmpLayout, _] = generateLayout(G, mapToGraphLayoutCfg(config));
-      setNbrInteractManager(new MarkVertexInteractionManager(interactMgr.state.selectedVertices));
+      setNbrInteractMgr(new MarkVertexInteractionManager(interactMgr.state.selectedVertices));
       setNbrLayout(tmpLayout);
+    } else if (panelSelect === "impl") {
+      const G = loadFromSelectionImpl(graph, interactMgr.state.selectedVertices);
+      const [tmpLayout, _] = generateLayout(G, mapToGraphLayoutCfg(config));
+      setImplInteractMgr(new MarkVertexInteractionManager(interactMgr.state.selectedVertices));
+      setImplLayout(tmpLayout);
     }
   }, [panelSelect]);
 
@@ -51,12 +59,17 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
         <button onClick={() => setPanelSelect("nbr")} style={{ background: panelSelect === "nbr" ? "#ddd" : "#fff" }}>
           Show selected + neighbours
         </button>
+        <button onClick={() => setPanelSelect("impl")} style={{ background: panelSelect === "impl" ? "#ddd" : "#fff" }}>
+          Show implied
+        </button>
       </div>
       <div style={{ flexGrow: 1 }}>
         {panelSelect === "main" ? (
           <GraphSvg graphLayout={layout} renderCfg={renderCfg} interactionManager={interactMgr} />
-        ) : (
+        ) : panelSelect === "nbr" ? (
           <GraphSvg graphLayout={nbrLayout} renderCfg={renderCfg} interactionManager={nbrInteractMgr} />
+        ) : (
+          <GraphSvg graphLayout={implLayout} renderCfg={renderCfg} interactionManager={implInteractMgr} />
         )}
       </div>
     </div>
