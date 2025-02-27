@@ -2,18 +2,24 @@ import GraphSvg from "@/components/GraphSvg";
 import { generateLayout } from "@/model/layout/GraphLayoutGenerator";
 import { useEffect, useState } from "react";
 import ConfigPanel from "@/components/config/ConfigPanel";
-import { ConfigDto, mapToDrawCfg, mapToGraphLayoutCfg } from "./cfg/ConfigDtos";
+import { ConfigDto, mapToRenderCfg, mapToGraphLayoutCfg } from "./cfg/ConfigDtos";
 import { loadFromCfg } from "@/input/GraphLoader";
+import { GraphLayout } from "./model/layout/GraphLayout";
+import { InteractionInfo } from "./model/renderer/InteractionManager";
 
 function App() {
-  const [config, setConfig] = useState(new ConfigDto());
-  const G = loadFromCfg(config.graphCfg);
-  const [drawing, setDrawing] = useState(generateLayout(G, mapToGraphLayoutCfg(config)));
-  const [drawCfg, setDrawCfg] = useState(mapToDrawCfg(config));
-
+  console.log("start app");
+  const [config, setConfig] = useState(() => new ConfigDto());
+  const [layout, setLayout] = useState(() => new GraphLayout());
+  const [interactionInfo, setInteractionInfo] = useState(() => ({ adjEdges: new Map(), adjVertices: new Map() } as InteractionInfo));
+  const [renderCfg, setRenderCfg] = useState(() => mapToRenderCfg(config));
+  
   useEffect(() => {
-    setDrawing(generateLayout(G, mapToGraphLayoutCfg(config)));
-    setDrawCfg(mapToDrawCfg(config));
+    const G = loadFromCfg(config.graphCfg);
+    const [tmpLayout, tmpInteractionInfo] = generateLayout(G, mapToGraphLayoutCfg(config));
+    setLayout(tmpLayout);
+    setInteractionInfo(tmpInteractionInfo);
+    setRenderCfg(mapToRenderCfg(config));
   }, [config]);
 
   return (
@@ -25,7 +31,7 @@ function App() {
       </div>{" "}
       <div style={{ flexGrow: 1 }}>
         {" "}
-        <GraphSvg graphLayout={drawing[0]} renderCfg={drawCfg} interactionInfo={drawing[1]} />{" "}
+        <GraphSvg graphLayout={layout} renderCfg={renderCfg} interactionInfo={interactionInfo} />{" "}
       </div>{" "}
     </div>
   );

@@ -42,7 +42,7 @@ export class UiCfgDto {
   vertexSpacing: number = 100;
 }
 
-export function mapToDrawCfg(cfgDto: ConfigDto): RenderCfg {
+export function mapToRenderCfg(cfgDto: ConfigDto): RenderCfg {
   return {
     vertexColor: cfgDto.uiCfg.vertexColor,
     highlightColor: cfgDto.uiCfg.highlightColor,
