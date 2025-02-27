@@ -24,7 +24,7 @@ export class GraphCfgDto {
 }
 
 export class BarycenterCfgDto {
-  barycenterDepth: number = 10;
+  barycenterDepth: number = 100;
   barycenterRandomInit: boolean = true;
 }
 

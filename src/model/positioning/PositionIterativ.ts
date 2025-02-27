@@ -1,6 +1,7 @@
 import { LayerGraph } from "@/model/ds/LayerGraph";
 import _ from "lodash";
 
+
 /**
  * https://link.springer.com/content/pdf/10.1007/3-540-45848-4_3
  * page 4, Iterative heuristic
@@ -16,7 +17,8 @@ import _ from "lodash";
  * @param layout
  * @returns y-values of each vertex as described. all values are integers, values start at 0
  */
-export function straightenEdges<V>(layeredGraph: LayerGraph<V, any>, layout: V[][]): Map<V, number> {
+export function positionIterative<V>(layeredGraph: LayerGraph<V, any>, layout: V[][]): Map<V, number> {
+
   const nLayers = layeredGraph.getNumLayers();
 
   const yPos = new Map<V, number>();

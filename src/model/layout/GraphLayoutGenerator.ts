@@ -1,6 +1,6 @@
 import { Graph } from "@/model/ds/";
 import { GraphLayout } from "./GraphLayout";
-import { VertexPositioner, VertexPositionCfg } from "./VertexPositioner";
+import { VertexPositioner, VertexPositionCfg } from "../positioning/VertexPositioner";
 
 import { InteractionInfo } from "../renderer/InteractionManager";
 import { EdgeDrawingAlgorithm, drawEdges } from "./EdgeDrawer";

@@ -4,10 +4,7 @@ import { LayerGraph, Graph, Edge } from "../../../src/model/ds";
 
 describe("BarycenterOrderer", () => {
   it("should perform barycenter ordering on a simple layered graph", () => {
-    const orderer = new BarycenterOrderer({
-      barycenterDepth: 1,
-      barycenterRandomStart: false,
-    });
+    const orderer = new BarycenterOrderer(1, false);
 
     const graph = new LayerGraph<number, any>();
     graph.addVertexToLayer(0, 0);

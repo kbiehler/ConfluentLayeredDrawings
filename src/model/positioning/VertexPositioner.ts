@@ -1,14 +1,16 @@
 import { LayerGraph } from "@/model/ds/LayerGraph";
 import _ from "lodash";
 import { Point2d } from "../types/Point";
-import { BarycenterOrderer } from "./BarycenterOrderer";
-import { straightenEdges } from "./EdgeStraightener";
+import { BarycenterOrderer } from "../layout/BarycenterOrderer";
+import { positionIterative } from "./PositionIterativ";
+import { solveLp } from "./PositionLP";
 
 export class VertexPositionCfg {
   baryDepth: number = 0;
   baryInitRandom: boolean = false;
   layerSpacing: number = 600;
   vertexSpacing: number = 100;
+  alg: "LP" | "iterative" = "LP";
 }
 
 export class VertexPositioner {
@@ -21,7 +23,13 @@ export class VertexPositioner {
   public computePositions<V>(layeredGraph: LayerGraph<V, any>): Map<V, Point2d> {
     const baryOrderer = new BarycenterOrderer(this.cfg.baryDepth, this.cfg.baryInitRandom);
     const layout = baryOrderer.barycenterOrdering(layeredGraph);
-    const yPos = straightenEdges(layeredGraph, layout);
+
+    let yPos;
+    if (this.cfg.alg == "LP") {
+      yPos = positionIterative(layeredGraph, layout);
+    } else {
+      yPos = solveLp(layeredGraph, layout);
+    }
     return this.computeSpacing(layout, yPos);
   }
 

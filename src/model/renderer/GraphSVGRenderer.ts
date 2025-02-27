@@ -39,6 +39,8 @@ export class GraphSVGRenderer {
       .attr("y", (v) => v.position.y - 20)
       .attr("rx", 5) // Smooth corners
       .attr("ry", 5) // Smooth corners
+      .attr("stroke", "black")
+      .attr("stroke-width", 2)
       .style("fill", (d: VertexLayout) => (highlightVertex(d.id) ? renderCfg.highlightColor : renderCfg.vertexColor))
       .on("mouseover", function (event, d) {
         d3.select(this).append("title").text(d.label);
@@ -54,8 +56,14 @@ export class GraphSVGRenderer {
       .append("text")
       .attr("class", "vertex-label")
       .attr("x", (d) => d.position.x)
-      .attr("y", (d) => d.position.y)
+      .attr("y", (d) => d.position.y + 5)
       .attr("text-anchor", "middle")
-      .text((d) => d.label.substring(0, 15));
+      .text((d) => d.label.substring(0, 15))
+      .on("mouseover", function (event, d) {
+        d3.select(this).append("title").text(d.label);
+      })
+      .on("mouseout", function () {
+        d3.select(this).select("title").remove();
+      });
   }
 }
