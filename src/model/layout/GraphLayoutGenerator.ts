@@ -1,6 +1,6 @@
-import { Graph  } from "@/model/ds/";
+import { Graph } from "@/model/ds/";
 import { GraphLayout } from "./GraphLayout";
-import { LayoutVertex } from "@/model/layout/Vertex";
+import { Vertex } from "@/model/ds/Vertex";
 import { VertexId } from "@/model/types";
 import { VertexPositioner, VertexPositionCfg } from "@/model/layout/positioning/VertexPositioner";
 
@@ -21,8 +21,7 @@ export type GraphLayoutCfg = {
  * @param cfg
  * @returns
  */
-export function generateLayout(g: Graph<LayoutVertex>, cfg: GraphLayoutCfg): [GraphLayout, InteractionInfo] {
-
+export function generateLayout(g: Graph<Vertex>, cfg: GraphLayoutCfg): [GraphLayout, InteractionInfo] {
   const drawing = new GraphLayout();
   let layerGraph = assignLayers(g);
 
@@ -36,9 +35,9 @@ export function generateLayout(g: Graph<LayoutVertex>, cfg: GraphLayoutCfg): [Gr
   let adjEdges2 = drawEdges(
     cfg.edgeAlg,
     bliCliqueGraph,
-    (v: LayoutVertex) => vertexPositions.get(v)!,
+    (v: Vertex) => vertexPositions.get(v)!,
     drawing,
-    (v: LayoutVertex) => v.isCliqueCenter()
+    (v: Vertex) => v.isCliqueCenter()
   );
 
   let adjEdges = new Map<VertexId, Set<string>>();

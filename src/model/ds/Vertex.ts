@@ -1,7 +1,13 @@
 import { v4 as uuidv4 } from "uuid";
 import { VertexId } from "@/model/types";
 
-export class LayoutVertex {
+/**
+ * Default Vertex type that has already relevant fields for the layout.
+ *
+ * The Graph class is generic and can be used with any type of vertex.
+ *
+ */
+export class Vertex {
   label: string;
   id: VertexId;
 
@@ -23,7 +29,7 @@ export class LayoutVertex {
   }
 }
 
-export class CliqueCenter extends LayoutVertex {
+export class CliqueCenter extends Vertex {
   constructor() {
     super(uuidv4());
   }

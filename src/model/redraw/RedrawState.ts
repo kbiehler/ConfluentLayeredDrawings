@@ -1,9 +1,9 @@
 import { Graph } from "../ds";
-import { LayoutVertex } from "../layout/Vertex";
+import { Vertex } from "../ds/Vertex";
 
 export class RedrawState {
-  g: Graph<LayoutVertex>;
-  public constructor(g: Graph<LayoutVertex>) {
+  g: Graph<Vertex>;
+  public constructor(g: Graph<Vertex>) {
     this.g = g;
   }
 }

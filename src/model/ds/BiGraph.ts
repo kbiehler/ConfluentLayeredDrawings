@@ -1,12 +1,13 @@
-import { Graph, Edge } from "./Graph";
+import { Edge } from "./Graph";
 import { LayerGraph } from "./LayerGraph";
+import { Vertex } from "./Vertex";
 
-export class BipartiteGraph<V, E extends Edge<V> = Edge<V>> extends LayerGraph<V, E> {
+export class BipartiteGraph<V = Vertex, E extends Edge<V> = Edge<V>> extends LayerGraph<V, E> {
   constructor() {
     super();
   }
 
-  addVertex(vertex: V): void {
+  addVertex(_: V): void {
     throw new Error("Use addVertexA or addVertexB for bipartite graphs");
   }
 

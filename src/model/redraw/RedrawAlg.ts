@@ -1,4 +1,4 @@
-import { LayoutVertex } from "../layout/Vertex";
+import { Vertex } from "../ds/Vertex";
 import { VertexId } from "../types";
 import { Edge, Graph } from "../ds";
 
@@ -8,12 +8,12 @@ import { Edge, Graph } from "../ds";
  * @param selection
  * @returns
  */
-export function buildNbrGraph(g: Graph<LayoutVertex, Edge<LayoutVertex>>, selection: Set<VertexId>): Graph<LayoutVertex> {
-  const idToVertex = new Map<VertexId, LayoutVertex>();
+export function buildNbrGraph(g: Graph<Vertex, Edge<Vertex>>, selection: Set<VertexId>): Graph<Vertex> {
+  const idToVertex = new Map<VertexId, Vertex>();
   g.getVertices().forEach((v) => idToVertex.set(v.getId(), v));
 
-  const newGraph = new Graph<LayoutVertex>();
-  const seen = new Set<LayoutVertex>();
+  const newGraph = new Graph<Vertex>();
+  const seen = new Set<Vertex>();
 
   selection.forEach((v) => {
     addIfNew(seen, newGraph, idToVertex.get(v)!);
@@ -32,17 +32,17 @@ export function buildNbrGraph(g: Graph<LayoutVertex, Edge<LayoutVertex>>, select
  * @param selection
  * @returns
  */
-export function buildImplGraph(g: Graph<LayoutVertex, Edge<LayoutVertex>>, selection: Set<VertexId>): Graph<LayoutVertex> {
-  const idToVertex = new Map<VertexId, LayoutVertex>();
+export function buildImplGraph(g: Graph<Vertex, Edge<Vertex>>, selection: Set<VertexId>): Graph<Vertex> {
+  const idToVertex = new Map<VertexId, Vertex>();
   g.getVertices().forEach((v) => idToVertex.set(v.getId(), v));
 
-  const newGraph = new Graph<LayoutVertex>();
-  const q = new Set<LayoutVertex>();
+  const newGraph = new Graph<Vertex>();
+  const q = new Set<Vertex>();
   selection.forEach((v) => {
     q.add(idToVertex.get(v)!);
   });
 
-  const seen = new Set<LayoutVertex>();
+  const seen = new Set<Vertex>();
   while (q.size > 0) {
     const v = q.values().next().value!;
     q.delete(v);
@@ -56,7 +56,7 @@ export function buildImplGraph(g: Graph<LayoutVertex, Edge<LayoutVertex>>, selec
   return newGraph;
 }
 
-function addIfNew(seen: Set<LayoutVertex>, newGraph: Graph<LayoutVertex, Edge<LayoutVertex>>, v: LayoutVertex) {
+function addIfNew(seen: Set<Vertex>, newGraph: Graph<Vertex, Edge<Vertex>>, v: Vertex) {
   if (!seen.has(v)) {
     newGraph.addVertex(v);
     seen.add(v);

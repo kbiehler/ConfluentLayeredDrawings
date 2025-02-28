@@ -1,6 +1,6 @@
 import { generateLayout } from "./layout/GraphLayoutGenerator";
 import { Graph, Edge } from "./ds";
-import { LayoutVertex } from "./layout/Vertex";
+import { Vertex } from "./ds/Vertex";
 import { GraphLayout } from "./layout/GraphLayout";
 import { RedrawState } from "./redraw/RedrawState";
 import { InteractionInfo } from "./renderer/InteractionManager";
@@ -8,7 +8,6 @@ import { ConfigDto, mapToGraphLayoutCfg } from "@/cfg/ConfigDtos";
 import { loadFromCfg } from "@/input/GraphLoader";
 import { VertexId } from "./types";
 import { buildImplGraph, buildNbrGraph } from "./redraw/RedrawAlg";
-
 
 export function draw(cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionInfo] {
   const inputG = loadFromCfg(cfgDto.graphCfg);
@@ -46,11 +45,11 @@ export function redrawImpl(redrawState: RedrawState, selection: Set<VertexId>, c
   return [new RedrawState(newGraph), layout, interactInfo];
 }
 
-function convertToLayoutVertices<V>(g: Graph<V>): Graph<LayoutVertex> {
-  const newGraph = new Graph<LayoutVertex>();
-  const vToNew = new Map<V, LayoutVertex>();
+function convertToLayoutVertices<V>(g: Graph<V>): Graph<Vertex> {
+  const newGraph = new Graph<Vertex>();
+  const vToNew = new Map<V, Vertex>();
   g.getVertices().forEach((v) => {
-    const newV = new LayoutVertex(v);
+    const newV = new Vertex(v);
     newGraph.addVertex(newV);
     vToNew.set(v, newV);
   });
