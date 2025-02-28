@@ -11,7 +11,7 @@ type Interval = [number, number];
  * @param verticalLayers each entry of this list -> set of edges bundled on same layer. The list is ordered
  * @returns
  */
-export function verticalLayerOrdering<V, E extends Edge<V>>(vertexPosition: (v: V) => Point2d, verticalLayers: Set<E>[]): Set<E>[] {
+export function verticalLayerOrdering<V, E extends Edge<V>>(vertexPosition: (v: V) => number, verticalLayers: Set<E>[]): Set<E>[] {
   const crossingGraph = new Graph<Set<E>>();
   verticalLayers.forEach((layer, _) => {
     crossingGraph.addVertex(layer);
@@ -39,7 +39,7 @@ function addCrossingEdge<V, E extends Edge<V>>(crossingsAthenB: number, crossing
   }
 }
 
-function calculateCrossingCounts<V, E extends Edge<V>>(setA: Set<E>, setB: Set<E>, vertexPosition: (v: V) => Point2d) {
+function calculateCrossingCounts<V, E extends Edge<V>>(setA: Set<E>, setB: Set<E>, vertexPosition: (v: V) => number) {
   const intervalsA: Interval[] = createIntervals(setA, vertexPosition);
   const intervalsB: Interval[] = createIntervals(setB, vertexPosition);
   const sourceVerticesA = createVertexYs(setA, vertexPosition, (edge) => edge.source);
@@ -72,7 +72,7 @@ function calcCrossings(vertices: number[], intervals: Interval[]) {
  * @param sourceOrTarget
  * @returns distinct sorted y values of the sourceOrTarget vertex of the edges
  */
-function createVertexYs<V, E extends Edge<V>>(setB: Set<E>, vertexPosition: (v: V) => Point2d, sourceOrTarget: (edge: E) => V) {
+function createVertexYs<V, E extends Edge<V>>(setB: Set<E>, vertexPosition: (v: V) => number, sourceOrTarget: (edge: E) => V) {
   let leftVerticesB = new Set<number>();
   Array.from(setB).forEach((edge) => {
     leftVerticesB.add(vertexPosition(sourceOrTarget(edge))!.y);
@@ -82,7 +82,7 @@ function createVertexYs<V, E extends Edge<V>>(setB: Set<E>, vertexPosition: (v: 
   return leftVerticesBSorted;
 }
 
-function createIntervals<V, E extends Edge<V>>(setA: Set<E>, vertexPosition: (v: V) => Point2d) {
+function createIntervals<V, E extends Edge<V>>(setA: Set<E>, vertexPosition: (v: V) => number) {
   const intervalsA: Interval[] = [];
   Array.from(setA).forEach((edge) => {
     const sourceY = vertexPosition(edge.source)!.y;

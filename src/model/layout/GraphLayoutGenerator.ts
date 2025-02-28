@@ -8,6 +8,7 @@ import { InteractionInfo } from "../renderer/InteractionManager";
 import { EdgeDrawingAlgorithm, drawEdges } from "@/model/layout/drawEdge/EdgeDrawer";
 import { assignLayers } from "./leveling/LevelAssigner";
 import { addBlicliqueCenters } from "./bicliqueCenter/BiCliqueCenters";
+import { DynamicalLayerSpacer } from "./spacing/LayerSpacer";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -28,8 +29,10 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
   let bliCliqueGraph = addBlicliqueCenters(layerGraph, cfg.biCliqueDepth);
   const vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(bliCliqueGraph);
 
+  const dyn = new DynamicalLayerSpacer(bliCliqueGraph);
+
   vertexPositions.forEach((pos, vertex) => {
-    drawing.addVertex(vertex.getId(), pos, !vertex.isCliqueCenter(), vertex.getLabel());
+    drawing.addVertex(vertex.getId(), { x: dyn.xPosition(vertex), y: vertexPositions.get(vertex)! }, !vertex.isCliqueCenter(), vertex.getLabel());
   });
 
   let adjEdges2 = drawEdges(

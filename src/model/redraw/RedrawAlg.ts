@@ -1,9 +1,10 @@
 import { Vertex } from "../ds/Vertex";
 import { VertexId } from "../types";
-import { Edge, Graph } from "../ds";
+import { Graph } from "../ds";
 
 /**
  * new graph containing only selected vertices and their neighbors
+ *
  * @param g
  * @param selection
  * @returns

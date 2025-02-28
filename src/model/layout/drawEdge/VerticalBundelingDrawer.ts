@@ -1,38 +1,37 @@
-import { Point2d } from "@/model/types/Point";
 import { GraphLayout } from "@/model/layout/GraphLayout";
 import { v4 as uuidv4 } from "uuid";
 import { LayerGraph, convertLayerToBiGraph, Edge, BipartiteGraph } from "@/model/ds/";
 import { createConflictGraph } from "./VerticalBundelingConflict";
 import { rlfColoring } from "@/model/alg/Coloring";
 import { verticalLayerOrdering } from "./VerticalLayerOrdering";
+import { DynamicalLayerSpacer } from "../spacing/LayerSpacer";
+import { Vertex } from "@/model/ds/Vertex";
 
-//space between vertexPositon (later centerPoint of the vertex in the drawing) and first vertical line.
-//(should maybe depend on the drawing size of a vertex, for now a constant)
-const SPACING_VERTEX_LAYER = 150;
 // radius of the quater circles in the confluent drawing
 const RADIUS = 25;
 
-export function drawVerticalBundeling<V>(
-  g: LayerGraph<V>, //
-  vertexPosition: (v: V) => Point2d,
+export function drawVerticalBundeling(
+  g: LayerGraph, //
+  xPositions: DynamicalLayerSpacer,
+  yPosition: (v: Vertex) => number,
   layout: GraphLayout,
-  isCliqueCenter: (v: V) => boolean
-): Map<V, Set<string>> {
-  let edgeToX = new Map<Edge<V>, number>();
+  isCliqueCenter: (v: Vertex) => boolean
+): Map<Vertex, Set<string>> {
+  let edgeToX = new Map<Edge<Vertex>, number>();
 
   const nLayers = g.getLayerCount();
   for (let layer = 0; layer < nLayers - 1; layer++) {
     const biGraph = convertLayerToBiGraph(g, layer);
-    const relativeAssignment = assignLayers(biGraph, vertexPosition);
+    const relativeAssignment = assignLayers(biGraph, yPosition);
 
-    const xLeft = vertexPosition(biGraph.getVerticesA()[0]).x;
-    const xRight = vertexPosition(biGraph.getVerticesB()[0]).x;
+    const xLeft = xPositions.xPosition(layer) + xPositions.spaceRightOfLayer(layer);
+    const xRight = xPositions.xPosition(layer + 1) - xPositions.spaceLeftOfLayer(layer + 1);
 
-    const tmpEdgeToX = layersToXvalues(xLeft, xRight - xLeft, relativeAssignment);
+    const tmpEdgeToX = vertLayersToXvalues(xLeft, xRight, relativeAssignment);
     tmpEdgeToX.forEach((x, edge) => edgeToX.set(edge, x));
   }
 
-  return drawEdges(g, edgeToX, layout, vertexPosition, isCliqueCenter);
+  return drawEdges(g, edgeToX, layout, xPositions, yPosition, isCliqueCenter);
 }
 
 /**
@@ -44,17 +43,17 @@ export function drawVerticalBundeling<V>(
  * @param vertexPositions
  * @returns integers (starting at 0) that map each edge to its vert layer
  */
-function assignLayers<V>(biGraph: BipartiteGraph<V>, vertexPosition: (v: V) => Point2d): Set<Edge<V>>[] {
+function assignLayers(biGraph: BipartiteGraph, vertexPosition: (v: Vertex) => number): Set<Edge<Vertex>>[] {
   const conflictGraph = createConflictGraph(biGraph, vertexPosition);
   let bundeling = rlfColoring(conflictGraph);
   let orderedEdges = verticalLayerOrdering(vertexPosition, bundeling);
   return orderedEdges;
 }
 
-function layersToXvalues<V>(layerStart: number, layerWidth: number, relativeAssignment: Set<Edge<V>>[]) {
+function vertLayersToXvalues<V>(vertLayerStart: number, vertLayerEnd: number, relativeAssignment: Set<Edge<V>>[]) {
   const edgeToX = new Map<Edge<V>, number>();
-  const diff = (layerWidth - SPACING_VERTEX_LAYER) / (relativeAssignment.length + 1);
-  let x = layerStart + SPACING_VERTEX_LAYER / 2;
+  const diff = (vertLayerEnd - vertLayerStart) / (relativeAssignment.length + 1);
+  let x = vertLayerStart;
   relativeAssignment.forEach((layer, _) => {
     x += diff;
     layer.forEach((edge) => {
@@ -64,13 +63,20 @@ function layersToXvalues<V>(layerStart: number, layerWidth: number, relativeAssi
   return edgeToX;
 }
 
-function drawEdges<V>(g: LayerGraph<V>, edgeToX: Map<Edge<V>, number>, layout: GraphLayout, vertexPosition: (v: V) => Point2d, isCliqueCenter: (v: V) => boolean): Map<V, Set<string>> {
-  const adjEdges = new Map<V, Set<string>>(); //vertex to edge ids of drawn edges
+function drawEdges(
+  g: LayerGraph, //
+  edgeToX: Map<Edge<Vertex>, number>,
+  layout: GraphLayout,
+  xPositions: DynamicalLayerSpacer,
+  yPosition: (v: Vertex) => number,
+  isCliqueCenter: (v: Vertex) => boolean
+): Map<Vertex, Set<string>> {
+  const adjEdges = new Map<Vertex, Set<string>>(); //vertex to edge ids of drawn edges
   g.getVertices().forEach((v) => adjEdges.set(v, new Set()));
 
   const drawer = new Drawer();
   edgeToX.forEach((x, edge) => {
-    const edgeIds = drawer.drawEdge(layout, vertexPosition(edge.source), vertexPosition(edge.target), x);
+    const edgeIds = drawer.drawEdge(layout, xPositions.xPosition(edge.source), yPosition(edge.source), xPositions.xPosition(edge.target), yPosition(edge.target), x);
     if (isCliqueCenter(edge.source)) {
       //add ids to vertices infront of TreeCenter
       g.getIncendentIn(edge.source).forEach((e) => edgeIds.forEach((id) => adjEdges.get(e.source)!.add(id)));
@@ -91,12 +97,12 @@ class Drawer {
 
   drawEdge(
     layout: GraphLayout, //
-    source: Point2d,
-    target: Point2d,
+    xSource: number,
+    ySource: number,
+    xTarget: number,
+    yTarget: number,
     xVertical: number
   ): Set<string> {
-    const [xSource, ySource] = [source.x, source.y];
-    const [xTarget, yTarget] = [target.x, target.y];
     const down = ySource < yTarget ? 1 : ySource === yTarget ? 0 : -1;
 
     const l1 = [
