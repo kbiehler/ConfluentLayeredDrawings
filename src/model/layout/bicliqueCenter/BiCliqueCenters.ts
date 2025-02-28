@@ -1,20 +1,14 @@
 import { v4 as uuidv4 } from "uuid";
 import { Edge, LayerGraph, convertLayerToBiGraph } from "@/model/ds";
 import { biCliqueCover } from "@/model/alg/BiCliqueCover";
-
-export class BiCliqueCenter {
-  uuid: string;
-  constructor() {
-    this.uuid = uuidv4();
-  }
-}
+import { LayoutVertex } from "../GraphLayoutGenerator";
 
 /**
  * creates a new graph with biclique centers
  * @param G
  * @returns
  */
-export function addBlicliqueCenters<V>(G: LayerGraph<V, Edge<V>>): LayerGraph<any, any> {
+export function addBlicliqueCenters<V>(G: LayerGraph<LayoutVertex<V>, Edge<LayoutVertex<V>>>): LayerGraph<LayoutVertex<V>, Edge<LayoutVertex<V>>> {
   let newGraph = new LayerGraph<any, any>();
 
   G.getVertices().forEach((v) => {
@@ -24,9 +18,9 @@ export function addBlicliqueCenters<V>(G: LayerGraph<V, Edge<V>>): LayerGraph<an
   for (let i = 0; i < G.getLayerCount(); i++) {
     const biGraph = convertLayerToBiGraph(G, i);
     const biCliques = biCliqueCover(biGraph);
-    const biCliqueTocenter = new Map<any, BiCliqueCenter>();
+    const biCliqueTocenter = new Map<any, LayoutVertex<V>>();
     biCliques.forEach((biclique) => {
-      const center = new BiCliqueCenter();
+      const center = new LayoutVertex<V>("TreeCenter");
       biCliqueTocenter.set(biclique, center);
       newGraph.addVertexToLayer(center, i * 2 + 1);
     });

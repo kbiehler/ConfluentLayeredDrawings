@@ -5,13 +5,25 @@ import { VertexPositioner, VertexPositionCfg } from "@/model/layout/positioning/
 import { InteractionInfo } from "../renderer/InteractionManager";
 import { EdgeDrawingAlgorithm, drawEdges } from "@/model/layout/drawEdge/EdgeDrawer";
 import { assignLayers } from "./leveling/LevelAssigner";
-import { addBlicliqueCenters, BiCliqueCenter } from "./bicliqueCenter/BiCliqueCenters";
+import { addBlicliqueCenters } from "./bicliqueCenter/BiCliqueCenters";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
   edgeAlg: EdgeDrawingAlgorithm;
   biCliqueDepth: number;
 };
+
+export class LayoutVertex<V> {
+  payload: V | "TreeCenter";
+
+  constructor(payload: V | "TreeCenter") {
+    this.payload = payload;
+  }
+
+  isTreeCenter(): boolean {
+    return this.payload === "TreeCenter";
+  }
+}
 
 /**
  *
@@ -21,7 +33,6 @@ export type GraphLayoutCfg = {
  */
 export function generateLayout<V>(g: Graph<V, any>, cfg: GraphLayoutCfg): [GraphLayout, InteractionInfo] {
   const drawing = new GraphLayout();
-
   let layerGraph = assignLayers(g);
 
   for (let i = 0; i < cfg.biCliqueDepth; i++) {
@@ -31,7 +42,7 @@ export function generateLayout<V>(g: Graph<V, any>, cfg: GraphLayoutCfg): [Graph
   const vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(layerGraph);
 
   vertexPositions.forEach((pos, vertex) => {
-    drawing.addVertex(vertex, pos, vertex instanceof BiCliqueCenter, String(vertex));
+    drawing.addVertex(vertex, pos, vertex instanceof LayoutVertex, String(vertex));
   });
 
   let adjEdges = drawEdges(cfg.edgeAlg, layerGraph, vertexPositions, drawing);
