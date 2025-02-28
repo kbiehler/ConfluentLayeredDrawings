@@ -1,12 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-
-export class VertexId {
-  id: string;
-
-  constructor(id: string) {
-    this.id = id;
-  }
-}
+import { VertexId } from "@/model/types";
 
 export class LayoutVertex {
   label: string;

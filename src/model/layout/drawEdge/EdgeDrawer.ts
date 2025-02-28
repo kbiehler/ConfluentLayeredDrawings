@@ -17,12 +17,12 @@ export enum EdgeDrawingAlgorithm {
  * @param layout
  * @returns Vertex to the IDs of adjacent edges in the GraphLayout. (later used in InteractionManager to highlight edges)
  */
-export function drawEdges<V>(alg: EdgeDrawingAlgorithm, g: LayerGraph<V>, vertexPosition: (v: V) => Point2d, layout: GraphLayout): Map<V, Set<string>> {
+export function drawEdges<V>(alg: EdgeDrawingAlgorithm, g: LayerGraph<V>, vertexPosition: (v: V) => Point2d, layout: GraphLayout, isCliqueCenter: (v: V) => boolean): Map<V, Set<string>> {
   switch (alg) {
     case EdgeDrawingAlgorithm.STRAIGHT_LINE:
       return drawStaightLine(g, vertexPosition, layout);
     case EdgeDrawingAlgorithm.VERTICAL_BUNDELING:
-      return drawVerticalBundeling(g, vertexPosition, layout);
+      return drawVerticalBundeling(g, vertexPosition, layout, isCliqueCenter);
   }
 }
 

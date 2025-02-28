@@ -1,6 +1,7 @@
 import { Graph, Edge } from "@/model/ds/";
 import { GraphLayout } from "./GraphLayout";
-import { LayoutVertex, VertexId } from "@/model/layout/Vertex";
+import { LayoutVertex } from "@/model/layout/Vertex";
+import { VertexId } from "@/model/types";
 import { VertexPositioner, VertexPositionCfg } from "@/model/layout/positioning/VertexPositioner";
 
 import { InteractionInfo } from "../renderer/InteractionManager";
@@ -33,7 +34,17 @@ export function generateLayout<V>(inputG: Graph<V>, cfg: GraphLayoutCfg): [Graph
     drawing.addVertex(vertex.getId(), pos, !vertex.isCliqueCenter(), vertex.getLabel());
   });
 
-  let adjEdges = drawEdges(cfg.edgeAlg, bliCliqueGraph, (v: LayoutVertex) => vertexPositions.get(v)!, drawing);
+  let adjEdges2 = drawEdges(
+    cfg.edgeAlg,
+    bliCliqueGraph,
+    (v: LayoutVertex) => vertexPositions.get(v)!,
+    drawing,
+    (v: LayoutVertex) => v.isCliqueCenter()
+  );
+
+  let adjEdges = new Map<VertexId, Set<string>>();
+  adjEdges2.forEach((edges, v) => adjEdges.set(v.getId(), edges));
+
   let adjVertices = new Map<VertexId, Set<VertexId>>();
   g.getVertices().forEach((v) => adjVertices.set(v.getId(), new Set(g.getAdjacent(v).map((v) => v.getId()))));
   return [drawing, { adjEdges, adjVertices }];

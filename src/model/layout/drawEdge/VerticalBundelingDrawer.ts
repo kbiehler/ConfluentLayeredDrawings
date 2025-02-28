@@ -15,7 +15,8 @@ const RADIUS = 25;
 export function drawVerticalBundeling<V>(
   g: LayerGraph<V>, //
   vertexPosition: (v: V) => Point2d,
-  layout: GraphLayout
+  layout: GraphLayout,
+  isCliqueCenter: (v: V) => boolean
 ): Map<V, Set<string>> {
   let edgeToX = new Map<Edge<V>, number>();
 
@@ -31,7 +32,7 @@ export function drawVerticalBundeling<V>(
     tmpEdgeToX.forEach((x, edge) => edgeToX.set(edge, x));
   }
 
-  return drawEdges(g, edgeToX, layout, vertexPosition);
+  return drawEdges(g, edgeToX, layout, vertexPosition, isCliqueCenter);
 }
 
 /**
@@ -63,15 +64,24 @@ function layersToXvalues<V>(layerStart: number, layerWidth: number, relativeAssi
   return edgeToX;
 }
 
-function drawEdges<V>(g: LayerGraph<V>, edgeToX: Map<Edge<V>, number>, layout: GraphLayout, vertexPosition: (v: V) => Point2d) {
+function drawEdges<V>(g: LayerGraph<V>, edgeToX: Map<Edge<V>, number>, layout: GraphLayout, vertexPosition: (v: V) => Point2d, isCliqueCenter: (v: V) => boolean): Map<V, Set<string>> {
   const adjEdges = new Map<V, Set<string>>(); //vertex to edge ids of drawn edges
   g.getVertices().forEach((v) => adjEdges.set(v, new Set()));
 
   const drawer = new Drawer();
   edgeToX.forEach((x, edge) => {
     const edgeIds = drawer.drawEdge(layout, vertexPosition(edge.source), vertexPosition(edge.target), x);
-    edgeIds.forEach((id) => adjEdges.get(edge.source)!.add(id));
-    edgeIds.forEach((id) => adjEdges.get(edge.target)!.add(id));
+    if (isCliqueCenter(edge.source)) {
+      //add ids to vertices infront of TreeCenter
+      g.getIncendentIn(edge.source).forEach((e) => edgeIds.forEach((id) => adjEdges.get(e.source)!.add(id)));
+    } else {
+      edgeIds.forEach((id) => adjEdges.get(edge.source)!.add(id));
+    }
+    if (isCliqueCenter(edge.target)) {
+      g.getIncidentOut(edge.target).forEach((e) => edgeIds.forEach((id) => adjEdges.get(e.target)!.add(id)));
+    } else {
+      edgeIds.forEach((id) => adjEdges.get(edge.target)!.add(id));
+    }
   });
   return adjEdges;
 }

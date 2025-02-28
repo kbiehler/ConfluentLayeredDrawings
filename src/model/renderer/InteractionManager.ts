@@ -1,12 +1,13 @@
 import { EventEmitter } from "events";
+import { VertexId } from "@/model/types";
 
 export interface InteractionInfo {
-  adjEdges: Map<any, Set<string>>;
-  adjVertices: Map<any, Set<any>>;
+  adjEdges: Map<VertexId, Set<string>>;
+  adjVertices: Map<VertexId, Set<VertexId>>;
 }
 
 export class InteractionState {
-  selectedVertices: Set<any> = new Set();
+  selectedVertices: Set<VertexId> = new Set();
 }
 
 export class InteractionManager extends EventEmitter {
@@ -18,7 +19,7 @@ export class InteractionManager extends EventEmitter {
     this.interactionInfo = interactionInfo || { adjEdges: new Map(), adjVertices: new Map() };
   }
 
-  vertexClicked(vertexId: string, ctrlKey: boolean) {
+  vertexClicked(vertexId: VertexId, ctrlKey: boolean) {
     if (ctrlKey) {
       if (this.state.selectedVertices.has(vertexId)) {
         this.state.selectedVertices.delete(vertexId);
@@ -41,15 +42,15 @@ export class InteractionManager extends EventEmitter {
    * @param vertexId
    * @returns
    */
-  markVertex(vertexId: string): boolean {
+  markVertex(vertexId: VertexId): boolean {
     return false;
   }
 
-  isSelectedVertex(vertexId: string): boolean {
+  isSelectedVertex(vertexId: VertexId): boolean {
     return this.state.selectedVertices.has(vertexId);
   }
 
-  highlightVertex(vertexId: string): boolean {
+  highlightVertex(vertexId: VertexId): boolean {
     if (this.state.selectedVertices.has(vertexId)) {
       return true;
     }
@@ -92,11 +93,11 @@ export class MarkVertexInteractionManager extends InteractionManager {
     this.vertexMark = vertexMark;
   }
 
-  vertexClicked(vertexId: string, ctrlKey: boolean): void {
+  vertexClicked(vertexId: VertexId, ctrlKey: boolean): void {
     return;
   }
 
-  markVertex(vertexId: string): boolean {
+  markVertex(vertexId: VertexId): boolean {
     return this.vertexMark.has(vertexId);
   }
 }

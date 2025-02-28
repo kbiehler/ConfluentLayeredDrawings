@@ -1,6 +1,6 @@
 import { EdgeLayout, GraphLayout, VertexLayout } from "@/model/layout/GraphLayout";
 import * as d3 from "d3";
-import { V } from "vitest/dist/chunks/environment.d8YfPkTm.js";
+import { VertexId } from "@/model/types";
 
 export interface RenderCfg {
   vertexColor: string;
@@ -13,10 +13,10 @@ export class GraphSVGRenderer {
     svg: d3.Selection<SVGGElement, unknown, null, undefined>, //
     graphLayout: GraphLayout,
     renderCfg: RenderCfg,
-    highlightVertex: (vertexId: string) => boolean,
+    highlightVertex: (vertexId: VertexId) => boolean,
     highlightEdge: (edgeId: string) => boolean,
-    isSelectedVertex: (vertexId: string) => boolean,
-    markVertex: (vertexId: string) => boolean
+    isSelectedVertex: (vertexId: VertexId) => boolean,
+    markVertex: (vertexId: VertexId) => boolean
   ) {
     const lineGenerator = d3.line<[number, number]>().curve(d3.curveBasis);
 

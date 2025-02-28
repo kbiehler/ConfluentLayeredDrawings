@@ -1,7 +1,8 @@
 import { Point2d } from "../types/Point";
+import { VertexId } from "@/model/types";
 
 export interface VertexLayout {
-  id: any;
+  id: VertexId;
   draw: boolean;
   position: Point2d;
   label: string;
