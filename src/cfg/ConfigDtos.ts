@@ -16,6 +16,7 @@ export class ConfigDto {
   barycenterCfg: BarycenterCfgDto = new BarycenterCfgDto();
   uiCfg: UiCfgDto = new UiCfgDto();
   algCfg: AlgorithmCfgDto = new AlgorithmCfgDto();
+  biCliqueCfg: BiCliqueCfg = new BiCliqueCfg();
 }
 
 export class GraphCfgDto {
@@ -65,6 +66,7 @@ export function mapToGraphLayoutCfg(cfgDto: ConfigDto): GraphLayoutCfg {
       vertexSpacing: cfgDto.uiCfg.vertexSpacing,
       alg: cfgDto.algCfg.vertexPositioning,
     },
+    biCliqueDepth: cfgDto.biCliqueCfg.bicliqueDepth,
     edgeAlg: cfgDto.algCfg.edgeDrawing,
   };
 }

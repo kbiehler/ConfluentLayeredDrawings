@@ -5,6 +5,7 @@ import UiConfigPanel from "./UiCfgPanel";
 import BarycenterCfgPanel from "./BarycenterCfgPanel";
 import GraphConfigPanel from "./GraphCfgPanel";
 import AlgorithmConfigPanel from "./AlgorithmCfgPanel";
+import BiCliqueCfgPanel from "./BiCliqueCfgPanel";
 
 type Props = {
   config: ConfigDto;
@@ -39,6 +40,7 @@ const ConfigPanel: React.FC<Props> = ({ config, setConfig }) => {
             <UiConfigPanel config={localConfig.uiCfg} handleChange={(field, value) => handleChange("uiCfg", field, value)} />
             <BarycenterCfgPanel config={localConfig.barycenterCfg} handleChange={(field, value) => handleChange("barycenterCfg", field, value)} />
             <AlgorithmConfigPanel config={localConfig.algCfg} handleChange={(field, value) => handleChange("algCfg", field, value)} />
+            <BiCliqueCfgPanel config={localConfig.biCliqueCfg} handleChange={(field, value) => handleChange("biCliqueCfg", field, value)} />
           </div>
           <button className="redraw-button" onClick={handleApply}>
             Apply

@@ -10,6 +10,7 @@ import { addBlicliqueCenters, BiCliqueCenter } from "../bicliqueCenter/BiCliqueC
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
   edgeAlg: EdgeDrawingAlgorithm;
+  biCliqueDepth: number;
 };
 
 /**
@@ -23,7 +24,9 @@ export function generateLayout<V>(g: Graph<V, any>, cfg: GraphLayoutCfg): [Graph
 
   let layerGraph = assignLayers(g);
 
-  layerGraph = addBlicliqueCenters(layerGraph);
+  for (let i = 0; i < cfg.biCliqueDepth; i++) {
+    layerGraph = addBlicliqueCenters(layerGraph);
+  }
 
   const vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(layerGraph);
 
