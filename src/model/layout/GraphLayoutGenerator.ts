@@ -1,5 +1,6 @@
 import { Graph, Edge } from "@/model/ds/";
 import { GraphLayout } from "./GraphLayout";
+import { LayoutVertex, VertexId } from "@/model/layout/Vertex";
 import { VertexPositioner, VertexPositionCfg } from "@/model/layout/positioning/VertexPositioner";
 
 import { InteractionInfo } from "../renderer/InteractionManager";
@@ -13,26 +14,6 @@ export type GraphLayoutCfg = {
   biCliqueDepth: number;
 };
 
-export class LayoutVertex<V> {
-  payload: V | "CliqueCenter";
-
-  constructor(payload: V | "CliqueCenter") {
-    this.payload = payload;
-  }
-
-  isCliqueCenter(): boolean {
-    return this.payload === "CliqueCenter";
-  }
-
-  label(): string {
-    if (this.isCliqueCenter()) {
-      return "TreeCenter";
-    } else {
-      return String(this.payload);
-    }
-  }
-}
-
 /**
  *
  * @param g contains no circles
@@ -45,21 +26,22 @@ export function generateLayout<V>(inputG: Graph<V>, cfg: GraphLayoutCfg): [Graph
   const drawing = new GraphLayout();
   let layerGraph = assignLayers(g);
 
-  layerGraph = addBlicliqueCenters(layerGraph, cfg.biCliqueDepth);
-  const vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(layerGraph);
+  let bliCliqueGraph = addBlicliqueCenters(layerGraph, cfg.biCliqueDepth);
+  const vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(bliCliqueGraph);
 
   vertexPositions.forEach((pos, vertex) => {
-    drawing.addVertex(vertex, pos, !vertex.isCliqueCenter, vertex.label());
+    drawing.addVertex(vertex.getId(), pos, !vertex.isCliqueCenter(), vertex.getLabel());
   });
 
-  let adjEdges = drawEdges(cfg.edgeAlg, layerGraph, vertexPositions, drawing);
-  let adjVertices = new Map<V, Set<V>>();
+  let adjEdges = drawEdges(cfg.edgeAlg, bliCliqueGraph, vertexPositions, drawing);
+  let adjVertices = new Map<VertexId, Set<VertexId>>();
+  g.getVertices().forEach((v) => adjVertices.set(v.getId(), new Set(g.getAdjacent(v).map((v) => v.getId()))));
   return [drawing, { adjEdges, adjVertices }];
 }
 
-function convertToLayoutVertices<V>(g: Graph<V>): Graph<LayoutVertex<V>> {
-  const newGraph = new Graph<LayoutVertex<V>>();
-  const vToNew = new Map<V, LayoutVertex<V>>();
+function convertToLayoutVertices<V>(g: Graph<V>): Graph<LayoutVertex> {
+  const newGraph = new Graph<LayoutVertex>();
+  const vToNew = new Map<V, LayoutVertex>();
   g.getVertices().forEach((v) => {
     const newV = new LayoutVertex(v);
     newGraph.addVertex(newV);
