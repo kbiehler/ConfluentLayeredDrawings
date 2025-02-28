@@ -8,9 +8,15 @@ import { LayoutVertex } from "../GraphLayoutGenerator";
  * @param G
  * @returns
  */
-export function addBlicliqueCenters<V>(G: LayerGraph<LayoutVertex<V>>): LayerGraph<LayoutVertex<V>> {
-  let newGraph = new LayerGraph<any>();
+export function addBlicliqueCenters<V>(G: LayerGraph<LayoutVertex<V>>, biCliqueDepth: number): LayerGraph<LayoutVertex<V>> {
+  for (let i = 0; i < biCliqueDepth; i++) {
+    G = addCenters(G);
+  }
+  return G;
+}
 
+function addCenters<V>(G: LayerGraph<LayoutVertex<V>>) {
+  let newGraph = new LayerGraph<LayoutVertex<V>>();
   G.getVertices().forEach((v) => {
     newGraph.addVertexToLayer(v, G.getLayer(v) * 2);
   });
@@ -20,7 +26,7 @@ export function addBlicliqueCenters<V>(G: LayerGraph<LayoutVertex<V>>): LayerGra
     const biCliques = biCliqueCover(biGraph);
     const biCliqueTocenter = new Map<any, LayoutVertex<V>>();
     biCliques.forEach((biclique) => {
-      const center = new LayoutVertex<V>("TreeCenter");
+      const center = new LayoutVertex<V>("CliqueCenter");
       biCliqueTocenter.set(biclique, center);
       newGraph.addVertexToLayer(center, i * 2 + 1);
     });
@@ -37,6 +43,5 @@ export function addBlicliqueCenters<V>(G: LayerGraph<LayoutVertex<V>>): LayerGra
       });
     });
   }
-
   return newGraph;
 }
