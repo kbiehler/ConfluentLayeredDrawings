@@ -1,6 +1,7 @@
 import { LayerGraph } from "@/model/ds";
 import { Vertex } from "@/model/ds/Vertex";
 import { LayerSpacer } from "./LayerSpacer";
+import { CliqueCenterVertexSpacer, VertexSpacer } from "./VertexSpacer";
 
 class Config {
   minWidth: number = 100;
@@ -15,8 +16,10 @@ export class EvenVerticalWidthSpacer implements LayerSpacer {
   cliqueCenterLayer: Set<number>;
   layerToX: Map<number, number> = new Map<number, number>();
   verticalToX: Map<number, Map<number, number>> = new Map<number, Map<number, number>>();
+  vertSpacer: VertexSpacer;
 
   constructor(g: LayerGraph, numVertLayer: number[]) {
+    this.vertSpacer = new CliqueCenterVertexSpacer();
     this.g = g;
     this.numVertLayer = numVertLayer;
     this.cliqueCenterLayer = new Set<number>();
@@ -35,6 +38,7 @@ export class EvenVerticalWidthSpacer implements LayerSpacer {
     this.layerToX.set(0, x);
     for (let i = 0; i < g.getLayerCount() - 1; i++) {
       this.verticalToX.set(i, new Map<number, number>());
+      x += this.vertSpacer.width(i) / 2;
       if (this.cliqueCenterLayer.has(i)) {
         x += cfg.cliqueCenterToFirstVertical;
       } else {
@@ -49,6 +53,7 @@ export class EvenVerticalWidthSpacer implements LayerSpacer {
       } else {
         x += cfg.vertexToFirstVertical;
       }
+      x += this.vertSpacer.width(i) / 2;
       this.layerToX.set(i + 1, x);
     }
   }
@@ -65,5 +70,9 @@ export class EvenVerticalWidthSpacer implements LayerSpacer {
 
   xPositionVertical(layer: number, vertex: number): number {
     return this.verticalToX.get(layer)!.get(vertex)!;
+  }
+
+  vertexSpacer(): VertexSpacer {
+    return this.vertSpacer;
   }
 }
