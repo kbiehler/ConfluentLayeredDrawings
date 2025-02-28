@@ -1,6 +1,6 @@
 import { Edge, Graph } from "@/model/ds";
-import { Point2d } from "../types/Point";
-import { greedyFAS } from "../alg/FAS";
+import { Point2d } from "@/model/types/Point";
+import { greedyFAS } from "@/model/alg/FAS";
 
 type Interval = [number, number];
 

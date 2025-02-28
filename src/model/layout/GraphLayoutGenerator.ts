@@ -1,9 +1,9 @@
 import { Graph } from "@/model/ds/";
 import { GraphLayout } from "./GraphLayout";
-import { VertexPositioner, VertexPositionCfg } from "../positioning/VertexPositioner";
+import { VertexPositioner, VertexPositionCfg } from "@/model/layout/positioning/VertexPositioner";
 
 import { InteractionInfo } from "../renderer/InteractionManager";
-import { EdgeDrawingAlgorithm, drawEdges } from "../drawEdge/EdgeDrawer";
+import { EdgeDrawingAlgorithm, drawEdges } from "@/model/layout/drawEdge/EdgeDrawer";
 import { assignLayers } from "./leveling/LevelAssigner";
 import { addBlicliqueCenters, BiCliqueCenter } from "./bicliqueCenter/BiCliqueCenters";
 

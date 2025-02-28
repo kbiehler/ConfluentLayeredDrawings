@@ -1,5 +1,5 @@
 import { Edge, Graph, BipartiteGraph } from "@/model/ds";
-import { Point2d } from "../types/Point";
+import { Point2d } from "@/model/types/Point";
 
 type Interval = [number, number];
 

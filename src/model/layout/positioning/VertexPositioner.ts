@@ -1,7 +1,7 @@
 import { LayerGraph } from "@/model/ds/LayerGraph";
 import _ from "lodash";
-import { Point2d } from "../types/Point";
-import { BarycenterOrderer } from "../layout/BarycenterOrderer";
+import { Point2d } from "@/model/types/Point";
+import { BarycenterOrderer } from "@/model/layout/BarycenterOrderer";
 import { positionIterative } from "./PositionIterativ";
 import { solveLp } from "./PositionLP";
 

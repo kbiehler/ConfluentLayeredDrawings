@@ -1,5 +1,5 @@
-import { Point2d } from "../types/Point";
-import { GraphLayout } from "../layout/GraphLayout";
+import { Point2d } from "@/model/types/Point";
+import { GraphLayout } from "@/model/layout/GraphLayout";
 import { v4 as uuidv4 } from "uuid";
 import { LayerGraph } from "@/model/ds/";
 import { drawVerticalBundeling } from "./VerticalBundelingDrawer";
