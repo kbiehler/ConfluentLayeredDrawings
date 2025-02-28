@@ -1,7 +1,7 @@
 import { Graph, Edge } from "./Graph";
 import { LayerGraph } from "./LayerGraph";
 
-export class BipartiteGraph<V, E extends Edge<V>> extends LayerGraph<V, E> {
+export class BipartiteGraph<V, E extends Edge<V> = Edge<V>> extends LayerGraph<V, E> {
   constructor() {
     super();
   }

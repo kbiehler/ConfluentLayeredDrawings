@@ -31,7 +31,7 @@ export class LayoutVertex<V> {
  * @param cfg
  * @returns
  */
-export function generateLayout<V>(g: Graph<V, any>, cfg: GraphLayoutCfg): [GraphLayout, InteractionInfo] {
+export function generateLayout<V>(g: Graph<V>, cfg: GraphLayoutCfg): [GraphLayout, InteractionInfo] {
   const drawing = new GraphLayout();
   let layerGraph = assignLayers(g);
 

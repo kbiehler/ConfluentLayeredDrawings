@@ -3,8 +3,8 @@ import { Point2d } from "@/model/types/Point";
 
 type Interval = [number, number];
 
-export function createConflictGraph<V, E extends Edge<V>>(layerGraph: BipartiteGraph<V, E>, vertexPositions: Map<V, Point2d>): Graph<E, Edge<E>> {
-  const conflictGraph = new Graph<E, Edge<E>>(); //conflict graph between edges of the input graph
+export function createConflictGraph<V, E extends Edge<V>>(layerGraph: BipartiteGraph<V, E>, vertexPositions: Map<V, Point2d>): Graph<E> {
+  const conflictGraph = new Graph<E>(); //conflict graph between edges of the input graph
   const edgeToInterval = new Map<E, Interval>();
 
   const edges = layerGraph.getEdges();

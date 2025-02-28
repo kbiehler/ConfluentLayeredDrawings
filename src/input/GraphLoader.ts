@@ -4,7 +4,7 @@ import { createRandomLayeredGraph } from "@/examples/GraphGenerator";
 import { generateExampleGraph } from "@/examples/ExampleGraphs";
 import { parseDotFile } from "./DotParser";
 
-export function loadFromCfg(cfg: GraphCfgDto): Graph<any, any> {
+export function loadFromCfg(cfg: GraphCfgDto): Graph<any> {
   if (cfg.type === "example") {
     return generateExampleGraph(cfg.example_type);
   } else if (cfg.type === "random") {
@@ -26,8 +26,8 @@ export function loadFromCfg(cfg: GraphCfgDto): Graph<any, any> {
  * @param selection
  * @returns
  */
-export function loadFromSelectionNbr(g: Graph<any, any>, selection: Set<any>): Graph<any, any> {
-  const newGraph = new Graph<any, any>();
+export function loadFromSelectionNbr(g: Graph<any>, selection: Set<any>): Graph<any> {
+  const newGraph = new Graph<any>();
   const addedVertices = new Set<any>();
   selection.forEach((v) => {
     if (!addedVertices.has(v)) {
@@ -55,8 +55,8 @@ export function loadFromSelectionNbr(g: Graph<any, any>, selection: Set<any>): G
  * @param selection
  * @returns
  */
-export function loadFromSelectionImpl(g: Graph<any, any>, selection: Set<any>): Graph<any, any> {
-  const newGraph = new Graph<any, any>();
+export function loadFromSelectionImpl(g: Graph<any>, selection: Set<any>): Graph<any> {
+  const newGraph = new Graph<any>();
   const q = new Set<any>(selection);
   const addedVertices = new Set<any>();
   while (q.size > 0) {

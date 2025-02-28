@@ -12,7 +12,7 @@ const SPACING_VERTEX_LAYER = 150;
 // radius of the quater circles in the confluent drawing
 const RADIUS = 25;
 
-export function drawVerticalBundeling<V>(g: LayerGraph<V, any>, vertexPositions: Map<V, Point2d>, layout: GraphLayout): Map<V, Set<string>> {
+export function drawVerticalBundeling<V>(g: LayerGraph<V>, vertexPositions: Map<V, Point2d>, layout: GraphLayout): Map<V, Set<string>> {
   let edgeToX = new Map<Edge<V>, number>();
 
   const nLayers = g.getLayerCount();
@@ -39,7 +39,7 @@ export function drawVerticalBundeling<V>(g: LayerGraph<V, any>, vertexPositions:
  * @param vertexPositions
  * @returns integers (starting at 0) that map each edge to its vert layer
  */
-function assignLayers<V>(biGraph: BipartiteGraph<V, any>, vertexPositions: Map<V, Point2d>): Set<Edge<V>>[] {
+function assignLayers<V>(biGraph: BipartiteGraph<V>, vertexPositions: Map<V, Point2d>): Set<Edge<V>>[] {
   const conflictGraph = createConflictGraph(biGraph, vertexPositions);
   let bundeling = rlfColoring(conflictGraph);
   let orderedEdges = verticalLayerOrdering(vertexPositions, bundeling);
@@ -59,7 +59,7 @@ function layersToXvalues<V>(layerStart: number, layerWidth: number, relativeAssi
   return edgeToX;
 }
 
-function drawEdges<V>(g: LayerGraph<V, any>, edgeToX: Map<Edge<V>, number>, layout: GraphLayout, vertexPositions: Map<V, Point2d>) {
+function drawEdges<V>(g: LayerGraph<V>, edgeToX: Map<Edge<V>, number>, layout: GraphLayout, vertexPositions: Map<V, Point2d>) {
   const adjEdges = new Map<V, Set<string>>(); //vertex to edge ids of drawn edges
   g.getVertices().forEach((v) => adjEdges.set(v, new Set()));
 

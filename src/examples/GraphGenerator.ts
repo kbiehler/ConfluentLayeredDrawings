@@ -2,8 +2,8 @@ import { Graph, Edge } from "../model/ds/Graph";
 import { BipartiteGraph } from "../model/ds/BiGraph";
 import { LayerGraph } from "../model/ds/LayerGraph";
 
-export const createWheelGraph = (n: number): Graph<Number, Edge<Number>> => {
-  const G = new Graph<Number, Edge<Number>>();
+export const createWheelGraph = (n: number): Graph<Number> => {
+  const G = new Graph<Number>();
   const center = 0;
   for (let i = 0; i < n; i++) {
     G.addVertex(i);
@@ -18,8 +18,8 @@ export const createWheelGraph = (n: number): Graph<Number, Edge<Number>> => {
   return G;
 };
 
-export const createRandomGraph = (n: number, p: number): Graph<Number, Edge<Number>> => {
-  const randomGraph = new Graph<Number, Edge<Number>>();
+export const createRandomGraph = (n: number, p: number): Graph<Number> => {
+  const randomGraph = new Graph<Number>();
   for (let i = 0; i < n; i++) {
     randomGraph.addVertex(i);
   }
@@ -33,8 +33,8 @@ export const createRandomGraph = (n: number, p: number): Graph<Number, Edge<Numb
   return randomGraph;
 };
 
-export const createRandomBiGraph = (nA: number, nB: number, p: number): BipartiteGraph<Number, Edge<Number>> => {
-  const randomBiGraph = new BipartiteGraph<Number, Edge<Number>>();
+export const createRandomBiGraph = (nA: number, nB: number, p: number): BipartiteGraph<Number> => {
+  const randomBiGraph = new BipartiteGraph<Number>();
   for (let i = 0; i < nA; i++) {
     randomBiGraph.addVertexA(i);
   }
@@ -51,8 +51,8 @@ export const createRandomBiGraph = (nA: number, nB: number, p: number): Bipartit
   return randomBiGraph;
 };
 
-export const createRandomLayeredGraph = (verticesPerLayer: number[], p: number): LayerGraph<Number, Edge<Number>> => {
-  const randomLayeredGraph = new LayerGraph<Number, Edge<Number>>();
+export const createRandomLayeredGraph = (verticesPerLayer: number[], p: number): LayerGraph<Number> => {
+  const randomLayeredGraph = new LayerGraph<Number>();
   let vertexId = 0;
 
   for (let layer = 0; layer < verticesPerLayer.length; layer++) {

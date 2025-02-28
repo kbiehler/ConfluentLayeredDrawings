@@ -8,7 +8,7 @@ import { Graph, Edge } from "@/model/ds/Graph";
  * @param G
  * @returns
  */
-export function rlfColoring<V, E extends Edge<V>>(G: Graph<V, E>): Set<V>[] {
+export function rlfColoring<V>(G: Graph<V>): Set<V>[] {
   G = G.copy();
   const res: Set<V>[] = [];
   while (G.getVertices().length > 0) {

@@ -16,7 +16,7 @@ import _ from "lodash";
  * @param layout
  * @returns y-values of each vertex as described. all values are integers, values start at 0
  */
-export function positionIterative<V>(layeredGraph: LayerGraph<V, any>, layout: V[][]): Map<V, number> {
+export function positionIterative<V>(layeredGraph: LayerGraph<V>, layout: V[][]): Map<V, number> {
   const nLayers = layeredGraph.getLayerCount();
 
   const yPos = new Map<V, number>();

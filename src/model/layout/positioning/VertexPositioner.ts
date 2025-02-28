@@ -26,7 +26,7 @@ export class VertexPositioner {
     this.cfg = cfg;
   }
 
-  public computePositions<V>(layeredGraph: LayerGraph<V, any>): Map<V, Point2d> {
+  public computePositions<V>(layeredGraph: LayerGraph<V>): Map<V, Point2d> {
     const baryOrderer = new BarycenterOrderer(this.cfg.baryDepth, this.cfg.baryInitRandom, this.cfg.baryIdentConnected);
     const layout = baryOrderer.barycenterOrdering(layeredGraph);
 

@@ -12,7 +12,7 @@ import { Graph } from "@/model/ds/Graph";
  * @param g
  * @returns ILP solution: Map<vertex -> y(u)>
  */
-export function solveLp<V>(g: Graph<V, any>): Map<V, number> {
+export function solveLp<V>(g: Graph<V>): Map<V, number> {
   const model = buildLpModel(g);
 
   const solution = solve(model);
@@ -23,7 +23,7 @@ export function solveLp<V>(g: Graph<V, any>): Map<V, number> {
   return result;
 }
 
-function buildLpModel<V>(g: Graph<V, any>) {
+function buildLpModel<V>(g: Graph<V>) {
   /*
   LP in standard form
   example for graph with edges {ab, bc, cd, ed}
@@ -89,7 +89,7 @@ function mapSolutionToResult<V>(solution: Solution<V>) {
   return result;
 }
 
-function addMissingVertices<V>(g: Graph<V, any>, result: Map<V, number>) {
+function addMissingVertices<V>(g: Graph<V>, result: Map<V, number>) {
   g.getVertices().forEach((v) => {
     if (!result.has(v)) {
       result.set(v, 0);

@@ -10,7 +10,7 @@ export class Edge<V> {
   }
 }
 
-export class Graph<V, E extends Edge<V>> {
+export class Graph<V, E extends Edge<V> = Edge<V>> {
   private vertices: Set<V>;
   private edges: Set<E>;
   private adj: Map<V, Set<E>>;

@@ -17,7 +17,7 @@ export enum EdgeDrawingAlgorithm {
  * @param layout
  * @returns Vertex to the IDs of adjacent edges in the GraphLayout. (later used in InteractionManager to highlight edges)
  */
-export function drawEdges<V>(alg: EdgeDrawingAlgorithm, g: LayerGraph<V, any>, vertexPositions: Map<V, Point2d>, layout: GraphLayout): Map<V, Set<string>> {
+export function drawEdges<V>(alg: EdgeDrawingAlgorithm, g: LayerGraph<V>, vertexPositions: Map<V, Point2d>, layout: GraphLayout): Map<V, Set<string>> {
   switch (alg) {
     case EdgeDrawingAlgorithm.STRAIGHT_LINE:
       return drawStaightLine(g, vertexPositions, layout);
@@ -26,7 +26,7 @@ export function drawEdges<V>(alg: EdgeDrawingAlgorithm, g: LayerGraph<V, any>, v
   }
 }
 
-export function drawStaightLine<V>(g: LayerGraph<V, any>, vertexPositions: Map<V, Point2d>, layout: GraphLayout): Map<V, Set<string>> {
+export function drawStaightLine<V>(g: LayerGraph<V>, vertexPositions: Map<V, Point2d>, layout: GraphLayout): Map<V, Set<string>> {
   const adjEdges = new Map<V, Set<string>>();
   g.getVertices().forEach((v) => adjEdges.set(v, new Set()));
   g.getEdges().forEach((edge) => {

@@ -13,7 +13,7 @@ export class BarycenterOrderer {
     this.identConnected = identConnected;
   }
 
-  public barycenterOrdering<V>(layeredGraph: LayerGraph<V, any>): V[][] {
+  public barycenterOrdering<V>(layeredGraph: LayerGraph<V>): V[][] {
     const layout: V[][] = [];
     for (let i = 0; i < layeredGraph.getLayerCount(); i++) {
       layout.push([]);
@@ -34,7 +34,7 @@ export class BarycenterOrderer {
     return layout;
   }
 
-  private orderComponent<V>(layeredGraph: LayerGraph<V, any>, component: Set<V>): V[][] {
+  private orderComponent<V>(layeredGraph: LayerGraph<V>, component: Set<V>): V[][] {
     const nLayers = layeredGraph.getLayerCount();
     const layout = this.initLayout(layeredGraph, component);
 
@@ -58,12 +58,12 @@ export class BarycenterOrderer {
     return layout;
   }
 
-  private permute<V>(layeredGraph: LayerGraph<V, any>, layout: V[][], iFix: number, iPermute: number) {
+  private permute<V>(layeredGraph: LayerGraph<V>, layout: V[][], iFix: number, iPermute: number) {
     let newLayer = this.computeNewLayer(layeredGraph, layout[iFix], layout[iPermute]);
     layout[iPermute] = newLayer;
   }
 
-  private computeNewLayer<V>(layeredGraph: LayerGraph<V, any>, fixLayer: V[], changeLayer: V[]): V[] {
+  private computeNewLayer<V>(layeredGraph: LayerGraph<V>, fixLayer: V[], changeLayer: V[]): V[] {
     let optimalPositions = new Map<V, number>();
     let fixLayerMap = new Map<V, number>();
 
@@ -87,7 +87,7 @@ export class BarycenterOrderer {
   inits an inital layout for the barycenter, containing only vertices of verticesConsider 
   random if barycenterRandomStart is set, otherwise order the layeredGraph returns
   */
-  private initLayout<V>(layeredGraph: LayerGraph<V, any>, verticesConsider: Set<V>): V[][] {
+  private initLayout<V>(layeredGraph: LayerGraph<V>, verticesConsider: Set<V>): V[][] {
     const layout: V[][] = [];
     for (let layer = 0; layer < layeredGraph.getLayerCount(); layer++) {
       let vertices = Array.from(layeredGraph.getVerticesInLayer(layer).filter((v) => verticesConsider.has(v)));

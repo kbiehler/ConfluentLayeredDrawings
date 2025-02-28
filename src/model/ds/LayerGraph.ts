@@ -1,6 +1,6 @@
 import { Graph, Edge } from "./Graph";
 
-export class LayerGraph<V, E extends Edge<V>> extends Graph<V, E> {
+export class LayerGraph<V, E extends Edge<V> = Edge<V>> extends Graph<V, E> {
   vertexToLayer = new Map<V, number>();
   layerToVertex = new Map<number, Set<V>>();
 

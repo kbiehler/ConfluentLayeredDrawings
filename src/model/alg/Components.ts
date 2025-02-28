@@ -6,7 +6,7 @@ import { Graph } from "@/model/ds";
  * @param g
  * @returns
  */
-export function findComponents<V>(g: Graph<V, any>): Set<V>[] {
+export function findComponents<V>(g: Graph<V>): Set<V>[] {
   const visited = new Set<V>();
   let components: Set<V>[] = [];
   let component: Set<V> = new Set();

@@ -4,17 +4,17 @@ import { solveLp } from "./LevelingLP";
 /**
  * so far only assign layers to minimize total edge length
  */
-export function assignLayers<V, E extends Edge<V>>(g: Graph<V, E>) {
+export function assignLayers<V>(g: Graph<V>) {
   if (g instanceof LayerGraph) {
     return g;
   }
   return lpLayering(g);
 }
 
-function lpLayering<V>(graph: Graph<V, Edge<V>>) {
+function lpLayering<V>(graph: Graph<V>) {
   const lpResult = solveLp(graph);
 
-  const layerGraph = new LayerGraph<V, Edge<V>>();
+  const layerGraph = new LayerGraph<V>();
   graph.getVertices().forEach((v) => {
     layerGraph.addVertexToLayer(v, lpResult.get(v)!);
   });

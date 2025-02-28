@@ -7,8 +7,8 @@ import { rlfColoring } from "./Coloring";
  * @param graph
  * @param G
  */
-export function biCliqueCover<V>(G: BipartiteGraph<V, Edge<V>>) {
-  const restrictedColGraph = new Graph<Edge<V>, any>();
+export function biCliqueCover<V>(G: BipartiteGraph<V>) {
+  const restrictedColGraph = new Graph<Edge<V>>();
   const edges = G.getEdges();
   edges.forEach((e) => {
     restrictedColGraph.addVertex(e);

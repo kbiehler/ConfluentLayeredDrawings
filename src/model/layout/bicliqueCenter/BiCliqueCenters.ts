@@ -8,8 +8,8 @@ import { LayoutVertex } from "../GraphLayoutGenerator";
  * @param G
  * @returns
  */
-export function addBlicliqueCenters<V>(G: LayerGraph<LayoutVertex<V>, Edge<LayoutVertex<V>>>): LayerGraph<LayoutVertex<V>, Edge<LayoutVertex<V>>> {
-  let newGraph = new LayerGraph<any, any>();
+export function addBlicliqueCenters<V>(G: LayerGraph<LayoutVertex<V>>): LayerGraph<LayoutVertex<V>> {
+  let newGraph = new LayerGraph<any>();
 
   G.getVertices().forEach((v) => {
     newGraph.addVertexToLayer(v, G.getLayer(v) * 2);

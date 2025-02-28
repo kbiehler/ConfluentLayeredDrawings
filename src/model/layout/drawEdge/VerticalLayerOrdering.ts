@@ -12,7 +12,7 @@ type Interval = [number, number];
  * @returns
  */
 export function verticalLayerOrdering<V, E extends Edge<V>>(vertexPositions: Map<V, Point2d>, verticalLayers: Set<E>[]): Set<E>[] {
-  const crossingGraph = new Graph<Set<E>, any>();
+  const crossingGraph = new Graph<Set<E>>();
   verticalLayers.forEach((layer, _) => {
     crossingGraph.addVertex(layer);
   });
@@ -31,7 +31,7 @@ export function verticalLayerOrdering<V, E extends Edge<V>>(vertexPositions: Map
   return finalOrder;
 }
 
-function addCrossingEdge<V, E extends Edge<V>>(crossingsAthenB: number, crossingsBthenA: number, crossingGraph: Graph<Set<E>, any>, setA: Set<E>, setB: Set<E>) {
+function addCrossingEdge<V, E extends Edge<V>>(crossingsAthenB: number, crossingsBthenA: number, crossingGraph: Graph<Set<E>>, setA: Set<E>, setB: Set<E>) {
   if (crossingsAthenB < crossingsBthenA) {
     crossingGraph.addEdge(new Edge(setA, setB, crossingsAthenB - crossingsBthenA));
   } else if (crossingsAthenB > crossingsBthenA) {

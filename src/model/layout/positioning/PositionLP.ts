@@ -15,7 +15,7 @@ import { Graph } from "@/model/ds/Graph";
  * @param g
  * @returns ILP solution: Map<vertex -> y(u)>
  */
-export function solveLp<V>(g: Graph<V, any>, layerOrder: V[][]) {
+export function solveLp<V>(g: Graph<V>, layerOrder: V[][]) {
   const model = buildLpModel(g, layerOrder);
 
   const solution = solve(model);
@@ -34,7 +34,7 @@ export function solveLp<V>(g: Graph<V, any>, layerOrder: V[][]) {
 
 type EPlusMinus = { e: any; sign: "+" | "-" };
 
-function buildLpModel<V>(g: Graph<V, any>, layerOrder: V[][]) {
+function buildLpModel<V>(g: Graph<V>, layerOrder: V[][]) {
   /*
   LP in standard form
   layer3: d,    e
