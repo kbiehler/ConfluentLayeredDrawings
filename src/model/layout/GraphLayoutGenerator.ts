@@ -1,4 +1,4 @@
-import { Graph, Edge } from "@/model/ds/";
+import { Graph  } from "@/model/ds/";
 import { GraphLayout } from "./GraphLayout";
 import { LayoutVertex } from "@/model/layout/Vertex";
 import { VertexId } from "@/model/types";
@@ -21,8 +21,7 @@ export type GraphLayoutCfg = {
  * @param cfg
  * @returns
  */
-export function generateLayout<V>(inputG: Graph<V>, cfg: GraphLayoutCfg): [GraphLayout, InteractionInfo] {
-  const g = convertToLayoutVertices(inputG);
+export function generateLayout(g: Graph<LayoutVertex>, cfg: GraphLayoutCfg): [GraphLayout, InteractionInfo] {
 
   const drawing = new GraphLayout();
   let layerGraph = assignLayers(g);
@@ -48,18 +47,4 @@ export function generateLayout<V>(inputG: Graph<V>, cfg: GraphLayoutCfg): [Graph
   let adjVertices = new Map<VertexId, Set<VertexId>>();
   g.getVertices().forEach((v) => adjVertices.set(v.getId(), new Set(g.getAdjacent(v).map((v) => v.getId()))));
   return [drawing, { adjEdges, adjVertices }];
-}
-
-function convertToLayoutVertices<V>(g: Graph<V>): Graph<LayoutVertex> {
-  const newGraph = new Graph<LayoutVertex>();
-  const vToNew = new Map<V, LayoutVertex>();
-  g.getVertices().forEach((v) => {
-    const newV = new LayoutVertex(v);
-    newGraph.addVertex(newV);
-    vToNew.set(v, newV);
-  });
-  g.getEdges().forEach((edge) => {
-    newGraph.addEdge(new Edge(vToNew.get(edge.source)!, vToNew.get(edge.target)!));
-  });
-  return newGraph;
 }

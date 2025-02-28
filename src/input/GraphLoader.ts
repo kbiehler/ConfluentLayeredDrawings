@@ -1,5 +1,5 @@
 import { GraphCfgDto } from "@/cfg/ConfigDtos";
-import { Graph, LayerGraph } from "@/model/ds";
+import { Graph  } from "@/model/ds";
 import { createRandomLayeredGraph } from "@/examples/GraphGenerator";
 import { generateExampleGraph } from "@/examples/ExampleGraphs";
 import { parseDotFile } from "./DotParser";
@@ -20,41 +20,8 @@ export function loadFromCfg(cfg: GraphCfgDto): Graph<any> {
   throw new Error("Invalid configuration");
 }
 
-/**
- * selected vertices + nachbarschaft in g
- * @param g
- * @param selection
- * @returns
- */
-export function loadFromSelectionNbr(g: Graph<any>, selection: Set<any>): Graph<any> {
-  const newGraph = new Graph<any>();
-  const addedVertices = new Set<any>();
-  selection.forEach((v) => {
-    if (!addedVertices.has(v)) {
-      newGraph.addVertex(v);
-      addedVertices.add(v);
-    }
-    g.getIncident(v).forEach((e) => {
-      if (!addedVertices.has(e.source)) {
-        newGraph.addVertex(e.source);
-        addedVertices.add(e.source);
-      }
-      if (!addedVertices.has(e.target)) {
-        newGraph.addVertex(e.target);
-        addedVertices.add(e.target);
-      }
-      newGraph.addEdge(e);
-    });
-  });
-  return newGraph;
-}
 
-/**
- * selected vertices + all edges and vertices in g that lie on a directed path from a selected vertex
- * @param g
- * @param selection
- * @returns
- */
+
 export function loadFromSelectionImpl(g: Graph<any>, selection: Set<any>): Graph<any> {
   const newGraph = new Graph<any>();
   const q = new Set<any>(selection);

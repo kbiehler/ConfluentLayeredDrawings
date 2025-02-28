@@ -46,7 +46,7 @@ export class VertexPositioner {
 
     const vertexPositions = new Map<V, { x: number; y: number }>();
     layers.forEach((vertices, i_layer) => {
-      vertices.forEach((vertex, position) => {
+      vertices.forEach((vertex, _) => {
         let x = i_layer * xSpacing;
         let y = yPos.get(vertex)! * ySpacing + (i_layer % 2) * layerShift;
         vertexPositions.set(vertex, { x, y });

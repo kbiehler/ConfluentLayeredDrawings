@@ -1,12 +1,12 @@
 import React from "react";
 import GraphSvg from "@/components/GraphSvg";
-import { generateLayout } from "@/model/layout/GraphLayoutGenerator";
 import { useEffect, useState } from "react";
-import { ConfigDto, mapToRenderCfg, mapToGraphLayoutCfg } from "@/cfg/ConfigDtos";
-import { loadFromCfg, loadFromSelectionImpl, loadFromSelectionNbr } from "@/input/GraphLoader";
+import { ConfigDto, mapToRenderCfg } from "@/cfg/ConfigDtos";
 import { GraphLayout } from "@/model/layout/GraphLayout";
 import { InteractionManager, MarkVertexInteractionManager } from "@/model/renderer/InteractionManager";
 import { Graph } from "@/model/ds";
+import { draw, redrawImpl, redrawNbr } from "@/model/DrawModel";
+import { RedrawState } from "@/model/redraw/RedrawState";
 
 interface GraphsPanelProps {
   config: ConfigDto;
@@ -14,15 +14,14 @@ interface GraphsPanelProps {
 
 const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
   const [layout, setLayout] = useState(() => new GraphLayout());
-  const [graph, setGraph] = useState(() => new Graph());
+  const [redrawState, setRedrawState] = useState(() => new RedrawState(new Graph()));
   const [interactMgr, setInteractMgr] = useState(() => new InteractionManager());
   const [renderCfg, setRenderCfg] = useState(() => mapToRenderCfg(config));
   const [panelSelect, setPanelSelect] = useState<"main" | "nbr" | "impl">("main");
 
   useEffect(() => {
-    const G = loadFromCfg(config.graphCfg);
-    setGraph(G);
-    const [tmpLayout, tmpInteractInfo] = generateLayout(G, mapToGraphLayoutCfg(config));
+    const [redrawState, tmpLayout, tmpInteractInfo] = draw(config);
+    setRedrawState(redrawState);
     setLayout(tmpLayout);
     setInteractMgr(new InteractionManager(tmpInteractInfo));
     setRenderCfg(mapToRenderCfg(config));
@@ -38,13 +37,11 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
     if (panelSelect === "main") {
       return;
     } else if (panelSelect === "nbr") {
-      const G = loadFromSelectionNbr(graph, interactMgr.state.selectedVertices);
-      const [tmpLayout, _] = generateLayout(G, mapToGraphLayoutCfg(config));
+      const [, tmpLayout, _] = redrawNbr(redrawState, interactMgr.state.selectedVertices, config);
       setNbrInteractMgr(new MarkVertexInteractionManager(interactMgr.state.selectedVertices));
       setNbrLayout(tmpLayout);
     } else if (panelSelect === "impl") {
-      const G = loadFromSelectionImpl(graph, interactMgr.state.selectedVertices);
-      const [tmpLayout, _] = generateLayout(G, mapToGraphLayoutCfg(config));
+      const [, tmpLayout, _] = redrawImpl(redrawState, interactMgr.state.selectedVertices, config);
       setImplInteractMgr(new MarkVertexInteractionManager(interactMgr.state.selectedVertices));
       setImplLayout(tmpLayout);
     }
