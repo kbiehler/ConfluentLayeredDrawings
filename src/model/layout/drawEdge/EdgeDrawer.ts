@@ -1,7 +1,7 @@
 import { GraphLayout } from "@/model/layout/GraphLayout";
 import { LayerGraph } from "@/model/ds/";
 import { drawVerticalBundeling } from "./VerticalBundelingDrawer";
-import { DynamicalLayerSpacer } from "../spacing/LayerSpacer";
+import { LayerSpacer } from "../spacing/LayerSpacer";
 import { Vertex } from "@/model/ds/Vertex";
 
 export enum EdgeDrawingAlgorithm {
@@ -23,7 +23,7 @@ export function drawEdges(
   yPosition: (v: Vertex) => number,
   layout: GraphLayout,
   isCliqueCenter: (v: Vertex) => boolean
-): [Map<Vertex, Set<string>>, DynamicalLayerSpacer] {
+): [Map<Vertex, Set<string>>, LayerSpacer] {
   switch (alg) {
     case EdgeDrawingAlgorithm.STRAIGHT_LINE:
     // return drawStaightLine(g, yPosition, layout);

@@ -36,7 +36,7 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
     (v: Vertex) => v.isCliqueCenter()
   );
 
-  vertexPositions.forEach((pos, vertex) => {
+  vertexPositions.forEach((_, vertex) => {
     drawing.addVertex(vertex.getId(), { x: dyn.xPosition(vertex), y: vertexPositions.get(vertex)! }, !vertex.isCliqueCenter(), vertex.getLabel());
   });
 

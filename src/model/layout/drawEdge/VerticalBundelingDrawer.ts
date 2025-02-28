@@ -4,8 +4,9 @@ import { LayerGraph, convertLayerToBiGraph, Edge, BipartiteGraph } from "@/model
 import { createConflictGraph } from "./VerticalBundelingConflict";
 import { rlfColoring } from "@/model/alg/Coloring";
 import { verticalLayerOrdering } from "./VerticalLayerOrdering";
-import { DynamicalLayerSpacer } from "../spacing/LayerSpacer";
+import { LayerSpacer } from "../spacing/LayerSpacer";
 import { Vertex } from "@/model/ds/Vertex";
+import { EvenVerticalWidthSpacer } from "../spacing/EvenVerticalWidthSpacer";
 
 // radius of the quater circles in the confluent drawing
 const RADIUS = 25;
@@ -15,7 +16,7 @@ export function drawVerticalBundeling(
   yPosition: (v: Vertex) => number,
   layout: GraphLayout,
   isCliqueCenter: (v: Vertex) => boolean
-): [Map<Vertex, Set<string>>, DynamicalLayerSpacer] {
+): [Map<Vertex, Set<string>>, LayerSpacer] {
   let edgeToX = new Map<Edge<Vertex>, number>();
 
   const nLayers = g.getLayerCount();
@@ -25,7 +26,7 @@ export function drawVerticalBundeling(
     const tmpVerticLayers = assignLayers(biGraph, yPosition);
     verticLayers.push(tmpVerticLayers);
   }
-  const vericLayerSpacer = new DynamicalLayerSpacer(
+  const verticLayerSpacer = new EvenVerticalWidthSpacer(
     g,
     verticLayers.map((l) => l.length)
   );
@@ -33,12 +34,12 @@ export function drawVerticalBundeling(
     const layer = verticLayers[i];
     for (let j = 0; j < layer.length; j++) {
       const edges = layer[j];
-      const x = vericLayerSpacer.xPositionVertical(i, j);
+      const x = verticLayerSpacer.xPositionVertical(i, j);
       edges.forEach((edge) => edgeToX.set(edge, x));
     }
   }
 
-  return [drawEdges(g, edgeToX, layout, vericLayerSpacer, yPosition, isCliqueCenter), vericLayerSpacer];
+  return [drawEdges(g, edgeToX, layout, verticLayerSpacer, yPosition, isCliqueCenter), verticLayerSpacer];
 }
 
 /**
@@ -57,24 +58,11 @@ function assignLayers(biGraph: BipartiteGraph, vertexPosition: (v: Vertex) => nu
   return orderedEdges;
 }
 
-function vertLayersToXvalues<V>(vertLayerStart: number, vertLayerEnd: number, relativeAssignment: Set<Edge<V>>[]) {
-  const edgeToX = new Map<Edge<V>, number>();
-  const diff = (vertLayerEnd - vertLayerStart) / (relativeAssignment.length + 1);
-  let x = vertLayerStart;
-  relativeAssignment.forEach((layer, _) => {
-    x += diff;
-    layer.forEach((edge) => {
-      edgeToX.set(edge, x);
-    });
-  });
-  return edgeToX;
-}
-
 function drawEdges(
   g: LayerGraph, //
   edgeToX: Map<Edge<Vertex>, number>,
   layout: GraphLayout,
-  xPositions: DynamicalLayerSpacer,
+  xPositions: LayerSpacer,
   yPosition: (v: Vertex) => number,
   isCliqueCenter: (v: Vertex) => boolean
 ): Map<Vertex, Set<string>> {
