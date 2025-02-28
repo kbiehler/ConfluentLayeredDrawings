@@ -21,7 +21,7 @@ export type GraphLayoutCfg = {
  * @param cfg
  * @returns
  */
-export function generateLayout(g: Graph<Vertex>, cfg: GraphLayoutCfg): [GraphLayout, InteractionInfo] {
+export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, InteractionInfo] {
   const drawing = new GraphLayout();
   let layerGraph = assignLayers(g);
 

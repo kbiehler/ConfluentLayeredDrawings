@@ -45,8 +45,8 @@ export function redrawImpl(redrawState: RedrawState, selection: Set<VertexId>, c
   return [new RedrawState(newGraph), layout, interactInfo];
 }
 
-function convertToLayoutVertices<V>(g: Graph<V>): Graph<Vertex> {
-  const newGraph = new Graph<Vertex>();
+function convertToLayoutVertices<V>(g: Graph<V>): Graph {
+  const newGraph = new Graph();
   const vToNew = new Map<V, Vertex>();
   g.getVertices().forEach((v) => {
     const newV = new Vertex(v);

@@ -8,11 +8,11 @@ import { Edge, Graph } from "../ds";
  * @param selection
  * @returns
  */
-export function buildNbrGraph(g: Graph<Vertex, Edge<Vertex>>, selection: Set<VertexId>): Graph<Vertex> {
+export function buildNbrGraph(g: Graph, selection: Set<VertexId>): Graph {
   const idToVertex = new Map<VertexId, Vertex>();
   g.getVertices().forEach((v) => idToVertex.set(v.getId(), v));
 
-  const newGraph = new Graph<Vertex>();
+  const newGraph = new Graph();
   const seen = new Set<Vertex>();
 
   selection.forEach((v) => {
@@ -32,11 +32,11 @@ export function buildNbrGraph(g: Graph<Vertex, Edge<Vertex>>, selection: Set<Ver
  * @param selection
  * @returns
  */
-export function buildImplGraph(g: Graph<Vertex, Edge<Vertex>>, selection: Set<VertexId>): Graph<Vertex> {
+export function buildImplGraph(g: Graph, selection: Set<VertexId>): Graph {
   const idToVertex = new Map<VertexId, Vertex>();
   g.getVertices().forEach((v) => idToVertex.set(v.getId(), v));
 
-  const newGraph = new Graph<Vertex>();
+  const newGraph = new Graph();
   const q = new Set<Vertex>();
   selection.forEach((v) => {
     q.add(idToVertex.get(v)!);
@@ -56,7 +56,7 @@ export function buildImplGraph(g: Graph<Vertex, Edge<Vertex>>, selection: Set<Ve
   return newGraph;
 }
 
-function addIfNew(seen: Set<Vertex>, newGraph: Graph<Vertex, Edge<Vertex>>, v: Vertex) {
+function addIfNew(seen: Set<Vertex>, newGraph: Graph, v: Vertex) {
   if (!seen.has(v)) {
     newGraph.addVertex(v);
     seen.add(v);

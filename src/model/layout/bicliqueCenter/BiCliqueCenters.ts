@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { Edge, LayerGraph, convertLayerToBiGraph } from "@/model/ds";
 import { biCliqueCover } from "@/model/alg/BiCliqueCover";
 import { CliqueCenter, Vertex } from "../../ds/Vertex";
@@ -8,15 +7,15 @@ import { CliqueCenter, Vertex } from "../../ds/Vertex";
  * @param G
  * @returns
  */
-export function addBlicliqueCenters(G: LayerGraph<Vertex>, biCliqueDepth: number): LayerGraph<Vertex> {
+export function addBlicliqueCenters(G: LayerGraph, biCliqueDepth: number): LayerGraph {
   for (let i = 0; i < biCliqueDepth; i++) {
     G = addCenters(G);
   }
   return G;
 }
 
-function addCenters<V>(G: LayerGraph<Vertex>) {
-  let newGraph = new LayerGraph<Vertex>();
+function addCenters(G: LayerGraph) {
+  let newGraph = new LayerGraph();
   G.getVertices().forEach((v) => {
     newGraph.addVertexToLayer(v, G.getLayer(v) * 2);
   });
