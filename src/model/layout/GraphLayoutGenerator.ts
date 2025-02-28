@@ -5,6 +5,8 @@ import { VertexPositioner, VertexPositionCfg } from "../positioning/VertexPositi
 import { InteractionInfo } from "../renderer/InteractionManager";
 import { EdgeDrawingAlgorithm, drawEdges } from "../drawEdge/EdgeDrawer";
 import { assignLayers } from "../leveling/LevelAssigner";
+import { addBlicliqueCenter } from "../biclique/BiClique";
+import { BiCliqueCenter } from "../biclique/BiCliqueCenter";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -20,16 +22,18 @@ export type GraphLayoutCfg = {
 export function generateLayout<V>(g: Graph<V, any>, cfg: GraphLayoutCfg): [GraphLayout, InteractionInfo] {
   const drawing = new GraphLayout();
 
-  const layerGraph = assignLayers(g);
+  let layerGraph = assignLayers(g);
+
+  layerGraph = addBlicliqueCenter(layerGraph);
 
   const vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(layerGraph);
 
   vertexPositions.forEach((pos, vertex) => {
-    drawing.addVertex(vertex, pos, true, String(vertex));
+    drawing.addVertex(vertex, pos, vertex instanceof BiCliqueCenter, String(vertex));
   });
 
   let adjEdges = drawEdges(cfg.edgeAlg, layerGraph, vertexPositions, drawing);
   let adjVertices = new Map<V, Set<V>>();
-  layerGraph.getVertices().forEach((v) => adjVertices.set(v, new Set(g.getAdjacent(v))));
+  g.getVertices().forEach((v) => adjVertices.set(v, new Set(g.getAdjacent(v))));
   return [drawing, { adjEdges, adjVertices }];
 }

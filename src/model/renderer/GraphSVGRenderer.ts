@@ -40,7 +40,7 @@ export class GraphSVGRenderer {
 
     svg
       .selectAll<SVGRectElement, VertexLayout>("rect")
-      .data(graphLayout.getVertices())
+      .data(graphLayout.getVertices().filter((v) => !v.draw))
       .join("rect")
       .attr("width", 150)
       .attr("height", 40)
@@ -61,6 +61,7 @@ export class GraphSVGRenderer {
     svg
       .selectAll<SVGTextElement, VertexLayout>(".vertex-label")
       .data(graphLayout.getVertices())
+      .data(graphLayout.getVertices().filter((v) => !v.draw))
       .enter()
       .append("text")
       .attr("class", "vertex-label")
