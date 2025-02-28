@@ -37,7 +37,7 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
     if (panelSelect === "main") {
       return;
     } else if (panelSelect === "nbr") {
-      const [, tmpLayout, _] = redrawNbr(redrawState, interactMgr.state.selectedVertices, config);
+      const tmpLayout = redrawNbr(redrawState, interactMgr.state.selectedVertices, config);
       setNbrInteractMgr(new MarkVertexInteractionManager(interactMgr.state.selectedVertices));
       setNbrLayout(tmpLayout);
     } else if (panelSelect === "impl") {

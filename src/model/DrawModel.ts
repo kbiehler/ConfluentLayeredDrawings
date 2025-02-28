@@ -7,6 +7,8 @@ import { InteractionInfo } from "./renderer/InteractionManager";
 import { ConfigDto, mapToGraphLayoutCfg } from "@/cfg/ConfigDtos";
 import { loadFromCfg } from "@/input/GraphLoader";
 import { VertexId } from "./types";
+import { buildImplGraph, buildNbrGraph } from "./redraw/RedrawAlg";
+
 
 export function draw(cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionInfo] {
   const inputG = loadFromCfg(cfgDto.graphCfg);
@@ -22,34 +24,12 @@ export function draw(cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionI
  * @param selection
  * @returns
  */
-export function redrawNbr(redrawState: RedrawState, selection: Set<VertexId>, cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionInfo] {
+export function redrawNbr(redrawState: RedrawState, selection: Set<VertexId>, cfgDto: ConfigDto): GraphLayout {
   const g = redrawState.g;
-  const idToVertex = new Map<VertexId, LayoutVertex>();
   const cfg = mapToGraphLayoutCfg(cfgDto);
-  g.getVertices().forEach((v) => idToVertex.set(v.getId(), v));
-
-  const newGraph = new Graph<LayoutVertex>();
-  const addedVertices = new Set<LayoutVertex>();
-
-  selection.forEach((v) => {
-    if (!addedVertices.has(idToVertex.get(v)!)) {
-      newGraph.addVertex(idToVertex.get(v)!);
-      addedVertices.add(idToVertex.get(v)!);
-    }
-    g.getIncident(idToVertex.get(v)!).forEach((e) => {
-      if (!addedVertices.has(e.source)) {
-        newGraph.addVertex(e.source);
-        addedVertices.add(e.source);
-      }
-      if (!addedVertices.has(e.target)) {
-        newGraph.addVertex(e.target);
-        addedVertices.add(e.target);
-      }
-      newGraph.addEdge(e);
-    });
-  });
-  const [layout, interactInfo] = generateLayout(newGraph, cfg);
-  return [new RedrawState(newGraph), layout, interactInfo];
+  const nbrGraph = buildNbrGraph(g, selection);
+  const [layout, _] = generateLayout(nbrGraph, cfg);
+  return layout;
 }
 
 /**
@@ -60,32 +40,8 @@ export function redrawNbr(redrawState: RedrawState, selection: Set<VertexId>, cf
  */
 export function redrawImpl(redrawState: RedrawState, selection: Set<VertexId>, cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionInfo] {
   const g = redrawState.g;
-  const idToVertex = new Map<VertexId, LayoutVertex>();
   const cfg = mapToGraphLayoutCfg(cfgDto);
-  g.getVertices().forEach((v) => idToVertex.set(v.getId(), v));
-
-  const newGraph = new Graph<LayoutVertex>();
-  const q = new Set<LayoutVertex>();
-  selection.forEach((v) => {
-    q.add(idToVertex.get(v)!);
-  });
-  const addedVertices = new Set<any>();
-  while (q.size > 0) {
-    const v = q.values().next().value!;
-    q.delete(v);
-    if (!addedVertices.has(v)) {
-      newGraph.addVertex(v);
-      addedVertices.add(v);
-    }
-    g.getIncidentOut(v).forEach((e) => {
-      if (!addedVertices.has(e.target)) {
-        newGraph.addVertex(e.target);
-        addedVertices.add(e.target);
-      }
-      q.add(e.target);
-      newGraph.addEdge(e);
-    });
-  }
+  const newGraph = buildImplGraph(g, selection);
   const [layout, interactInfo] = generateLayout(newGraph, cfg);
   return [new RedrawState(newGraph), layout, interactInfo];
 }
