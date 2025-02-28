@@ -23,12 +23,12 @@ export function drawEdges(
   yPosition: (v: Vertex) => number,
   layout: GraphLayout,
   isCliqueCenter: (v: Vertex) => boolean
-): Map<Vertex, Set<string>> {
+): [Map<Vertex, Set<string>>, DynamicalLayerSpacer] {
   switch (alg) {
     case EdgeDrawingAlgorithm.STRAIGHT_LINE:
     // return drawStaightLine(g, yPosition, layout);
     case EdgeDrawingAlgorithm.VERTICAL_BUNDELING:
-      return drawVerticalBundeling(g, new DynamicalLayerSpacer(g), yPosition, layout, isCliqueCenter);
+      return drawVerticalBundeling(g, yPosition, layout, isCliqueCenter);
   }
 }
 

@@ -12,26 +12,33 @@ const RADIUS = 25;
 
 export function drawVerticalBundeling(
   g: LayerGraph, //
-  xPositions: DynamicalLayerSpacer,
   yPosition: (v: Vertex) => number,
   layout: GraphLayout,
   isCliqueCenter: (v: Vertex) => boolean
-): Map<Vertex, Set<string>> {
+): [Map<Vertex, Set<string>>, DynamicalLayerSpacer] {
   let edgeToX = new Map<Edge<Vertex>, number>();
 
   const nLayers = g.getLayerCount();
+  const verticLayers: Set<Edge<Vertex>>[][] = [];
   for (let layer = 0; layer < nLayers - 1; layer++) {
     const biGraph = convertLayerToBiGraph(g, layer);
-    const relativeAssignment = assignLayers(biGraph, yPosition);
-
-    const xLeft = xPositions.xPosition(layer) + xPositions.spaceRightOfLayer(layer);
-    const xRight = xPositions.xPosition(layer + 1) - xPositions.spaceLeftOfLayer(layer + 1);
-
-    const tmpEdgeToX = vertLayersToXvalues(xLeft, xRight, relativeAssignment);
-    tmpEdgeToX.forEach((x, edge) => edgeToX.set(edge, x));
+    const tmpVerticLayers = assignLayers(biGraph, yPosition);
+    verticLayers.push(tmpVerticLayers);
+  }
+  const vericLayerSpacer = new DynamicalLayerSpacer(
+    g,
+    verticLayers.map((l) => l.length)
+  );
+  for (let i = 0; i < verticLayers.length; i++) {
+    const layer = verticLayers[i];
+    for (let j = 0; j < layer.length; j++) {
+      const edges = layer[j];
+      const x = vericLayerSpacer.xPositionVertical(i, j);
+      edges.forEach((edge) => edgeToX.set(edge, x));
+    }
   }
 
-  return drawEdges(g, edgeToX, layout, xPositions, yPosition, isCliqueCenter);
+  return [drawEdges(g, edgeToX, layout, vericLayerSpacer, yPosition, isCliqueCenter), vericLayerSpacer];
 }
 
 /**
