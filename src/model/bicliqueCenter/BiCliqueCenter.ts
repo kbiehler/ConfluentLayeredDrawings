@@ -1,8 +1,20 @@
+import { v4 as uuidv4 } from "uuid";
 import { Edge, LayerGraph, convertLayerToBiGraph } from "@/model/ds";
 import { biCliqueCover } from "@/model/alg/BiCliqueCover";
-import { BiCliqueCenter } from "./BiCliqueCenter";
 
-export function addBlicliqueCenter<V>(G: LayerGraph<V, Edge<V>>): LayerGraph<any, any> {
+export class BiCliqueCenter {
+  uuid: string;
+  constructor() {
+    this.uuid = uuidv4();
+  }
+}
+
+/**
+ * creates a new graph with biclique centers
+ * @param G
+ * @returns
+ */
+export function addBlicliqueCenters<V>(G: LayerGraph<V, Edge<V>>): LayerGraph<any, any> {
   let newGraph = new LayerGraph<any, any>();
 
   G.getVertices().forEach((v) => {

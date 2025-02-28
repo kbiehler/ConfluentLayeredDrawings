@@ -5,8 +5,7 @@ import { VertexPositioner, VertexPositionCfg } from "../positioning/VertexPositi
 import { InteractionInfo } from "../renderer/InteractionManager";
 import { EdgeDrawingAlgorithm, drawEdges } from "../drawEdge/EdgeDrawer";
 import { assignLayers } from "../leveling/LevelAssigner";
-import { addBlicliqueCenter } from "../biclique/BiClique";
-import { BiCliqueCenter } from "../biclique/BiCliqueCenter";
+import { addBlicliqueCenters, BiCliqueCenter } from "../bicliqueCenter/BiCliqueCenter";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -24,7 +23,7 @@ export function generateLayout<V>(g: Graph<V, any>, cfg: GraphLayoutCfg): [Graph
 
   let layerGraph = assignLayers(g);
 
-  layerGraph = addBlicliqueCenter(layerGraph);
+  layerGraph = addBlicliqueCenters(layerGraph);
 
   const vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(layerGraph);
 
