@@ -43,6 +43,10 @@ export class UiCfgDto {
   vertexSpacing: number = 100;
 }
 
+export class BiCliqueCfg {
+  bicliqueDepth: number = 1;
+}
+
 export function mapToRenderCfg(cfgDto: ConfigDto): RenderCfg {
   return {
     vertexColor: cfgDto.uiCfg.vertexColor,

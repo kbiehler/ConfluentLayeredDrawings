@@ -8,7 +8,7 @@ type Props = {
   handleChange: (field: keyof AlgorithmCfgDto, value: any) => void;
 };
 
-const EdgeDrawingConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
+const AlgorithmConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
   return (
     <div>
       <h3>Algorithms:</h3>
@@ -44,4 +44,4 @@ const EdgeDrawingConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
   );
 };
 
-export default EdgeDrawingConfigPanel;
+export default AlgorithmConfigPanel;

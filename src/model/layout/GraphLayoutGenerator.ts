@@ -5,7 +5,7 @@ import { VertexPositioner, VertexPositionCfg } from "../positioning/VertexPositi
 import { InteractionInfo } from "../renderer/InteractionManager";
 import { EdgeDrawingAlgorithm, drawEdges } from "../drawEdge/EdgeDrawer";
 import { assignLayers } from "../leveling/LevelAssigner";
-import { addBlicliqueCenters, BiCliqueCenter } from "../bicliqueCenter/BiCliqueCenter";
+import { addBlicliqueCenters, BiCliqueCenter } from "../bicliqueCenter/BiCliqueCenters";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
