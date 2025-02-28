@@ -33,7 +33,7 @@ export function generateLayout<V>(inputG: Graph<V>, cfg: GraphLayoutCfg): [Graph
     drawing.addVertex(vertex.getId(), pos, !vertex.isCliqueCenter(), vertex.getLabel());
   });
 
-  let adjEdges = drawEdges(cfg.edgeAlg, bliCliqueGraph, vertexPositions, drawing);
+  let adjEdges = drawEdges(cfg.edgeAlg, bliCliqueGraph, (v: LayoutVertex) => vertexPositions.get(v)!, drawing);
   let adjVertices = new Map<VertexId, Set<VertexId>>();
   g.getVertices().forEach((v) => adjVertices.set(v.getId(), new Set(g.getAdjacent(v).map((v) => v.getId()))));
   return [drawing, { adjEdges, adjVertices }];

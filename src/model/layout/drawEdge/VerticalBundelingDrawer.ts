@@ -1,11 +1,10 @@
 import { Point2d } from "@/model/types/Point";
-import { GraphLayout, VertexLayout } from "@/model/layout/GraphLayout";
+import { GraphLayout } from "@/model/layout/GraphLayout";
 import { v4 as uuidv4 } from "uuid";
 import { LayerGraph, convertLayerToBiGraph, Edge, BipartiteGraph } from "@/model/ds/";
 import { createConflictGraph } from "./VerticalBundelingConflict";
 import { rlfColoring } from "@/model/alg/Coloring";
 import { verticalLayerOrdering } from "./VerticalLayerOrdering";
-import { LayoutVertex, VertexId } from "../Vertex";
 
 //space between vertexPositon (later centerPoint of the vertex in the drawing) and first vertical line.
 //(should maybe depend on the drawing size of a vertex, for now a constant)
@@ -13,22 +12,26 @@ const SPACING_VERTEX_LAYER = 150;
 // radius of the quater circles in the confluent drawing
 const RADIUS = 25;
 
-export function drawVerticalBundeling(g: LayerGraph<LayoutVertex>, vertexPositions: Map<LayoutVertex, Point2d>, layout: GraphLayout): Map<VertexId, Set<string>> {
-  let edgeToX = new Map<Edge<LayoutVertex>, number>();
+export function drawVerticalBundeling<V>(
+  g: LayerGraph<V>, //
+  vertexPosition: (v: V) => Point2d,
+  layout: GraphLayout
+): Map<V, Set<string>> {
+  let edgeToX = new Map<Edge<V>, number>();
 
   const nLayers = g.getLayerCount();
   for (let layer = 0; layer < nLayers - 1; layer++) {
     const biGraph = convertLayerToBiGraph(g, layer);
-    const relativeAssignment = assignLayers(biGraph, vertexPositions);
+    const relativeAssignment = assignLayers(biGraph, vertexPosition);
 
-    const xLeft = vertexPositions.get(biGraph.getVerticesA()[0])!.x;
-    const xRight = vertexPositions.get(biGraph.getVerticesB()[0])!.x;
+    const xLeft = vertexPosition(biGraph.getVerticesA()[0]).x;
+    const xRight = vertexPosition(biGraph.getVerticesB()[0]).x;
 
     const tmpEdgeToX = layersToXvalues(xLeft, xRight - xLeft, relativeAssignment);
     tmpEdgeToX.forEach((x, edge) => edgeToX.set(edge, x));
   }
 
-  return drawEdges(g, edgeToX, layout, vertexPositions);
+  return drawEdges(g, edgeToX, layout, vertexPosition);
 }
 
 /**
@@ -40,10 +43,10 @@ export function drawVerticalBundeling(g: LayerGraph<LayoutVertex>, vertexPositio
  * @param vertexPositions
  * @returns integers (starting at 0) that map each edge to its vert layer
  */
-function assignLayers(biGraph: BipartiteGraph<LayoutVertex>, vertexPositions: Map<LayoutVertex, Point2d>): Set<Edge<LayoutVertex>>[] {
-  const conflictGraph = createConflictGraph(biGraph, vertexPositions);
+function assignLayers<V>(biGraph: BipartiteGraph<V>, vertexPosition: (v: V) => Point2d): Set<Edge<V>>[] {
+  const conflictGraph = createConflictGraph(biGraph, vertexPosition);
   let bundeling = rlfColoring(conflictGraph);
-  let orderedEdges = verticalLayerOrdering(vertexPositions, bundeling);
+  let orderedEdges = verticalLayerOrdering(vertexPosition, bundeling);
   return orderedEdges;
 }
 
@@ -60,15 +63,15 @@ function layersToXvalues<V>(layerStart: number, layerWidth: number, relativeAssi
   return edgeToX;
 }
 
-function drawEdges(g: LayerGraph<LayoutVertex>, edgeToX: Map<Edge<LayoutVertex>, number>, layout: GraphLayout, vertexPositions: Map<LayoutVertex, Point2d>) {
-  const adjEdges = new Map<VertexId, Set<string>>(); //vertex to edge ids of drawn edges
-  g.getVertices().forEach((v) => adjEdges.set(v.getId(), new Set()));
+function drawEdges<V>(g: LayerGraph<V>, edgeToX: Map<Edge<V>, number>, layout: GraphLayout, vertexPosition: (v: V) => Point2d) {
+  const adjEdges = new Map<V, Set<string>>(); //vertex to edge ids of drawn edges
+  g.getVertices().forEach((v) => adjEdges.set(v, new Set()));
 
   const drawer = new Drawer();
   edgeToX.forEach((x, edge) => {
-    const edgeIds = drawer.drawEdge(layout, vertexPositions.get(edge.source)!, vertexPositions.get(edge.target)!, x);
-    edgeIds.forEach((id) => adjEdges.get(edge.source.getId())!.add(id));
-    edgeIds.forEach((id) => adjEdges.get(edge.target.getId())!.add(id));
+    const edgeIds = drawer.drawEdge(layout, vertexPosition(edge.source), vertexPosition(edge.target), x);
+    edgeIds.forEach((id) => adjEdges.get(edge.source)!.add(id));
+    edgeIds.forEach((id) => adjEdges.get(edge.target)!.add(id));
   });
   return adjEdges;
 }
