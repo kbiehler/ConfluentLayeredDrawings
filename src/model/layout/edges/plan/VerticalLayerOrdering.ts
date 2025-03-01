@@ -1,5 +1,4 @@
 import { Edge, Graph } from "@/model/ds";
-import { Point2d } from "@/model/types/Point";
 import { greedyFAS } from "@/model/alg/FAS";
 
 type Interval = [number, number];
@@ -75,7 +74,7 @@ function calcCrossings(vertices: number[], intervals: Interval[]) {
 function createVertexYs<V, E extends Edge<V>>(setB: Set<E>, vertexPosition: (v: V) => number, sourceOrTarget: (edge: E) => V) {
   let leftVerticesB = new Set<number>();
   Array.from(setB).forEach((edge) => {
-    leftVerticesB.add(vertexPosition(sourceOrTarget(edge))!.y);
+    leftVerticesB.add(vertexPosition(sourceOrTarget(edge))!);
   });
   const leftVerticesBSorted = Array.from(leftVerticesB);
   leftVerticesBSorted.sort((a, b) => a - b);
@@ -85,8 +84,8 @@ function createVertexYs<V, E extends Edge<V>>(setB: Set<E>, vertexPosition: (v: 
 function createIntervals<V, E extends Edge<V>>(setA: Set<E>, vertexPosition: (v: V) => number) {
   const intervalsA: Interval[] = [];
   Array.from(setA).forEach((edge) => {
-    const sourceY = vertexPosition(edge.source)!.y;
-    const targetY = vertexPosition(edge.target)!.y;
+    const sourceY = vertexPosition(edge.source)!;
+    const targetY = vertexPosition(edge.target)!;
     const interval: Interval = [Math.min(sourceY, targetY), Math.max(sourceY, targetY)];
     intervalsA.push(interval);
   });

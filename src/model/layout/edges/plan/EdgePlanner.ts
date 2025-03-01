@@ -1,8 +1,7 @@
-import { GraphLayout } from "@/model/layout/GraphLayout";
 import { LayerGraph } from "@/model/ds/";
-import { drawVerticalBundeling } from "./VerticalBundelingDrawer";
-import { LayerSpacer } from "../spacing/LayerSpacer";
+import { drawVerticalBundeling } from "../draw/VerticalBundelingDrawer";
 import { Vertex } from "@/model/ds/Vertex";
+import { EdgePlan } from "./EdgePlan";
 
 export enum EdgeDrawingAlgorithm {
   STRAIGHT_LINE = "straight lines",
@@ -17,18 +16,15 @@ export enum EdgeDrawingAlgorithm {
  * @param layout
  * @returns Vertex to the IDs of adjacent edges in the GraphLayout. (later used in InteractionManager to highlight edges)
  */
-export function drawEdges(
+export function planEdges(
   alg: EdgeDrawingAlgorithm, //
-  g: LayerGraph,
-  yPosition: (v: Vertex) => number,
-  layout: GraphLayout,
-  isCliqueCenter: (v: Vertex) => boolean
-): [Map<Vertex, Set<string>>, LayerSpacer] {
+  g: LayerGraph, //
+  yPosition: (v: Vertex) => number
+): EdgePlan[] {
   switch (alg) {
     case EdgeDrawingAlgorithm.STRAIGHT_LINE:
-    // return drawStaightLine(g, yPosition, layout);
     case EdgeDrawingAlgorithm.VERTICAL_BUNDELING:
-      return drawVerticalBundeling(g, yPosition, layout, isCliqueCenter);
+      return drawVerticalBundeling(g, yPosition);
   }
 }
 

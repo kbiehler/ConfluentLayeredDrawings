@@ -5,9 +5,10 @@ import { VertexId } from "@/model/types";
 import { VertexPositioner, VertexPositionCfg } from "@/model/layout/positioning/VertexPositioner";
 
 import { InteractionInfo } from "../renderer/InteractionManager";
-import { EdgeDrawingAlgorithm, drawEdges } from "@/model/layout/drawEdge/EdgeDrawer";
+import { EdgeDrawingAlgorithm, planEdges } from "@/model/layout/edges/plan/EdgePlanner";
 import { assignLayers } from "./leveling/LevelAssigner";
 import { addBlicliqueCenters } from "./bicliqueCenter/BiCliqueCenters";
+import { draw } from "./edges/draw/EdgeDrawer";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -28,12 +29,14 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
   let bliCliqueGraph = addBlicliqueCenters(layerGraph, cfg.biCliqueDepth);
   const vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(bliCliqueGraph);
 
-  let [adjEdges2, dyn] = drawEdges(
-    cfg.edgeAlg,
+  let edgePlans = planEdges(cfg.edgeAlg, bliCliqueGraph, (v: Vertex) => vertexPositions.get(v)!);
+
+  let [adjEdges2, dyn] = draw(
     bliCliqueGraph,
-    (v: Vertex) => vertexPositions.get(v)!,
     drawing,
-    (v: Vertex) => v.isCliqueCenter()
+    (v: Vertex) => vertexPositions.get(v)!,
+    (v: Vertex) => v.isCliqueCenter(),
+    edgePlans
   );
 
   vertexPositions.forEach((_, vertex) => {
@@ -42,7 +45,6 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
 
   let adjEdges = new Map<VertexId, Set<string>>();
   adjEdges2.forEach((edges, v) => adjEdges.set(v.getId(), edges));
-
   let adjVertices = new Map<VertexId, Set<VertexId>>();
   g.getVertices().forEach((v) => adjVertices.set(v.getId(), new Set(g.getAdjacent(v).map((v) => v.getId()))));
   return [drawing, { adjEdges, adjVertices }];

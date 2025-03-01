@@ -1,61 +1,37 @@
-import { GraphLayout } from "@/model/layout/GraphLayout";
+import { Edge, LayerGraph, Vertex } from "@/model/ds";
+import { EdgePlan } from "../plan/EdgePlan";
+import { GraphLayout } from "../../GraphLayout";
+import { EvenVerticalWidthSpacer } from "../../spacing/EvenVerticalWidthSpacer";
+import _ from "lodash";
+import { LayerSpacer } from "../../spacing/LayerSpacer";
 import { v4 as uuidv4 } from "uuid";
-import { LayerGraph, convertLayerToBiGraph, Edge, BipartiteGraph } from "@/model/ds/";
-import { createConflictGraph } from "./VerticalBundelingConflict";
-import { rlfColoring } from "@/model/alg/Coloring";
-import { verticalLayerOrdering } from "./VerticalLayerOrdering";
-import { LayerSpacer } from "../spacing/LayerSpacer";
-import { Vertex } from "@/model/ds/Vertex";
-import { EvenVerticalWidthSpacer } from "../spacing/EvenVerticalWidthSpacer";
 
 // radius of the quater circles in the confluent drawing
 const RADIUS = 25;
 
-export function drawVerticalBundeling(
+export function draw(
   g: LayerGraph, //
-  yPosition: (v: Vertex) => number,
   layout: GraphLayout,
-  isCliqueCenter: (v: Vertex) => boolean
+  yPosition: (v: Vertex) => number,
+  isCliqueCenter: (v: Vertex) => boolean,
+  plan: EdgePlan[]
 ): [Map<Vertex, Set<string>>, LayerSpacer] {
+  const numVertLayers = countVertLayers(plan);
+
+  const verticLayerSpacer = new EvenVerticalWidthSpacer(g, numVertLayers);
   let edgeToX = new Map<Edge<Vertex>, number>();
 
-  const nLayers = g.getLayerCount();
-  const verticLayers: Set<Edge<Vertex>>[][] = [];
-  for (let layer = 0; layer < nLayers - 1; layer++) {
-    const biGraph = convertLayerToBiGraph(g, layer);
-    const tmpVerticLayers = assignLayers(biGraph, yPosition);
-    verticLayers.push(tmpVerticLayers);
+  for (let edgePlan of plan) {
+    edgeToX.set(edgePlan.edge, verticLayerSpacer.xPositionVertical(edgePlan.layer, edgePlan.relativeVertLayer));
   }
-  const verticLayerSpacer = new EvenVerticalWidthSpacer(
-    g,
-    verticLayers.map((l) => l.length)
-  );
-  for (let i = 0; i < verticLayers.length; i++) {
-    const layer = verticLayers[i];
-    for (let j = 0; j < layer.length; j++) {
-      const edges = layer[j];
-      const x = verticLayerSpacer.xPositionVertical(i, j);
-      edges.forEach((edge) => edgeToX.set(edge, x));
-    }
-  }
-
   return [drawEdges(g, edgeToX, layout, verticLayerSpacer, yPosition, isCliqueCenter), verticLayerSpacer];
 }
 
-/**
- * assigns each edge to a layer,
- * using a coloring heuristic to bundle the edges and a
- * greedy FAS algorithm to order the bundled edges s.t. crossings are minimized
- *
- * @param g
- * @param vertexPositions
- * @returns integers (starting at 0) that map each edge to its vert layer
- */
-function assignLayers(biGraph: BipartiteGraph, vertexPosition: (v: Vertex) => number): Set<Edge<Vertex>>[] {
-  const conflictGraph = createConflictGraph(biGraph, vertexPosition);
-  let bundeling = rlfColoring(conflictGraph);
-  let orderedEdges = verticalLayerOrdering(vertexPosition, bundeling);
-  return orderedEdges;
+function countVertLayers(plan: EdgePlan[]): number[] {
+  const byLayer = _.groupBy(plan, (spec) => spec.layer);
+  const maxVal = _.mapValues(byLayer, (group) => _.maxBy(group, "relativeVertLayer")!.relativeVertLayer);
+  const result = Array.from({ length: Object.keys(maxVal).length }, (_, i) => maxVal[i] + 1);
+  return result;
 }
 
 function drawEdges(

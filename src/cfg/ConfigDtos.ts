@@ -1,7 +1,7 @@
 import { RenderCfg } from "@/model/renderer/GraphSVGRenderer";
 import { GraphLayoutCfg } from "../model/layout/GraphLayoutGenerator";
 import { ExampleGraphs } from "@/examples/ExampleGraphs";
-import { EdgeDrawingAlgorithm } from "@/model/layout/drawEdge/EdgeDrawer";
+import { EdgeDrawingAlgorithm } from "@/model/layout/edges/plan/EdgePlanner";
 import { VertexPositionAlgorithm } from "@/model/layout/positioning/VertexPositioner";
 /**
  * Data Transfer Object (DTO) for configuration settings.
