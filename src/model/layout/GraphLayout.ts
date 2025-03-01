@@ -5,7 +5,10 @@ export interface VertexLayout {
   id: VertexId;
   draw: boolean;
   position: Point2d;
+  width: number;
+  height: number;
   label: string;
+  displayLabel: string;
 }
 
 export interface EdgeLayout {
@@ -22,9 +25,17 @@ export class GraphLayout {
     this.edges = edges;
   }
 
-  addVertex(id: any, position: Point2d, draw: boolean, label: string = ""): void {
+  addVertex(
+    id: any, //
+    position: Point2d,
+    draw: boolean,
+    width: number,
+    height: number,
+    label: string = "",
+    displayLabel: string = ""
+  ): void {
     if (!this.vertices.has(id)) {
-      this.vertices.set(id, { id, position, draw, label });
+      this.vertices.set(id, { id, position, draw, label, displayLabel, width, height });
     } else {
       throw new Error(`Vertex with id ${id} already exists.`);
     }
@@ -42,12 +53,28 @@ export class GraphLayout {
     return this.edges;
   }
 
+  /**
+   * needed shift of coordinate system to see everything
+   * @returns
+   */
+  getShift(): [number, number] {
+    if (this.vertices.size === 0) {
+      return [0, 0];
+    }
+    const minX = Math.min(...Array.from(this.vertices.values()).map((v) => v.position.x - v.width / 2));
+    const minY = Math.min(...Array.from(this.vertices.values()).map((v) => v.position.y - v.height / 2));
+    return [-minX, -minY];
+  }
+
   getSize(): [number, number] {
     if (this.vertices.size === 0) {
       return [0, 0];
     }
-    const maxX = Math.max(...Array.from(this.vertices.values()).map((v) => v.position.x));
-    const maxY = Math.max(...Array.from(this.vertices.values()).map((v) => v.position.y));
-    return [maxX, maxY];
+    const minX = Math.min(...Array.from(this.vertices.values()).map((v) => v.position.x - v.width / 2));
+    const maxX = Math.max(...Array.from(this.vertices.values()).map((v) => v.position.x + v.width));
+
+    const minY = Math.min(...Array.from(this.vertices.values()).map((v) => v.position.y - v.height / 2));
+    const maxY = Math.max(...Array.from(this.vertices.values()).map((v) => v.position.y + v.height / 2));
+    return [maxX - minX, maxY - minY];
   }
 }

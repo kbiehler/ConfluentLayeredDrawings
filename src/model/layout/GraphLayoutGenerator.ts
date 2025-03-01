@@ -9,6 +9,8 @@ import { EdgeDrawingAlgorithm, planEdges } from "@/model/layout/edges/plan/EdgeP
 import { assignLayers } from "./leveling/LevelAssigner";
 import { addBlicliqueCenters } from "./bicliqueCenter/BiCliqueCenters";
 import { draw } from "./edges/draw/EdgeDrawer";
+import { CliqueCenterVertexSpacer } from "./spacing/VertexSpacer";
+import { EvenVerticalWidthSpacerCfg, EvenVerticalWidthSpacer } from "./spacing/EvenVerticalWidthSpacer";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -31,16 +33,28 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
 
   let edgePlans = planEdges(cfg.edgeAlg, bliCliqueGraph, (v: Vertex) => vertexPositions.get(v)!);
 
-  let [adjEdges2, dyn] = draw(
+  const vertexSpacer = new CliqueCenterVertexSpacer();
+  const vertLayerSpacer = new EvenVerticalWidthSpacer(new EvenVerticalWidthSpacerCfg(), vertexSpacer);
+
+  let adjEdges2 = draw(
     bliCliqueGraph,
     drawing,
     (v: Vertex) => vertexPositions.get(v)!,
     (v: Vertex) => v.isCliqueCenter(),
-    edgePlans
+    edgePlans,
+    vertLayerSpacer
   );
 
   vertexPositions.forEach((_, vertex) => {
-    drawing.addVertex(vertex.getId(), { x: dyn.xPosition(vertex), y: vertexPositions.get(vertex)! }, !vertex.isCliqueCenter(), vertex.getLabel());
+    drawing.addVertex(
+      vertex.getId(), //
+      { x: vertLayerSpacer.xPosition(vertex), y: vertexPositions.get(vertex)! },
+      !vertex.isCliqueCenter(),
+      vertexSpacer.width(bliCliqueGraph.getLayer(vertex)),
+      vertexSpacer.height(bliCliqueGraph.getLayer(vertex)),
+      vertex.getLabel(),
+      vertexSpacer.label(vertex)
+    );
   });
 
   let adjEdges = new Map<VertexId, Set<string>>();

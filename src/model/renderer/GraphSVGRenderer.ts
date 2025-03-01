@@ -42,16 +42,16 @@ export class GraphSVGRenderer {
       .selectAll<SVGRectElement, VertexLayout>("rect")
       .data(graphLayout.getVertices().filter((v) => v.draw))
       .join("rect")
-      .attr("width", 150)
-      .attr("height", 40)
-      .attr("x", (v) => v.position.x - 75)
+      .attr("width", (v) => v.width)
+      .attr("height", (v) => v.height)
+      .attr("x", (v) => v.position.x - v.width / 2)
       .attr("y", (v) => v.position.y - 20)
       .attr("rx", 5) // Smooth corners
       .attr("ry", 5) // Smooth corners
       .attr("stroke", "black")
-      .attr("stroke-width", (d) => (isSelectedVertex(d.id) || markVertex(d.id) ? 3 : 1))
-      .style("fill", (d: VertexLayout) => (highlightVertex(d.id) ? renderCfg.highlightColor : renderCfg.vertexColor))
-      .on("mouseover", function (event, d) {
+      .attr("stroke-width", (v) => (isSelectedVertex(v.id) || markVertex(v.id) ? 3 : 1))
+      .style("fill", (v) => (highlightVertex(v.id) ? renderCfg.highlightColor : renderCfg.vertexColor))
+      .on("mouseover", function (_, d) {
         d3.select(this).append("title").text(d.label);
       })
       .on("mouseout", function () {
@@ -68,8 +68,8 @@ export class GraphSVGRenderer {
       .attr("x", (d) => d.position.x)
       .attr("y", (d) => d.position.y + 5)
       .attr("text-anchor", "middle")
-      .text((d) => d.label.substring(0, 15))
-      .on("mouseover", function (event, d) {
+      .text((d) => d.displayLabel)
+      .on("mouseover", function (_, d) {
         d3.select(this).append("title").text(d.label);
       })
       .on("mouseout", function () {

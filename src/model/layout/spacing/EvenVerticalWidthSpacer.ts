@@ -1,9 +1,9 @@
 import { LayerGraph } from "@/model/ds";
 import { Vertex } from "@/model/ds/Vertex";
 import { LayerSpacer } from "./LayerSpacer";
-import { CliqueCenterVertexSpacer, VertexSpacer } from "./VertexSpacer";
+import { CliqueCenterVertexSpacer } from "./VertexSpacer";
 
-class Config {
+export class EvenVerticalWidthSpacerCfg {
   minWidth: number = 100;
   minVerticalSpacing: number = 30;
   vertexToFirstVertical: number = 100;
@@ -11,51 +11,29 @@ class Config {
 }
 
 export class EvenVerticalWidthSpacer implements LayerSpacer {
-  g: LayerGraph;
-  numVertLayer: number[];
-  cliqueCenterLayer: Set<number>;
+  cfg: EvenVerticalWidthSpacerCfg;
+  g!: LayerGraph;
+  numVertLayer!: number[];
+  //cache
   layerToX: Map<number, number> = new Map<number, number>();
   verticalToX: Map<number, Map<number, number>> = new Map<number, Map<number, number>>();
-  vertSpacer: VertexSpacer;
+  vertexSpacer: CliqueCenterVertexSpacer;
 
-  constructor(g: LayerGraph, numVertLayer: number[]) {
-    this.vertSpacer = new CliqueCenterVertexSpacer();
-    this.g = g;
-    this.numVertLayer = numVertLayer;
-    this.cliqueCenterLayer = new Set<number>();
-    for (let i = 0; i < g.getLayerCount(); i++) {
-      if (g.getVerticesInLayer(i).find((v) => v.isCliqueCenter())) {
-        this.cliqueCenterLayer.add(i);
-      }
-    }
-    this.computeEvenVertLayerSize();
+  constructor(cfg = new EvenVerticalWidthSpacerCfg(), vertexSpacer = new CliqueCenterVertexSpacer()) {
+    this.cfg = cfg;
+    this.vertexSpacer = vertexSpacer;
   }
 
-  computeEvenVertLayerSize() {
-    let g = this.g;
-    let x = 0;
-    let cfg = new Config();
-    this.layerToX.set(0, x);
-    for (let i = 0; i < g.getLayerCount() - 1; i++) {
-      this.verticalToX.set(i, new Map<number, number>());
-      x += this.vertSpacer.width(i) / 2;
-      if (this.cliqueCenterLayer.has(i)) {
-        x += cfg.cliqueCenterToFirstVertical;
-      } else {
-        x += cfg.vertexToFirstVertical;
-      }
-      for (let j = 0; j < this.numVertLayer[i]; j++) {
-        this.verticalToX.get(i)!.set(j, x);
-        x += cfg.minVerticalSpacing;
-      }
-      if (this.cliqueCenterLayer.has(i + 1)) {
-        x += cfg.cliqueCenterToFirstVertical;
-      } else {
-        x += cfg.vertexToFirstVertical;
-      }
-      x += this.vertSpacer.width(i) / 2;
-      this.layerToX.set(i + 1, x);
-    }
+  setGraph(g: LayerGraph) {
+    //must be set first
+    this.g = g;
+    this.initCliqueCenters(g);
+  }
+
+  setNumVertLayer(numVertLayer: number[]) {
+    //must be set second
+    this.numVertLayer = numVertLayer;
+    this.initValues();
   }
 
   xPosition(layerOrVertex: number | Vertex): number {
@@ -72,7 +50,41 @@ export class EvenVerticalWidthSpacer implements LayerSpacer {
     return this.verticalToX.get(layer)!.get(vertex)!;
   }
 
-  vertexSpacer(): VertexSpacer {
-    return this.vertSpacer;
+  initValues() {
+    const cliqueCenterLayer = this.initCliqueCenters(this.g);
+    let g = this.g;
+    let x = 0;
+    let cfg = new EvenVerticalWidthSpacerCfg();
+    this.layerToX.set(0, x);
+    for (let i = 0; i < g.getLayerCount() - 1; i++) {
+      this.verticalToX.set(i, new Map<number, number>());
+      x += this.vertexSpacer.width(i) / 2;
+      if (cliqueCenterLayer.has(i)) {
+        x += cfg.cliqueCenterToFirstVertical;
+      } else {
+        x += cfg.vertexToFirstVertical;
+      }
+      for (let j = 0; j < this.numVertLayer[i]; j++) {
+        this.verticalToX.get(i)!.set(j, x);
+        x += cfg.minVerticalSpacing;
+      }
+      if (cliqueCenterLayer.has(i + 1)) {
+        x += cfg.cliqueCenterToFirstVertical;
+      } else {
+        x += cfg.vertexToFirstVertical;
+      }
+      x += this.vertexSpacer.width(i + 1) / 2;
+      this.layerToX.set(i + 1, x);
+    }
+  }
+
+  private initCliqueCenters(g: LayerGraph) {
+    const cliqueCenterLayer = new Set<number>();
+    for (let i = 0; i < g.getLayerCount(); i++) {
+      if (g.getVerticesInLayer(i).find((v) => v.isCliqueCenter())) {
+        cliqueCenterLayer.add(i);
+      }
+    }
+    return cliqueCenterLayer;
   }
 }

@@ -14,17 +14,19 @@ export function draw(
   layout: GraphLayout,
   yPosition: (v: Vertex) => number,
   isCliqueCenter: (v: Vertex) => boolean,
-  plan: EdgePlan[]
-): [Map<Vertex, Set<string>>, LayerSpacer] {
+  plan: EdgePlan[],
+  verticLayerSpacer: EvenVerticalWidthSpacer
+): Map<Vertex, Set<string>> {
   const numVertLayers = countVertLayers(plan);
+  verticLayerSpacer.setGraph(g);
+  verticLayerSpacer.setNumVertLayer(numVertLayers);
 
-  const verticLayerSpacer = new EvenVerticalWidthSpacer(g, numVertLayers);
   let edgeToX = new Map<Edge<Vertex>, number>();
 
   for (let edgePlan of plan) {
     edgeToX.set(edgePlan.edge, verticLayerSpacer.xPositionVertical(edgePlan.layer, edgePlan.relativeVertLayer));
   }
-  return [drawEdges(g, edgeToX, layout, verticLayerSpacer, yPosition, isCliqueCenter), verticLayerSpacer];
+  return drawEdges(g, edgeToX, layout, verticLayerSpacer, yPosition, isCliqueCenter);
 }
 
 function countVertLayers(plan: EdgePlan[]): number[] {
