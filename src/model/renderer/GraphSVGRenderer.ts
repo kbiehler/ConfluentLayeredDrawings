@@ -45,7 +45,7 @@ export class GraphSVGRenderer {
       .attr("width", (v) => v.width)
       .attr("height", (v) => v.height)
       .attr("x", (v) => v.position.x - v.width / 2)
-      .attr("y", (v) => v.position.y - 20)
+      .attr("y", (v) => v.position.y - v.height / 2)
       .attr("rx", 5) // Smooth corners
       .attr("ry", 5) // Smooth corners
       .attr("stroke", "black")

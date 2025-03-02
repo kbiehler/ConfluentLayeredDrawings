@@ -1,7 +1,6 @@
 import { Edge, LayerGraph, Vertex } from "@/model/ds";
 import { EdgePlan } from "../plan/EdgePlan";
 import { GraphLayout } from "../../GraphLayout";
-import { EvenVerticalWidthSpacer } from "../../spacing/EvenVerticalWidthSpacer";
 import _ from "lodash";
 import { LayerSpacer } from "../../spacing/LayerSpacer";
 import { v4 as uuidv4 } from "uuid";
@@ -15,18 +14,18 @@ export function draw(
   yPosition: (v: Vertex) => number,
   isCliqueCenter: (v: Vertex) => boolean,
   plan: EdgePlan[],
-  verticLayerSpacer: EvenVerticalWidthSpacer
+  layerSpacer: LayerSpacer
 ): Map<Vertex, Set<string>> {
   const numVertLayers = countVertLayers(plan);
-  verticLayerSpacer.setGraph(g);
-  verticLayerSpacer.setNumVertLayer(numVertLayers);
+  layerSpacer.setGraph(g);
+  layerSpacer.setNumVertLayer(numVertLayers);
 
   let edgeToX = new Map<Edge<Vertex>, number>();
 
   for (let edgePlan of plan) {
-    edgeToX.set(edgePlan.edge, verticLayerSpacer.xPositionVertical(edgePlan.layer, edgePlan.relativeVertLayer));
+    edgeToX.set(edgePlan.edge, layerSpacer.xPositionVertical(edgePlan.layer, edgePlan.relativeVertLayer));
   }
-  return drawEdges(g, edgeToX, layout, verticLayerSpacer, yPosition, isCliqueCenter);
+  return drawEdges(g, edgeToX, layout, layerSpacer, yPosition, isCliqueCenter);
 }
 
 function countVertLayers(plan: EdgePlan[]): number[] {

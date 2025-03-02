@@ -1,11 +1,12 @@
 import "./ConfigPanel.css";
 import React, { useState } from "react";
 import { ConfigDto } from "@/cfg/ConfigDtos";
-import UiConfigPanel from "./UiCfgPanel";
-import BarycenterCfgPanel from "./BarycenterCfgPanel";
-import GraphConfigPanel from "./GraphCfgPanel";
-import AlgorithmConfigPanel from "./AlgorithmCfgPanel";
-import BiCliqueCfgPanel from "./BiCliqueCfgPanel";
+import UiConfigPanel from "./subPanels/UiCfgPanel";
+import BarycenterCfgPanel from "./subPanels/BarycenterCfgPanel";
+import GraphConfigPanel from "./subPanels/GraphCfgPanel";
+import AlgorithmConfigPanel from "./subPanels/AlgorithmCfgPanel";
+import BiCliqueCfgPanel from "./subPanels/BiCliqueCfgPanel";
+import LayerSpacingCfgPanel from "./subPanels/LayerSpacingCfgPanel";
 
 type Props = {
   config: ConfigDto;
@@ -41,6 +42,7 @@ const ConfigPanel: React.FC<Props> = ({ config, setConfig }) => {
             <BarycenterCfgPanel config={localConfig.barycenterCfg} handleChange={(field, value) => handleChange("barycenterCfg", field, value)} />
             <AlgorithmConfigPanel config={localConfig.algCfg} handleChange={(field, value) => handleChange("algCfg", field, value)} />
             <BiCliqueCfgPanel config={localConfig.biCliqueCfg} handleChange={(field, value) => handleChange("biCliqueCfg", field, value)} />
+            <LayerSpacingCfgPanel config={localConfig.layerSpacingCfg} handleChange={(field, value) => handleChange("layerSpacingCfg", field, value)} />
           </div>
           <button className="redraw-button" onClick={handleApply}>
             Apply

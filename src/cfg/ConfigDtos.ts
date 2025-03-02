@@ -3,6 +3,7 @@ import { GraphLayoutCfg } from "../model/layout/GraphLayoutGenerator";
 import { ExampleGraphs } from "@/examples/ExampleGraphs";
 import { EdgeDrawingAlgorithm } from "@/model/layout/edges/plan/EdgePlanner";
 import { VertexPositionAlgorithm } from "@/model/layout/positioning/VertexPositioner";
+
 /**
  * Data Transfer Object (DTO) for configuration settings.
  *
@@ -17,6 +18,7 @@ export class ConfigDto {
   uiCfg: UiCfgDto = new UiCfgDto();
   algCfg: AlgorithmCfgDto = new AlgorithmCfgDto();
   biCliqueCfg: BiCliqueCfg = new BiCliqueCfg();
+  layerSpacingCfg: LayerSpacingCfgDto = new LayerSpacingCfgDto();
 }
 
 export class GraphCfgDto {
@@ -48,6 +50,17 @@ export class BiCliqueCfg {
   bicliqueDepth: number = 1;
 }
 
+export class LayerSpacingCfgDto {
+  type: "layerFix" | "vertLayerFix" = "layerFix";
+
+  vertLayerFix_verticalSpacing: number = 25;
+  vertLayerFix_vertexToFirstVertical: number = 30;
+  vertLayerFix_centerWidth: number = 20;
+
+  layerFix_layerSpacing: number = 500;
+  layerFix_centerWidth: number = 200;
+}
+
 export function mapToRenderCfg(cfgDto: ConfigDto): RenderCfg {
   return {
     vertexColor: cfgDto.uiCfg.vertexColor,
@@ -57,6 +70,20 @@ export function mapToRenderCfg(cfgDto: ConfigDto): RenderCfg {
 }
 
 export function mapToGraphLayoutCfg(cfgDto: ConfigDto): GraphLayoutCfg {
+  let layerSpacing: any;
+  if (cfgDto.layerSpacingCfg.type === "layerFix") {
+    layerSpacing = {
+      layerSpacing: cfgDto.layerSpacingCfg.layerFix_layerSpacing,
+      centerWidth: cfgDto.layerSpacingCfg.layerFix_centerWidth,
+    };
+  } else if (cfgDto.layerSpacingCfg.type === "vertLayerFix") {
+    layerSpacing = {
+      minVerticalSpacing: cfgDto.layerSpacingCfg.vertLayerFix_verticalSpacing,
+      vertexToFirstVertical: cfgDto.layerSpacingCfg.vertLayerFix_vertexToFirstVertical,
+      centerWidth: cfgDto.layerSpacingCfg.vertLayerFix_centerWidth,
+    };
+  }
+
   return {
     vertexPosition: {
       baryDepth: cfgDto.barycenterCfg.barycenterDepth,
@@ -68,5 +95,6 @@ export function mapToGraphLayoutCfg(cfgDto: ConfigDto): GraphLayoutCfg {
     },
     biCliqueDepth: cfgDto.biCliqueCfg.bicliqueDepth,
     edgeAlg: cfgDto.algCfg.edgeDrawing,
+    layerSpacing: layerSpacing,
   };
 }

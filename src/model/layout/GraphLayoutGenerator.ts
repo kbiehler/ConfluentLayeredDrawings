@@ -10,12 +10,15 @@ import { assignLayers } from "./leveling/LevelAssigner";
 import { addBlicliqueCenters } from "./bicliqueCenter/BiCliqueCenters";
 import { draw } from "./edges/draw/EdgeDrawer";
 import { CliqueCenterVertexSpacer } from "./spacing/VertexSpacer";
-import { EvenVerticalWidthSpacerCfg, EvenVerticalWidthSpacer } from "./spacing/EvenVerticalWidthSpacer";
+import { FixedVerticalSpacerCfg, FixedVerticalSpacer } from "./spacing/FixedVerticalSpacer";
+import { FixedLayerSpacerCfg } from "./spacing/FixedLayerSpacer";
+import { layerSpacerFromCfg } from "./spacing/LayerSpacer";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
   edgeAlg: EdgeDrawingAlgorithm;
   biCliqueDepth: number;
+  layerSpacing: FixedVerticalSpacerCfg | FixedLayerSpacerCfg;
 };
 
 /**
@@ -28,16 +31,16 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
   const drawing = new GraphLayout();
   let layerGraph = assignLayers(g);
 
-  let bliCliqueGraph = addBlicliqueCenters(layerGraph, cfg.biCliqueDepth);
-  const vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(bliCliqueGraph);
+  let biCliqueGraph = addBlicliqueCenters(layerGraph, cfg.biCliqueDepth);
+  const vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(biCliqueGraph);
 
-  let edgePlans = planEdges(cfg.edgeAlg, bliCliqueGraph, (v: Vertex) => vertexPositions.get(v)!);
+  let edgePlans = planEdges(cfg.edgeAlg, biCliqueGraph, (v: Vertex) => vertexPositions.get(v)!);
 
-  const vertexSpacer = new CliqueCenterVertexSpacer();
-  const vertLayerSpacer = new EvenVerticalWidthSpacer(new EvenVerticalWidthSpacerCfg(), vertexSpacer);
+  const vertexSpacer = new CliqueCenterVertexSpacer(biCliqueGraph);
+  const vertLayerSpacer = layerSpacerFromCfg(cfg.layerSpacing, vertexSpacer);
 
   let adjEdges2 = draw(
-    bliCliqueGraph,
+    biCliqueGraph,
     drawing,
     (v: Vertex) => vertexPositions.get(v)!,
     (v: Vertex) => v.isCliqueCenter(),
@@ -50,8 +53,8 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
       vertex.getId(), //
       { x: vertLayerSpacer.xPosition(vertex), y: vertexPositions.get(vertex)! },
       !vertex.isCliqueCenter(),
-      vertexSpacer.width(bliCliqueGraph.getLayer(vertex)),
-      vertexSpacer.height(bliCliqueGraph.getLayer(vertex)),
+      vertexSpacer.width(biCliqueGraph.getLayer(vertex)),
+      vertexSpacer.height(biCliqueGraph.getLayer(vertex)),
       vertex.getLabel(),
       vertexSpacer.label(vertex)
     );

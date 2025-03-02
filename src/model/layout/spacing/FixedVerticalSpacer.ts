@@ -1,28 +1,23 @@
 import { LayerGraph } from "@/model/ds";
 import { Vertex } from "@/model/ds/Vertex";
 import { LayerSpacer } from "./LayerSpacer";
-import { CliqueCenterVertexSpacer } from "./VertexSpacer";
+import { VertexSpacer } from "./VertexSpacer";
 
-export class EvenVerticalWidthSpacerCfg {
-  minWidth: number = 100;
-  minVerticalSpacing: number = 30;
-  vertexToFirstVertical: number = 100;
-  cliqueCenterToFirstVertical: number = 20;
+export class FixedVerticalSpacerCfg {
+  //default values only for testing, default frontend valued set in ConfigDtos.ts
+  verticalSpacing: number = 25;
+  vertexToFirstVertical: number = 30;
+  centerWidth: number = 20;
 }
 
-export class EvenVerticalWidthSpacer implements LayerSpacer {
-  cfg: EvenVerticalWidthSpacerCfg;
+export class FixedVerticalSpacer implements LayerSpacer {
   g!: LayerGraph;
   numVertLayer!: number[];
   //cache
   layerToX: Map<number, number> = new Map<number, number>();
   verticalToX: Map<number, Map<number, number>> = new Map<number, Map<number, number>>();
-  vertexSpacer: CliqueCenterVertexSpacer;
 
-  constructor(cfg = new EvenVerticalWidthSpacerCfg(), vertexSpacer = new CliqueCenterVertexSpacer()) {
-    this.cfg = cfg;
-    this.vertexSpacer = vertexSpacer;
-  }
+  constructor(private cfg: FixedVerticalSpacerCfg, private vertexSpacer: VertexSpacer) {}
 
   setGraph(g: LayerGraph) {
     //must be set first
@@ -53,23 +48,23 @@ export class EvenVerticalWidthSpacer implements LayerSpacer {
   initValues() {
     const cliqueCenterLayer = this.initCliqueCenters(this.g);
     let g = this.g;
+    let cfg = this.cfg;
     let x = 0;
-    let cfg = new EvenVerticalWidthSpacerCfg();
     this.layerToX.set(0, x);
     for (let i = 0; i < g.getLayerCount() - 1; i++) {
       this.verticalToX.set(i, new Map<number, number>());
       x += this.vertexSpacer.width(i) / 2;
       if (cliqueCenterLayer.has(i)) {
-        x += cfg.cliqueCenterToFirstVertical;
+        x += cfg.centerWidth;
       } else {
         x += cfg.vertexToFirstVertical;
       }
       for (let j = 0; j < this.numVertLayer[i]; j++) {
         this.verticalToX.get(i)!.set(j, x);
-        x += cfg.minVerticalSpacing;
+        x += cfg.verticalSpacing;
       }
       if (cliqueCenterLayer.has(i + 1)) {
-        x += cfg.cliqueCenterToFirstVertical;
+        x += cfg.centerWidth;
       } else {
         x += cfg.vertexToFirstVertical;
       }
