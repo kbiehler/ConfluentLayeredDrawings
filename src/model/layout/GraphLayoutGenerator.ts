@@ -9,8 +9,8 @@ import { EdgeDrawingAlgorithm, planEdges } from "@/model/layout/edges/plan/EdgeP
 import { assignLayers } from "./leveling/LevelAssigner";
 import { addBlicliqueCenters } from "./bicliqueCenter/BiCliqueCenters";
 import { draw } from "./edges/draw/EdgeDrawer";
-import { CliqueCenterVertexSpacer } from "./spacing/VertexSpacer";
-import { FixedVerticalSpacerCfg, FixedVerticalSpacer } from "./spacing/FixedVerticalSpacer";
+import { createVertexSpacer, VertexSpacerConfig } from "./spacing/VertexSpacer";
+import { FixedVerticalSpacerCfg } from "./spacing/FixedVerticalSpacer";
 import { FixedLayerSpacerCfg } from "./spacing/FixedLayerSpacer";
 import { layerSpacerFromCfg } from "./spacing/LayerSpacer";
 
@@ -19,6 +19,7 @@ export type GraphLayoutCfg = {
   edgeAlg: EdgeDrawingAlgorithm;
   biCliqueDepth: number;
   layerSpacing: FixedVerticalSpacerCfg | FixedLayerSpacerCfg;
+  vertexSpacing: VertexSpacerConfig;
 };
 
 /**
@@ -36,7 +37,7 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
 
   let edgePlans = planEdges(cfg.edgeAlg, biCliqueGraph, (v: Vertex) => vertexPositions.get(v)!);
 
-  const vertexSpacer = new CliqueCenterVertexSpacer(biCliqueGraph);
+  const vertexSpacer = createVertexSpacer(biCliqueGraph, cfg.vertexSpacing);
   const vertLayerSpacer = layerSpacerFromCfg(cfg.layerSpacing, vertexSpacer);
 
   let adjEdges2 = draw(

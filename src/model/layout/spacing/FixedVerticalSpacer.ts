@@ -6,8 +6,8 @@ import { VertexSpacer } from "./VertexSpacer";
 export class FixedVerticalSpacerCfg {
   //default values only for testing, default frontend valued set in ConfigDtos.ts
   verticalSpacing: number = 25;
-  vertexToFirstVertical: number = 30;
-  centerWidth: number = 20;
+  addVertexDist: number = 25;
+  addCenterWidth: number = 25;
 }
 
 export class FixedVerticalSpacer implements LayerSpacer {
@@ -55,18 +55,19 @@ export class FixedVerticalSpacer implements LayerSpacer {
       this.verticalToX.set(i, new Map<number, number>());
       x += this.vertexSpacer.width(i) / 2;
       if (cliqueCenterLayer.has(i)) {
-        x += cfg.centerWidth;
+        x += cfg.addCenterWidth;
       } else {
-        x += cfg.vertexToFirstVertical;
+        x += cfg.addVertexDist;
       }
       for (let j = 0; j < this.numVertLayer[i]; j++) {
-        this.verticalToX.get(i)!.set(j, x);
         x += cfg.verticalSpacing;
+        this.verticalToX.get(i)!.set(j, x);
       }
+      x += cfg.verticalSpacing;
       if (cliqueCenterLayer.has(i + 1)) {
-        x += cfg.centerWidth;
+        x += cfg.addCenterWidth;
       } else {
-        x += cfg.vertexToFirstVertical;
+        x += cfg.addVertexDist;
       }
       x += this.vertexSpacer.width(i + 1) / 2;
       this.layerToX.set(i + 1, x);

@@ -5,7 +5,6 @@ import _ from "lodash";
 
 export class FixedLayerSpacerCfg {
   layerSpacing: number = 500;
-  centerWidth: number = 20;
 }
 
 export class FixedLayerSpacer implements LayerSpacer {
@@ -58,15 +57,13 @@ export class FixedLayerSpacer implements LayerSpacer {
       x += this.vertexSpacer.width(i) / 2;
       for (let j = i; j < nextNonCenterLayer; j++) {
         this.verticalToX.set(j, new Map<number, number>());
+        x += verticalSpacing;
         for (let k = 0; k < this.numVertLayer[j]; k++) {
-          x += verticalSpacing;
           this.verticalToX.get(j)!.set(k, x);
+          x += verticalSpacing;
         }
-        x += this.cfg.centerWidth / 2;
         this.layerToX.set(j + 1, x);
-        x += this.cfg.centerWidth / 2;
       }
-      x -= this.cfg.centerWidth / 2;
       x += this.vertexSpacer.width(nextNonCenterLayer) / 2;
       i = nextNonCenterLayer;
 
@@ -76,10 +73,8 @@ export class FixedLayerSpacer implements LayerSpacer {
 
   private computVerticalSpacing(nextNonCenterLayer: number, i: number, cfg: FixedLayerSpacerCfg) {
     const num_centers = nextNonCenterLayer - i - 1;
-    let freeWidth = cfg.layerSpacing - num_centers * cfg.centerWidth;
-    freeWidth -= this.vertexSpacer.width(i) / 2;
-    freeWidth -= this.vertexSpacer.width(nextNonCenterLayer) / 2;
-    let layerNeeded = _.sum(this.numVertLayer.slice(i, nextNonCenterLayer)) + (num_centers + 1) * 2;
+    let freeWidth = cfg.layerSpacing;
+    let layerNeeded = _.sum(this.numVertLayer.slice(i, nextNonCenterLayer)) + num_centers + 1;
     let verticalSpacing = freeWidth / layerNeeded;
     return verticalSpacing;
   }

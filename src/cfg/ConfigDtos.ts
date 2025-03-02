@@ -3,6 +3,9 @@ import { GraphLayoutCfg } from "../model/layout/GraphLayoutGenerator";
 import { ExampleGraphs } from "@/examples/ExampleGraphs";
 import { EdgeDrawingAlgorithm } from "@/model/layout/edges/plan/EdgePlanner";
 import { VertexPositionAlgorithm } from "@/model/layout/positioning/VertexPositioner";
+import { FixedLayerSpacerCfg } from "@/model/layout/spacing/FixedLayerSpacer";
+import { FixedVerticalSpacerCfg } from "@/model/layout/spacing/FixedVerticalSpacer";
+import { vertexSpacingCfg, VertexSpacingCfgDto } from "./VertexSpacingCfgDto";
 
 /**
  * Data Transfer Object (DTO) for configuration settings.
@@ -19,6 +22,7 @@ export class ConfigDto {
   algCfg: AlgorithmCfgDto = new AlgorithmCfgDto();
   biCliqueCfg: BiCliqueCfg = new BiCliqueCfg();
   layerSpacingCfg: LayerSpacingCfgDto = new LayerSpacingCfgDto();
+  vertexSpacingCfg: VertexSpacingCfgDto = vertexSpacingCfg;
 }
 
 export class GraphCfgDto {
@@ -51,14 +55,13 @@ export class BiCliqueCfg {
 }
 
 export class LayerSpacingCfgDto {
-  type: "layerFix" | "vertLayerFix" = "layerFix";
+  type: "layerFix" | "vertLayerFix" = "vertLayerFix";
 
-  vertLayerFix_verticalSpacing: number = 25;
-  vertLayerFix_vertexToFirstVertical: number = 30;
-  vertLayerFix_centerWidth: number = 20;
+  vertLayerFix_verticalSpacing: number = 30;
+  vertLayerFix_addVertexDist: number = 30;
+  vertLayerFix_addCenterWidth: number = 0;
 
   layerFix_layerSpacing: number = 500;
-  layerFix_centerWidth: number = 200;
 }
 
 export function mapToRenderCfg(cfgDto: ConfigDto): RenderCfg {
@@ -70,18 +73,15 @@ export function mapToRenderCfg(cfgDto: ConfigDto): RenderCfg {
 }
 
 export function mapToGraphLayoutCfg(cfgDto: ConfigDto): GraphLayoutCfg {
-  let layerSpacing: any;
+  let layerSpacingCfg: FixedLayerSpacerCfg | FixedVerticalSpacerCfg;
   if (cfgDto.layerSpacingCfg.type === "layerFix") {
-    layerSpacing = {
-      layerSpacing: cfgDto.layerSpacingCfg.layerFix_layerSpacing,
-      centerWidth: cfgDto.layerSpacingCfg.layerFix_centerWidth,
-    };
-  } else if (cfgDto.layerSpacingCfg.type === "vertLayerFix") {
-    layerSpacing = {
-      minVerticalSpacing: cfgDto.layerSpacingCfg.vertLayerFix_verticalSpacing,
-      vertexToFirstVertical: cfgDto.layerSpacingCfg.vertLayerFix_vertexToFirstVertical,
-      centerWidth: cfgDto.layerSpacingCfg.vertLayerFix_centerWidth,
-    };
+    layerSpacingCfg = new FixedLayerSpacerCfg();
+    layerSpacingCfg.layerSpacing = cfgDto.layerSpacingCfg.layerFix_layerSpacing;
+  } else {
+    layerSpacingCfg = new FixedVerticalSpacerCfg();
+    layerSpacingCfg.verticalSpacing = cfgDto.layerSpacingCfg.vertLayerFix_verticalSpacing;
+    layerSpacingCfg.addVertexDist = cfgDto.layerSpacingCfg.vertLayerFix_addVertexDist;
+    layerSpacingCfg.addCenterWidth = cfgDto.layerSpacingCfg.vertLayerFix_addCenterWidth;
   }
 
   return {
@@ -95,6 +95,15 @@ export function mapToGraphLayoutCfg(cfgDto: ConfigDto): GraphLayoutCfg {
     },
     biCliqueDepth: cfgDto.biCliqueCfg.bicliqueDepth,
     edgeAlg: cfgDto.algCfg.edgeDrawing,
-    layerSpacing: layerSpacing,
+    layerSpacing: layerSpacingCfg,
+    vertexSpacing: {
+      type: cfgDto.vertexSpacingCfg.type,
+      textPadding: cfgDto.vertexSpacingCfg.textPadding,
+      v_height: cfgDto.vertexSpacingCfg.v_height,
+      v_width: cfgDto.vertexSpacingCfg.v_width,
+      width_min: cfgDto.vertexSpacingCfg.width_min,
+      width_max: cfgDto.vertexSpacingCfg.width_max,
+      show_percentage: cfgDto.vertexSpacingCfg.show_percentage,
+    },
   };
 }

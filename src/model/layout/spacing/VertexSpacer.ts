@@ -1,25 +1,110 @@
 import { LayerGraph, Vertex } from "@/model/ds";
 import _ from "lodash";
 
-export interface VertexSpacer {
-  width(layer: number): number;
-  height(layer: number): number;
-  label(v: Vertex): string;
+export enum VertexSpacerType {
+  FIXED_SIZE = "fixedSize",
+  MIN_MAX = "minMax",
+  DYNAMIC = "dynamic",
 }
 
-export class CliqueCenterVertexSpacer implements VertexSpacer {
-  g: LayerGraph;
-  layerToWidth: Map<number, number>;
+export type VertexSpacerConfig = {
+  type: VertexSpacerType;
+  textPadding: number;
+  v_height: number;
+  v_width?: number; // Only for FixedSizeVertexSpacer
+  width_min?: number; // Only for MinMaxVertexSpacer and DynamicVertexSpacer
+  width_max?: number; // Only for MinMaxVertexSpacer and DynamicVertexSpacer
+  show_percentage?: number; // Only for DynamicVertexSpacer
+};
 
-  constructor(g: LayerGraph) {
-    this.g = g;
-    this.layerToWidth = new Map<number, number>();
+export function createVertexSpacer(g: LayerGraph, cfg: VertexSpacerConfig): VertexSpacer {
+  switch (cfg.type) {
+    case VertexSpacerType.FIXED_SIZE:
+      return new FixedSizeVertexSpacer(g, cfg.textPadding, cfg.v_width!, cfg.v_height);
+    case VertexSpacerType.MIN_MAX:
+      return new MinMaxVertexSpacer(g, cfg.textPadding, cfg.v_height, cfg.width_min!, cfg.width_max!);
+    case VertexSpacerType.DYNAMIC:
+      return new DynamicVertexSpacer(g, cfg.textPadding, cfg.v_height, cfg.width_min!, cfg.width_max!, cfg.show_percentage!);
+    default:
+      throw new Error("Invalid VertexSpacer type");
+  }
+}
+
+export abstract class VertexSpacer {
+  cliqueCenter: Set<number>;
+
+  constructor(protected g: LayerGraph, protected textPadding: number = 20) {
+    this.cliqueCenter = new Set<number>();
     for (let i = 0; i < g.getLayerCount(); i++) {
       if (g.getVerticesInLayer(i).some((v) => v.isCliqueCenter())) {
+        this.cliqueCenter.add(i);
+      }
+    }
+  }
+
+  abstract width(layer: number): number;
+  abstract height(layer: number): number;
+  label(v: Vertex): string {
+    if (v.isCliqueCenter()) {
+      return "";
+    }
+    const width = this.width(this.g.getLayer(v));
+    const label = v.getLabel();
+    if (getTextSize(label).width < width - this.textPadding) {
+      return label;
+    }
+    for (let i = label.length - 1; i > 0; i--) {
+      const substring = label.substring(0, i) + "...";
+      if (getTextSize(substring).width < width - this.textPadding) {
+        return substring;
+      }
+    }
+    return "...";
+  }
+}
+
+export class FixedSizeVertexSpacer extends VertexSpacer {
+  constructor(
+    g: LayerGraph, //
+    textPadding: number,
+    private v_width: number,
+    private v_height: number
+  ) {
+    super(g, textPadding);
+  }
+
+  width(layer: number): number {
+    if (this.cliqueCenter.has(layer)) {
+      return 0;
+    }
+    return this.v_width;
+  }
+  height(layer: number): number {
+    if (this.cliqueCenter.has(layer)) {
+      return 0;
+    }
+    return this.v_height;
+  }
+}
+
+export class MinMaxVertexSpacer extends VertexSpacer {
+  layerToWidth: Map<number, number>;
+
+  constructor(
+    g: LayerGraph, //
+    textPadding: number,
+    private v_height: number,
+    width_min: number,
+    width_max: number
+  ) {
+    super(g, textPadding);
+    this.layerToWidth = new Map<number, number>();
+    for (let i = 0; i < g.getLayerCount(); i++) {
+      if (this.cliqueCenter.has(i)) {
         this.layerToWidth.set(i, 0);
       } else {
-        const width = _.max(g.getVerticesInLayer(i).map((v) => getTextSize(v.getLabel()).width))! + 50;
-        this.layerToWidth.set(i, Math.min(Math.max(100, width), 250));
+        const width = _.max(g.getVerticesInLayer(i).map((v) => getTextSize(v.getLabel()).width))! + this.textPadding;
+        this.layerToWidth.set(i, Math.min(Math.max(width_min, width), width_max));
       }
     }
   }
@@ -29,26 +114,47 @@ export class CliqueCenterVertexSpacer implements VertexSpacer {
   }
 
   height(_: number): number {
-    return 50;
+    return this.v_height;
   }
+}
 
-  label(v: Vertex): string {
-    if (v.isCliqueCenter()) {
-      return "";
-    }
-    const width = this.width(this.g.getLayer(v));
-    const label = v.getLabel();
-    if (getTextSize(label).width < width - 20) {
-      return label;
-    }
-    for (let i = label.length - 1; i > 0; i--) {
-      const substring = label.substring(0, i) + "...";
-      if (getTextSize(substring).width < width - 20) {
-        return substring;
+export class DynamicVertexSpacer extends VertexSpacer {
+  layerToWidth: Map<number, number>;
+
+  constructor(
+    g: LayerGraph, //
+    textPadding: number,
+    private v_height: number,
+    width_min: number,
+    width_max: number,
+    show_percentage: number
+  ) {
+    super(g, textPadding);
+    this.layerToWidth = new Map<number, number>();
+    for (let i = 0; i < g.getLayerCount(); i++) {
+      if (this.cliqueCenter.has(i)) {
+        this.layerToWidth.set(i, 0);
+      } else {
+        const allWidths = g.getVerticesInLayer(i).map((v) => getTextSize(v.getLabel()).width);
+        const width = getPercentile(allWidths, show_percentage) + this.textPadding;
+        this.layerToWidth.set(i, Math.min(Math.max(width_min, width), width_max));
       }
     }
-    return "...";
   }
+
+  width(layer: number): number {
+    return this.layerToWidth.get(layer)!;
+  }
+
+  height(_: number): number {
+    return this.v_height;
+  }
+}
+
+function getPercentile(arr: number[], percentile: number): number {
+  const sorted = _.sortBy(arr);
+  const index = Math.floor(arr.length * percentile);
+  return sorted[index];
 }
 
 function getTextSize(text: string, fontSize: number = 17, fontFamily: string = "Arial"): { width: number; height: number } {

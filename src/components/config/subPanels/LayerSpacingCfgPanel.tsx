@@ -25,15 +25,9 @@ const LayerSpacingConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
           {config.type === "layerFix" && (
             <>
               <tr>
-                <td>Layer Spacing:</td>
+                <td>Layer Width:</td>
                 <td>
                   <input type="number" value={config.layerFix_layerSpacing} onChange={(e) => handleChange("layerFix_layerSpacing", parseFloat(e.target.value))} />
-                </td>
-              </tr>
-              <tr>
-                <td>Bi-Clique Width:</td>
-                <td>
-                  <input type="number" value={config.layerFix_centerWidth} onChange={(e) => handleChange("layerFix_centerWidth", parseFloat(e.target.value))} />
                 </td>
               </tr>
             </>
@@ -48,15 +42,15 @@ const LayerSpacingConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
                 </td>
               </tr>
               <tr>
-                <td>Vertex to First Vertical:</td>
+                <td>Additional dist to vertex:</td>
                 <td>
-                  <input type="number" value={config.vertLayerFix_vertexToFirstVertical} onChange={(e) => handleChange("vertLayerFix_vertexToFirstVertical", parseFloat(e.target.value))} />
+                  <input type="number" value={config.vertLayerFix_addVertexDist} onChange={(e) => handleChange("vertLayerFix_addVertexDist", parseFloat(e.target.value))} />
                 </td>
               </tr>
               <tr>
-                <td>Center Width:</td>
+                <td>Additional center width:</td>
                 <td>
-                  <input type="number" value={config.vertLayerFix_centerWidth} onChange={(e) => handleChange("vertLayerFix_centerWidth", parseFloat(e.target.value))} />
+                  <input type="number" value={config.vertLayerFix_addCenterWidth} onChange={(e) => handleChange("vertLayerFix_addCenterWidth", parseFloat(e.target.value))} />
                 </td>
               </tr>
             </>

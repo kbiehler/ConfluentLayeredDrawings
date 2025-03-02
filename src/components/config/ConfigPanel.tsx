@@ -7,6 +7,7 @@ import GraphConfigPanel from "./subPanels/GraphCfgPanel";
 import AlgorithmConfigPanel from "./subPanels/AlgorithmCfgPanel";
 import BiCliqueCfgPanel from "./subPanels/BiCliqueCfgPanel";
 import LayerSpacingCfgPanel from "./subPanels/LayerSpacingCfgPanel";
+import VertexSpacingCfgPanel from "./subPanels/VertexSpacingCfgPanel";
 
 type Props = {
   config: ConfigDto;
@@ -43,6 +44,7 @@ const ConfigPanel: React.FC<Props> = ({ config, setConfig }) => {
             <AlgorithmConfigPanel config={localConfig.algCfg} handleChange={(field, value) => handleChange("algCfg", field, value)} />
             <BiCliqueCfgPanel config={localConfig.biCliqueCfg} handleChange={(field, value) => handleChange("biCliqueCfg", field, value)} />
             <LayerSpacingCfgPanel config={localConfig.layerSpacingCfg} handleChange={(field, value) => handleChange("layerSpacingCfg", field, value)} />
+            <VertexSpacingCfgPanel config={localConfig.vertexSpacingCfg} handleChange={(field, value) => handleChange("vertexSpacingCfg", field, value)} />
           </div>
           <button className="redraw-button" onClick={handleApply}>
             Apply
