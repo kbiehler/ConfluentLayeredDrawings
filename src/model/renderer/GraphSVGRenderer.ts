@@ -59,6 +59,15 @@ export class GraphSVGRenderer {
       });
 
     svg
+      .selectAll<SVGRectElement, VertexLayout>("centers")
+      .data(graphLayout.getVertices().filter((v) => !v.draw))
+      .join("rect")
+      .attr("width", (v) => 10)
+      .attr("height", (v) => 10)
+      .attr("x", (v) => v.position.x - 5)
+      .attr("y", (v) => v.position.y - 5);
+
+    svg
       .selectAll<SVGTextElement, VertexLayout>(".vertex-label")
       .data(graphLayout.getVertices())
       .data(graphLayout.getVertices().filter((v) => v.draw))

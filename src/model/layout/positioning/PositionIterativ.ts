@@ -62,7 +62,7 @@ export function positionIterative<V>(layeredGraph: LayerGraph<V>, layout: V[][])
         if (layeredGraph.inDegree(v) > 0) {
           //otherwise dont change anything
           let currentPosition = yPos.get(v)!;
-          let sum = _.sum(layeredGraph.getIncendentIn(v).map((e) => yPos.get(e.source)!));
+          let sum = _.sum(layeredGraph.getIncidentIn(v).map((e) => yPos.get(e.source)!));
           let optimalPosition = Math.round(sum / layeredGraph.inDegree(v));
           if (currentPosition > optimalPosition) {
             shiftUp(layerChange, v, fixed, yPos, optimalPosition);

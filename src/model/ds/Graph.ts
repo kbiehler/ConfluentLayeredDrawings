@@ -52,6 +52,14 @@ export class Graph<V = Vertex, E extends Edge<V> = Edge<V>> {
     });
   }
 
+  getAdjacentIn(vertex: V): V[] {
+    return this.getIncidentIn(vertex).map((edge) => edge.source);
+  }
+
+  getAdjacentOut(vertex: V): V[] {
+    return this.getIncidentOut(vertex).map((edge) => edge.target);
+  }
+
   getIncident(vertex: V): E[] {
     return Array.from(this.adj.get(vertex)!);
   }
@@ -64,7 +72,7 @@ export class Graph<V = Vertex, E extends Edge<V> = Edge<V>> {
     return Array.from(this.adjDirected.get(vertex)!);
   }
 
-  getIncendentIn(vertex: V): E[] {
+  getIncidentIn(vertex: V): E[] {
     return Array.from(this.adj.get(vertex)!).filter((edge) => edge.target === vertex);
   }
 

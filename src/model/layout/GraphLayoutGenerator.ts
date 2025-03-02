@@ -1,4 +1,4 @@
-import { Graph } from "@/model/ds/";
+import { BipartiteGraph, Graph, LayerGraph } from "@/model/ds/";
 import { GraphLayout } from "./GraphLayout";
 import { Vertex } from "@/model/ds/Vertex";
 import { VertexId } from "@/model/types";
@@ -13,6 +13,8 @@ import { createVertexSpacer, VertexSpacerConfig } from "./spacing/VertexSpacer";
 import { FixedVerticalSpacerCfg } from "./spacing/FixedVerticalSpacer";
 import { FixedLayerSpacerCfg } from "./spacing/FixedLayerSpacer";
 import { layerSpacerFromCfg } from "./spacing/LayerSpacer";
+import { addCliqueCenterPositons } from "./positioning/CliqueCenterPositioner";
+import { computeScaledPositions } from "./positioning/VertexScaler";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -30,10 +32,18 @@ export type GraphLayoutCfg = {
  */
 export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, InteractionInfo] {
   const drawing = new GraphLayout();
-  let layerGraph = assignLayers(g);
+  let layerGraph: LayerGraph;
+  if (g instanceof BipartiteGraph) {
+    layerGraph = g;
+  } else {
+    layerGraph = assignLayers(g);
+  }
 
+  let vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(layerGraph);
   let biCliqueGraph = addBlicliqueCenters(layerGraph, cfg.biCliqueDepth);
-  const vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(biCliqueGraph);
+  vertexPositions = addCliqueCenterPositons(biCliqueGraph, vertexPositions, cfg.biCliqueDepth);
+
+  vertexPositions = computeScaledPositions(biCliqueGraph, vertexPositions, cfg.vertexPosition.yDist);
 
   let edgePlans = planEdges(cfg.edgeAlg, biCliqueGraph, (v: Vertex) => vertexPositions.get(v)!);
 

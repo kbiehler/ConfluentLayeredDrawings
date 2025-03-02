@@ -51,7 +51,7 @@ function drawEdges(
     const edgeIds = drawer.drawEdge(layout, xPositions.xPosition(edge.source), yPosition(edge.source), xPositions.xPosition(edge.target), yPosition(edge.target), x);
     if (isCliqueCenter(edge.source)) {
       //add ids to vertices infront of TreeCenter
-      g.getIncendentIn(edge.source).forEach((e) => edgeIds.forEach((id) => adjEdges.get(e.source)!.add(id)));
+      g.getIncidentIn(edge.source).forEach((e) => edgeIds.forEach((id) => adjEdges.get(e.source)!.add(id)));
     } else {
       edgeIds.forEach((id) => adjEdges.get(edge.source)!.add(id));
     }

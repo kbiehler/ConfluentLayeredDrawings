@@ -7,14 +7,14 @@ import { solveLp } from "./PositionLP";
 export enum VertexPositionAlgorithm {
   LP = "LP",
   iterative = "iterative",
+  fixed = "fixed",
 }
 
 export class VertexPositionCfg {
   baryDepth: number = 0;
   baryInitRandom: boolean = false;
   baryIdentConnected: boolean = true;
-  layerSpacing: number = 600;
-  vertexSpacing: number = 100;
+  yDist: number = 100;
   alg: VertexPositionAlgorithm = VertexPositionAlgorithm.LP;
 }
 
@@ -32,22 +32,21 @@ export class VertexPositioner {
     let yPos;
     if (this.cfg.alg == VertexPositionAlgorithm.LP) {
       yPos = solveLp(layeredGraph, layout);
-    } else {
+    } else if (this.cfg.alg == VertexPositionAlgorithm.iterative) {
       yPos = positionIterative(layeredGraph, layout);
+    } else {
+      yPos = this.computeFixedPositions(layout);
     }
-    return this.computeSpacing(layout, yPos);
+    return yPos;
   }
 
-  private computeSpacing<V>(layers: V[][], yPos: Map<V, number>): Map<V, number> {
-    const ySpacing = this.cfg.vertexSpacing;
-    const layerShift = ySpacing / 2;
-    const vertexPositions = new Map<V, number>();
-    layers.forEach((vertices, i_layer) => {
-      vertices.forEach((vertex, _) => {
-        let y = yPos.get(vertex)! * ySpacing + (i_layer % 2) * layerShift;
-        vertexPositions.set(vertex, y);
+  private computeFixedPositions<V>(layout: V[][]): any {
+    const yPos = new Map<V, number>();
+    layout.forEach((layer) => {
+      layer.forEach((vertex, j) => {
+        yPos.set(vertex, j);
       });
     });
-    return vertexPositions;
+    return yPos;
   }
 }

@@ -27,27 +27,26 @@ export class ConfigDto {
 
 export class GraphCfgDto {
   type: "example" | "random" | "file" = "example";
-  example_type: ExampleGraphs = ExampleGraphs.POS_4;
+  example_type: ExampleGraphs = ExampleGraphs.CENTER_1;
   fileContent?: string; // Store uploaded file contents
 }
 
 export class BarycenterCfgDto {
-  barycenterDepth: number = 100;
-  barycenterRandomInit: boolean = true;
-  identConnected: boolean = true;
+  barycenterDepth: number = 0;
+  barycenterRandomInit: boolean = false;
+  identConnected: boolean = false;
 }
 
 export class AlgorithmCfgDto {
   edgeDrawing: EdgeDrawingAlgorithm = EdgeDrawingAlgorithm.VERTICAL_BUNDELING;
-  vertexPositioning: VertexPositionAlgorithm = VertexPositionAlgorithm.LP;
+  vertexPositioning: VertexPositionAlgorithm = VertexPositionAlgorithm.fixed;
 }
 
 export class UiCfgDto {
   vertexColor: string = "#ADD8E6";
   highlightColor: string = "#FF6347";
   edgeColor: string = "#999999";
-  layerSpacing: number = 500;
-  vertexSpacing: number = 100;
+  yDist: number = 100;
 }
 
 export class BiCliqueCfg {
@@ -89,8 +88,7 @@ export function mapToGraphLayoutCfg(cfgDto: ConfigDto): GraphLayoutCfg {
       baryDepth: cfgDto.barycenterCfg.barycenterDepth,
       baryInitRandom: cfgDto.barycenterCfg.barycenterRandomInit,
       baryIdentConnected: cfgDto.barycenterCfg.identConnected,
-      layerSpacing: cfgDto.uiCfg.layerSpacing,
-      vertexSpacing: cfgDto.uiCfg.vertexSpacing,
+      yDist: cfgDto.uiCfg.yDist,
       alg: cfgDto.algCfg.vertexPositioning,
     },
     biCliqueDepth: cfgDto.biCliqueCfg.bicliqueDepth,

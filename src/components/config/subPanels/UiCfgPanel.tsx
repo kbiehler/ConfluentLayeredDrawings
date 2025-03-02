@@ -31,15 +31,9 @@ const UiConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
             </td>
           </tr>
           <tr>
-            <td>Layer Spacing:</td>
+            <td>Vertex distance:</td>
             <td>
-              <input type="number" value={config.layerSpacing} onChange={(e) => handleChange("layerSpacing", Number(e.target.value))} />
-            </td>
-          </tr>
-          <tr>
-            <td>Vertex Spacing:</td>
-            <td>
-              <input type="number" value={config.vertexSpacing} onChange={(e) => handleChange("vertexSpacing", Number(e.target.value))} />
+              <input type="number" value={config.yDist} onChange={(e) => handleChange("yDist", Number(e.target.value))} />
             </td>
           </tr>
         </tbody>

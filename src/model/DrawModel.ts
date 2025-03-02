@@ -1,5 +1,5 @@
 import { generateLayout } from "./layout/GraphLayoutGenerator";
-import { Graph, Edge } from "./ds";
+import { Graph, Edge, BipartiteGraph } from "./ds";
 import { Vertex } from "./ds/Vertex";
 import { GraphLayout } from "./layout/GraphLayout";
 import { RedrawState } from "./redraw/RedrawState";
@@ -46,6 +46,25 @@ export function redrawImpl(redrawState: RedrawState, selection: Set<VertexId>, c
 }
 
 function convertToLayoutVertices<V>(g: Graph<V>): Graph {
+  if (g instanceof BipartiteGraph) {
+    const newGraph = new BipartiteGraph();
+    const vToNew = new Map<V, Vertex>();
+    g.getVerticesA().forEach((v) => {
+      const newV = new Vertex(v);
+      newGraph.addVertexA(newV);
+      vToNew.set(v, newV);
+    });
+    g.getVerticesB().forEach((v) => {
+      const newV = new Vertex(v);
+      newGraph.addVertexB(newV);
+      vToNew.set(v, newV);
+    });
+    g.getEdges().forEach((edge) => {
+      newGraph.addEdge(new Edge(vToNew.get(edge.source)!, vToNew.get(edge.target)!));
+    });
+    return newGraph;
+  }
+
   const newGraph = new Graph();
   const vToNew = new Map<V, Vertex>();
   g.getVertices().forEach((v) => {

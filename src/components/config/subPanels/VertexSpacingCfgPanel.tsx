@@ -10,11 +10,11 @@ type Props = {
 const VertexSpacingCfgPanel: React.FC<Props> = ({ config, handleChange }) => {
   return (
     <div>
-      <h3>Vertex Spacing Configuration</h3>
+      <h3>Vertex Size Configuration</h3>
       <table className="config-table">
         <tbody>
           <tr>
-            <td>Vertex Spacer Type:</td>
+            <td>Type:</td>
             <td>
               <select value={config.type} onChange={(e) => handleChange("type", e.target.value as VertexSpacerType)}>
                 <option value={VertexSpacerType.FIXED_SIZE}>Fixed Size</option>
