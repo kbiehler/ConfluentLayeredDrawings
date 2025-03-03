@@ -16,7 +16,13 @@ const BiCliqueConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
           <tr>
             <td>BiClique Depth:</td>
             <td>
-              <input type="number" value={config.bicliqueDepth} onChange={(e) => handleChange("bicliqueDepth", Number(e.target.value))} min={1} />
+              <input type="number" value={config.bicliqueDepth} onChange={(e) => handleChange("bicliqueDepth", Number(e.target.value))} />
+            </td>
+          </tr>
+          <tr>
+            <td>Post Process Shift:</td>
+            <td>
+              <input type="checkbox" checked={config.postProcessShift} onChange={(e) => handleChange("postProcessShift", e.target.checked)} />
             </td>
           </tr>
         </tbody>

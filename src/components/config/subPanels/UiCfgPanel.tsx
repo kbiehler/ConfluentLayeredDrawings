@@ -36,6 +36,12 @@ const UiConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
               <input type="number" value={config.yDist} onChange={(e) => handleChange("yDist", Number(e.target.value))} />
             </td>
           </tr>
+          <tr>
+            <td>Show clique centers</td>
+            <td>
+              <input type="checkbox" checked={config.showCliqueCenter} onChange={(e) => handleChange("showCliqueCenter", e.target.checked)} />
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

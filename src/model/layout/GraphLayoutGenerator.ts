@@ -10,19 +10,20 @@ import { createVertexSpacer, VertexSpacer, VertexSpacerConfig } from "./spacing/
 import { FixedVerticalSpacerCfg } from "./spacing/FixedVerticalSpacer";
 import { FixedLayerSpacerCfg } from "./spacing/FixedLayerSpacer";
 import { LayerSpacer, layerSpacerFromCfg } from "./spacing/LayerSpacer";
-import { addCliqueCenterPositons } from "./positioning/CliqueCenterPositioner";
+import { addCliqueCenterPositons } from "./bicliqueCenter/CliqueCenterPositioner";
 import { computeScaledPositions } from "./positioning/VertexScaler";
 import { computeVerticalBundeling } from "./edges/plan/VerticalBundeling";
 import { EdgePlan } from "./edges/plan/EdgePlan";
-import { undoShift } from "./positioning/PostProcessPositioner";
+import { postProcessCliqueShift as postProcessBicliqueShift } from "./bicliqueCenter/PostProcessClique";
 import { EdgeDrawingAlgorithm } from "./edges/EdgeDrawingAlgorithm";
 import { InteractionInfo } from "../renderer/InteractionManager";
 import _ from "lodash";
+import { BiCliqueCfg } from "@/cfg/ConfigDtos";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
   edgeAlg: EdgeDrawingAlgorithm;
-  biCliqueDepth: number;
+  biClique: BiCliqueCfg;
   layerSpacing: FixedVerticalSpacerCfg | FixedLayerSpacerCfg;
   vertexSpacing: VertexSpacerConfig;
 };
@@ -44,15 +45,17 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
 
   let vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(layerGraph);
 
-  let biCliqueGraph = addBlicliqueCenters(layerGraph, cfg.biCliqueDepth);
+  let biCliqueGraph = addBlicliqueCenters(layerGraph, cfg.biClique.bicliqueDepth);
 
-  vertexPositions = addCliqueCenterPositons(biCliqueGraph, vertexPositions, cfg.biCliqueDepth);
+  vertexPositions = addCliqueCenterPositons(biCliqueGraph, vertexPositions, cfg.biClique.bicliqueDepth);
 
   vertexPositions = computeScaledPositions(biCliqueGraph, vertexPositions, cfg.vertexPosition.yDist);
 
   let vertBundeling = computeVerticalBundeling(biCliqueGraph, (v) => vertexPositions.get(v)!);
 
-  vertexPositions = undoShift(vertexPositions, biCliqueGraph, vertBundeling);
+  if (cfg.biClique.bicliqueDepth > 0 && cfg.biClique.postProcessShift) {
+    vertexPositions = postProcessBicliqueShift(vertexPositions, biCliqueGraph, vertBundeling);
+  }
 
   const edgePlans = generateEdgePlans(vertBundeling, biCliqueGraph);
 

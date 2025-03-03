@@ -32,14 +32,14 @@ export class GraphCfgDto {
 }
 
 export class BarycenterCfgDto {
-  barycenterDepth: number = 0;
-  barycenterRandomInit: boolean = false;
-  identConnected: boolean = false;
+  barycenterDepth: number = 100;
+  barycenterRandomInit: boolean = true;
+  identConnected: boolean = true;
 }
 
 export class AlgorithmCfgDto {
   edgeDrawing: EdgeDrawingAlgorithm = EdgeDrawingAlgorithm.VERTICAL_BUNDELING;
-  vertexPositioning: VertexPositionAlgorithm = VertexPositionAlgorithm.fixed;
+  vertexPositioning: VertexPositionAlgorithm = VertexPositionAlgorithm.LP;
 }
 
 export class UiCfgDto {
@@ -47,10 +47,12 @@ export class UiCfgDto {
   highlightColor: string = "#FF6347";
   edgeColor: string = "#999999";
   yDist: number = 100;
+  showCliqueCenter: boolean = true;
 }
 
 export class BiCliqueCfg {
   bicliqueDepth: number = 1;
+  postProcessShift: boolean = true;
 }
 
 export class LayerSpacingCfgDto {
@@ -68,6 +70,7 @@ export function mapToRenderCfg(cfgDto: ConfigDto): RenderCfg {
     vertexColor: cfgDto.uiCfg.vertexColor,
     highlightColor: cfgDto.uiCfg.highlightColor,
     edgeColor: cfgDto.uiCfg.edgeColor,
+    showCliqueCenter: cfgDto.uiCfg.showCliqueCenter,
   };
 }
 
@@ -91,7 +94,10 @@ export function mapToGraphLayoutCfg(cfgDto: ConfigDto): GraphLayoutCfg {
       yDist: cfgDto.uiCfg.yDist,
       alg: cfgDto.algCfg.vertexPositioning,
     },
-    biCliqueDepth: cfgDto.biCliqueCfg.bicliqueDepth,
+    biClique: {
+      bicliqueDepth: cfgDto.biCliqueCfg.bicliqueDepth,
+      postProcessShift: cfgDto.biCliqueCfg.postProcessShift,
+    },
     edgeAlg: cfgDto.algCfg.edgeDrawing,
     layerSpacing: layerSpacingCfg,
     vertexSpacing: {
