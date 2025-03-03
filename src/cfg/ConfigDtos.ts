@@ -27,7 +27,7 @@ export class ConfigDto {
 
 export class GraphCfgDto {
   type: "example" | "random" | "file" = "example";
-  example_type: ExampleGraphs = ExampleGraphs.CENTER_1;
+  example_type: ExampleGraphs = ExampleGraphs.CENTER_2;
   fileContent?: string; // Store uploaded file contents
 }
 

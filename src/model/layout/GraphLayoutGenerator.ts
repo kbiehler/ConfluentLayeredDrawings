@@ -17,6 +17,7 @@ import { computeScaledPositions } from "./positioning/VertexScaler";
 import { computeVerticalBundeling } from "./edges/draw/VerticalBundelingDrawer";
 import { EdgePlan } from "./edges/plan/EdgePlan";
 import { EdgeDrawingAlgorithm } from "./edges/plan/EdgePlanner";
+import { undoShift } from "./positioning/PostProcessPositioner";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -48,6 +49,8 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
   vertexPositions = computeScaledPositions(biCliqueGraph, vertexPositions, cfg.vertexPosition.yDist);
 
   let vertBundeling = computeVerticalBundeling(biCliqueGraph, (v) => vertexPositions.get(v)!);
+
+  vertexPositions = undoShift(vertexPositions, biCliqueGraph, vertBundeling);
 
   const edgePlans = Array.from(vertBundeling).map(
     ([edge, relativeLayer]) =>
