@@ -1,9 +1,17 @@
 import { LayerGraph, convertLayerToBiGraph, Edge, BipartiteGraph } from "@/model/ds/";
-import { createConflictGraph } from "../plan/VerticalBundelingConflict";
+import { createConflictGraph } from "./VerticalBundelingConflict";
 import { rlfColoring } from "@/model/alg/Coloring";
-import { verticalLayerOrdering } from "../plan/VerticalLayerOrdering";
+import { verticalLayerOrdering } from "./VerticalLayerOrdering";
 import { Vertex } from "@/model/ds/Vertex";
 
+/**
+ * compute the vertical bundeling
+ *
+ * assigns each edge to a color. starts at 0 for each layer
+ * @param g
+ * @param yPosition
+ * @returns
+ */
 export function computeVerticalBundeling(
   g: LayerGraph, //
   yPosition: (v: Vertex) => number

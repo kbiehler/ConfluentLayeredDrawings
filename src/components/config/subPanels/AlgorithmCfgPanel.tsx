@@ -1,6 +1,6 @@
 import React from "react";
 import { AlgorithmCfgDto } from "@/cfg/ConfigDtos";
-import { EdgeDrawingAlgorithm } from "@/model/layout/edges/plan/EdgePlanner";
+import { EdgeDrawingAlgorithm } from "@/model/layout/edges/EdgeDrawingAlgorithm";
 import { VertexPositionAlgorithm } from "@/model/layout/positioning/VertexPositioner";
 
 type Props = {
@@ -29,7 +29,10 @@ const AlgorithmConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
           <tr>
             <td>Vertex Positioning</td>
             <td>
-              <select value={config.vertexPositioning} onChange={(e) => handleChange("vertexPositioning", e.target.value as AlgorithmCfgDto["vertexPositioning"])}>
+              <select
+                value={config.vertexPositioning}
+                onChange={(e) => handleChange("vertexPositioning", e.target.value as AlgorithmCfgDto["vertexPositioning"])}
+              >
                 {Object.values(VertexPositionAlgorithm).map((alg) => (
                   <option key={alg} value={alg}>
                     {alg}

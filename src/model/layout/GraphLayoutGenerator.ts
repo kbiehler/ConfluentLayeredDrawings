@@ -1,23 +1,23 @@
-import { BipartiteGraph, Graph, LayerGraph } from "@/model/ds/";
+import { BipartiteGraph, Edge, Graph, LayerGraph } from "@/model/ds/";
 import { GraphLayout } from "./GraphLayout";
 import { Vertex } from "@/model/ds/Vertex";
 import { VertexId } from "@/model/types";
 import { VertexPositioner, VertexPositionCfg } from "@/model/layout/positioning/VertexPositioner";
-
-import { InteractionInfo } from "../renderer/InteractionManager";
 import { assignLayers } from "./leveling/LevelAssigner";
 import { addBlicliqueCenters } from "./bicliqueCenter/BiCliqueCenters";
-import { draw } from "./edges/draw/EdgeDrawer";
-import { createVertexSpacer, VertexSpacerConfig } from "./spacing/VertexSpacer";
+import { drawEdges } from "./edges/draw/EdgeDrawer";
+import { createVertexSpacer, VertexSpacer, VertexSpacerConfig } from "./spacing/VertexSpacer";
 import { FixedVerticalSpacerCfg } from "./spacing/FixedVerticalSpacer";
 import { FixedLayerSpacerCfg } from "./spacing/FixedLayerSpacer";
-import { layerSpacerFromCfg } from "./spacing/LayerSpacer";
+import { LayerSpacer, layerSpacerFromCfg } from "./spacing/LayerSpacer";
 import { addCliqueCenterPositons } from "./positioning/CliqueCenterPositioner";
 import { computeScaledPositions } from "./positioning/VertexScaler";
-import { computeVerticalBundeling } from "./edges/draw/VerticalBundelingDrawer";
+import { computeVerticalBundeling } from "./edges/plan/VerticalBundeling";
 import { EdgePlan } from "./edges/plan/EdgePlan";
-import { EdgeDrawingAlgorithm } from "./edges/plan/EdgePlanner";
 import { undoShift } from "./positioning/PostProcessPositioner";
+import { EdgeDrawingAlgorithm } from "./edges/EdgeDrawingAlgorithm";
+import { InteractionInfo } from "../renderer/InteractionManager";
+import _ from "lodash";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -34,8 +34,8 @@ export type GraphLayoutCfg = {
  * @returns
  */
 export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, InteractionInfo] {
-  const drawing = new GraphLayout();
   let layerGraph: LayerGraph;
+  //for example graphs that are already layered
   if (g instanceof BipartiteGraph) {
     layerGraph = g;
   } else {
@@ -43,7 +43,9 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
   }
 
   let vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(layerGraph);
+
   let biCliqueGraph = addBlicliqueCenters(layerGraph, cfg.biCliqueDepth);
+
   vertexPositions = addCliqueCenterPositons(biCliqueGraph, vertexPositions, cfg.biCliqueDepth);
 
   vertexPositions = computeScaledPositions(biCliqueGraph, vertexPositions, cfg.vertexPosition.yDist);
@@ -52,23 +54,53 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
 
   vertexPositions = undoShift(vertexPositions, biCliqueGraph, vertBundeling);
 
-  const edgePlans = Array.from(vertBundeling).map(
-    ([edge, relativeLayer]) =>
-      ({ edge: edge, source: edge.source, target: edge.target, relativeVertLayer: relativeLayer, layer: biCliqueGraph.getLayer(edge.source) } as EdgePlan)
-  );
+  const edgePlans = generateEdgePlans(vertBundeling, biCliqueGraph);
 
   const vertexSpacer = createVertexSpacer(biCliqueGraph, cfg.vertexSpacing);
-  const vertLayerSpacer = layerSpacerFromCfg(cfg.layerSpacing, vertexSpacer);
 
-  let adjEdges2 = draw(
+  const layerSpacer = initLayerSpacer(cfg, vertexSpacer, biCliqueGraph, edgePlans);
+
+  const layout = new GraphLayout();
+
+  let adjEdges = drawEdges(
     biCliqueGraph,
-    drawing,
+    layout,
     (v: Vertex) => vertexPositions.get(v)!,
     (v: Vertex) => v.isCliqueCenter(),
     edgePlans,
-    vertLayerSpacer
+    layerSpacer
   );
 
+  addVerticesToLayout(vertexPositions, layout, layerSpacer, vertexSpacer, biCliqueGraph);
+
+  const interactInfo = createInteractInfo(adjEdges, layerGraph);
+
+  return [layout, interactInfo];
+}
+
+function initLayerSpacer(cfg: GraphLayoutCfg, vertexSpacer: VertexSpacer, biCliqueGraph: LayerGraph<Vertex, Edge<Vertex>>, edgePlans: EdgePlan[]) {
+  const layerSpacer = layerSpacerFromCfg(cfg.layerSpacing, vertexSpacer);
+  layerSpacer.setGraph(biCliqueGraph);
+  layerSpacer.setNumVertLayer(countVertLayers(edgePlans));
+  return layerSpacer;
+}
+
+function createInteractInfo(adjEdges: Map<Vertex, Set<string>>, inputGraph: LayerGraph<Vertex, Edge<Vertex>>): InteractionInfo {
+  let idAdjEdges = new Map<VertexId, Set<string>>();
+  adjEdges.forEach((edges, v) => idAdjEdges.set(v.getId(), edges));
+  let idAdjVertices = new Map<VertexId, Set<VertexId>>();
+  inputGraph.getVertices().forEach((v) => idAdjVertices.set(v.getId(), new Set(inputGraph.getAdjacent(v).map((v) => v.getId()))));
+
+  return { adjEdges: idAdjEdges, adjVertices: idAdjVertices };
+}
+
+function addVerticesToLayout(
+  vertexPositions: Map<Vertex, number>,
+  drawing: GraphLayout,
+  vertLayerSpacer: LayerSpacer,
+  vertexSpacer: VertexSpacer,
+  biCliqueGraph: LayerGraph<Vertex, Edge<Vertex>>
+) {
   vertexPositions.forEach((_, vertex) => {
     drawing.addVertex(
       vertex.getId(), //
@@ -80,10 +112,18 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
       vertexSpacer.label(vertex)
     );
   });
+}
 
-  let adjEdges = new Map<VertexId, Set<string>>();
-  adjEdges2.forEach((edges, v) => adjEdges.set(v.getId(), edges));
-  let adjVertices = new Map<VertexId, Set<VertexId>>();
-  g.getVertices().forEach((v) => adjVertices.set(v.getId(), new Set(g.getAdjacent(v).map((v) => v.getId()))));
-  return [drawing, { adjEdges, adjVertices }];
+function countVertLayers(plan: EdgePlan[]): number[] {
+  const byLayer = _.groupBy(plan, (spec) => spec.layer);
+  const maxVal = _.mapValues(byLayer, (group) => _.maxBy(group, "relativeVertLayer")!.relativeVertLayer);
+  const result = Array.from({ length: Object.keys(maxVal).length }, (_, i) => maxVal[i] + 1);
+  return result;
+}
+
+function generateEdgePlans(vertBundeling: Map<Edge, number>, biCliqueGraph: LayerGraph) {
+  return Array.from(vertBundeling).map(
+    ([edge, relativeLayer]) =>
+      ({ edge: edge, source: edge.source, target: edge.target, relativeVertLayer: relativeLayer, layer: biCliqueGraph.getLayer(edge.source) } as EdgePlan)
+  );
 }

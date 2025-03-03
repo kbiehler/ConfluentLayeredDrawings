@@ -1,11 +1,11 @@
 import { RenderCfg } from "@/model/renderer/GraphSVGRenderer";
 import { GraphLayoutCfg } from "../model/layout/GraphLayoutGenerator";
 import { ExampleGraphs } from "@/examples/ExampleGraphs";
-import { EdgeDrawingAlgorithm } from "@/model/layout/edges/plan/EdgePlanner";
 import { VertexPositionAlgorithm } from "@/model/layout/positioning/VertexPositioner";
 import { FixedLayerSpacerCfg } from "@/model/layout/spacing/FixedLayerSpacer";
 import { FixedVerticalSpacerCfg } from "@/model/layout/spacing/FixedVerticalSpacer";
 import { vertexSpacingCfg, VertexSpacingCfgDto } from "./VertexSpacingCfgDto";
+import { EdgeDrawingAlgorithm } from "@/model/layout/edges/EdgeDrawingAlgorithm";
 
 /**
  * Data Transfer Object (DTO) for configuration settings.

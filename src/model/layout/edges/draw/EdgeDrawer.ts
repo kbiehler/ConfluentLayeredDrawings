@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 // radius of the quater circles in the confluent drawing
 const RADIUS = 25;
 
-export function draw(
+export function drawEdges(
   g: LayerGraph, //
   layout: GraphLayout,
   yPosition: (v: Vertex) => number,
@@ -16,26 +16,14 @@ export function draw(
   plan: EdgePlan[],
   layerSpacer: LayerSpacer
 ): Map<Vertex, Set<string>> {
-  const numVertLayers = countVertLayers(plan);
-  layerSpacer.setGraph(g);
-  layerSpacer.setNumVertLayer(numVertLayers);
-
   let edgeToX = new Map<Edge<Vertex>, number>();
-
   for (let edgePlan of plan) {
     edgeToX.set(edgePlan.edge, layerSpacer.xPositionVertical(edgePlan.layer, edgePlan.relativeVertLayer));
   }
-  return drawEdges(g, edgeToX, layout, layerSpacer, yPosition, isCliqueCenter);
+  return draw(g, edgeToX, layout, layerSpacer, yPosition, isCliqueCenter);
 }
 
-function countVertLayers(plan: EdgePlan[]): number[] {
-  const byLayer = _.groupBy(plan, (spec) => spec.layer);
-  const maxVal = _.mapValues(byLayer, (group) => _.maxBy(group, "relativeVertLayer")!.relativeVertLayer);
-  const result = Array.from({ length: Object.keys(maxVal).length }, (_, i) => maxVal[i] + 1);
-  return result;
-}
-
-function drawEdges(
+function draw(
   g: LayerGraph, //
   edgeToX: Map<Edge<Vertex>, number>,
   layout: GraphLayout,
@@ -48,7 +36,14 @@ function drawEdges(
 
   const drawer = new Drawer();
   edgeToX.forEach((x, edge) => {
-    const edgeIds = drawer.drawEdge(layout, xPositions.xPosition(edge.source), yPosition(edge.source), xPositions.xPosition(edge.target), yPosition(edge.target), x);
+    const edgeIds = drawer.drawEdge(
+      layout,
+      xPositions.xPosition(edge.source),
+      yPosition(edge.source),
+      xPositions.xPosition(edge.target),
+      yPosition(edge.target),
+      x
+    );
     if (isCliqueCenter(edge.source)) {
       //add ids to vertices infront of TreeCenter
       g.getIncidentIn(edge.source).forEach((e) => edgeIds.forEach((id) => adjEdges.get(e.source)!.add(id)));
