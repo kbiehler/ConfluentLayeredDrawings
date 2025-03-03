@@ -1,5 +1,5 @@
 import { LayerGraph } from "@/model/ds/";
-import { drawVerticalBundeling } from "../draw/VerticalBundelingDrawer";
+import { computeVerticalBundeling } from "../draw/VerticalBundelingDrawer";
 import { Vertex } from "@/model/ds/Vertex";
 import { EdgePlan } from "./EdgePlan";
 
@@ -16,17 +16,17 @@ export enum EdgeDrawingAlgorithm {
  * @param layout
  * @returns Vertex to the IDs of adjacent edges in the GraphLayout. (later used in InteractionManager to highlight edges)
  */
-export function planEdges(
-  alg: EdgeDrawingAlgorithm, //
-  g: LayerGraph, //
-  yPosition: (v: Vertex) => number
-): EdgePlan[] {
-  switch (alg) {
-    case EdgeDrawingAlgorithm.STRAIGHT_LINE:
-    case EdgeDrawingAlgorithm.VERTICAL_BUNDELING:
-      return drawVerticalBundeling(g, yPosition);
-  }
-}
+// export function planEdges(
+//   alg: EdgeDrawingAlgorithm, //
+//   g: LayerGraph, //
+//   yPosition: (v: Vertex) => number
+// ): EdgePlan[] {
+//   switch (alg) {
+//     case EdgeDrawingAlgorithm.STRAIGHT_LINE:
+//     case EdgeDrawingAlgorithm.VERTICAL_BUNDELING:
+//       // return computeVerticalBundeling(g, yPosition);
+//   }
+// }
 
 // export function drawStaightLine<V>(g: LayerGraph<V>, vertexPosition: (v: V) => number, layout: GraphLayout): Map<V, Set<string>> {
 //   const adjEdges = new Map<V, Set<string>>();

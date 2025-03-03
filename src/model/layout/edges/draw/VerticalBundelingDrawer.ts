@@ -3,22 +3,23 @@ import { createConflictGraph } from "../plan/VerticalBundelingConflict";
 import { rlfColoring } from "@/model/alg/Coloring";
 import { verticalLayerOrdering } from "../plan/VerticalLayerOrdering";
 import { Vertex } from "@/model/ds/Vertex";
-import { EdgePlan } from "../plan/EdgePlan";
 
-export function drawVerticalBundeling(
+export function computeVerticalBundeling(
   g: LayerGraph, //
   yPosition: (v: Vertex) => number
-): EdgePlan[] {
-  let edgeSpecs: EdgePlan[] = [];
+): Map<Edge, number> {
+  let edgeToVertLayer = new Map<Edge, number>();
   const nLayers = g.getLayerCount();
   for (let layer = 0; layer < nLayers - 1; layer++) {
     const biGraph = convertLayerToBiGraph(g, layer);
     const tmpVerticLayers = assignLayers(biGraph, yPosition);
-    const tmpVerticLayersSpecs = tmpVerticLayers //
-      .flatMap((edges, i) => Array.from(edges).map((edge) => ({ edge: edge, source: edge.source, target: edge.target, relativeVertLayer: i, layer: layer } as EdgePlan)));
-    edgeSpecs.push(...tmpVerticLayersSpecs);
+    tmpVerticLayers.forEach((edges, i) => {
+      edges.forEach((edge) => {
+        edgeToVertLayer.set(edge, i);
+      });
+    });
   }
-  return edgeSpecs;
+  return edgeToVertLayer;
 }
 
 /**

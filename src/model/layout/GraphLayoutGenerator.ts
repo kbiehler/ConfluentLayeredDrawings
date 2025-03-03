@@ -5,7 +5,6 @@ import { VertexId } from "@/model/types";
 import { VertexPositioner, VertexPositionCfg } from "@/model/layout/positioning/VertexPositioner";
 
 import { InteractionInfo } from "../renderer/InteractionManager";
-import { EdgeDrawingAlgorithm, planEdges } from "@/model/layout/edges/plan/EdgePlanner";
 import { assignLayers } from "./leveling/LevelAssigner";
 import { addBlicliqueCenters } from "./bicliqueCenter/BiCliqueCenters";
 import { draw } from "./edges/draw/EdgeDrawer";
@@ -15,6 +14,9 @@ import { FixedLayerSpacerCfg } from "./spacing/FixedLayerSpacer";
 import { layerSpacerFromCfg } from "./spacing/LayerSpacer";
 import { addCliqueCenterPositons } from "./positioning/CliqueCenterPositioner";
 import { computeScaledPositions } from "./positioning/VertexScaler";
+import { computeVerticalBundeling } from "./edges/draw/VerticalBundelingDrawer";
+import { EdgePlan } from "./edges/plan/EdgePlan";
+import { EdgeDrawingAlgorithm } from "./edges/plan/EdgePlanner";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -45,7 +47,12 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
 
   vertexPositions = computeScaledPositions(biCliqueGraph, vertexPositions, cfg.vertexPosition.yDist);
 
-  let edgePlans = planEdges(cfg.edgeAlg, biCliqueGraph, (v: Vertex) => vertexPositions.get(v)!);
+  let vertBundeling = computeVerticalBundeling(biCliqueGraph, (v) => vertexPositions.get(v)!);
+
+  const edgePlans = Array.from(vertBundeling).map(
+    ([edge, relativeLayer]) =>
+      ({ edge: edge, source: edge.source, target: edge.target, relativeVertLayer: relativeLayer, layer: biCliqueGraph.getLayer(edge.source) } as EdgePlan)
+  );
 
   const vertexSpacer = createVertexSpacer(biCliqueGraph, cfg.vertexSpacing);
   const vertLayerSpacer = layerSpacerFromCfg(cfg.layerSpacing, vertexSpacer);

@@ -1,6 +1,6 @@
 import { Vertex } from "./Vertex";
 
-export class Edge<V> {
+export class Edge<V = Vertex> {
   source: V;
   target: V;
   weight: number;
