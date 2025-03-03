@@ -47,6 +47,24 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
     }
   }, [panelSelect]);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        setPanelSelect((prevPanel) => {
+          if (prevPanel === "main") return "nbr";
+          if (prevPanel === "nbr") return "impl";
+          return "main";
+        });
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <div>
       <div style={{ flexShrink: 0, padding: "10px", display: "flex", gap: "10px" }}>

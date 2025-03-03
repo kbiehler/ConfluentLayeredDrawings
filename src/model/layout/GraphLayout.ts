@@ -71,7 +71,7 @@ export class GraphLayout {
       return [0, 0];
     }
     const minX = Math.min(...Array.from(this.vertices.values()).map((v) => v.position.x - v.width / 2));
-    const maxX = Math.max(...Array.from(this.vertices.values()).map((v) => v.position.x + v.width));
+    const maxX = Math.max(...Array.from(this.vertices.values()).map((v) => v.position.x + v.width / 2));
 
     const minY = Math.min(...Array.from(this.vertices.values()).map((v) => v.position.y - v.height / 2));
     const maxY = Math.max(...Array.from(this.vertices.values()).map((v) => v.position.y + v.height / 2));

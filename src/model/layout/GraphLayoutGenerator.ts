@@ -54,7 +54,7 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
   let vertBundeling = computeVerticalBundeling(biCliqueGraph, (v) => vertexPositions.get(v)!);
 
   if (cfg.biClique.bicliqueDepth > 0 && cfg.biClique.postProcessShift) {
-    vertexPositions = postProcessBicliqueShift(vertexPositions, biCliqueGraph, vertBundeling);
+    vertexPositions = postProcessBicliqueShift(vertexPositions, biCliqueGraph, vertBundeling, cfg.vertexPosition.yDist);
   }
 
   const edgePlans = generateEdgePlans(vertBundeling, biCliqueGraph);

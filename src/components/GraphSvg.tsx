@@ -43,11 +43,12 @@ function draw(
 
   let [width, height] = graphDrawing.getSize();
   let [xShift, yShift] = graphDrawing.getShift();
-  let [xAdd, yAdd] = [30, 30];
+  let [addWidth, addHeight] = [40, 40];
+  let [xAddShift, yAddShift] = [30, 30];
 
-  svg.attr("width", width + xAdd).attr("height", height + yAdd);
+  svg.attr("width", width + addWidth).attr("height", height + addHeight);
   //g contains actual drawing, shifted by shift of drawing + additional px
-  const g = svg.append("g").attr("transform", `translate(${xShift + xAdd}, ${yShift + yAdd})`);
+  const g = svg.append("g").attr("transform", `translate(${xShift + xAddShift}, ${yShift + yAddShift})`);
 
   new GraphSVGRenderer().render(
     g,

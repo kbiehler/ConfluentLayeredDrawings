@@ -55,7 +55,7 @@ export abstract class VertexSpacer {
     }
     for (let i = label.length - 1; i > 0; i--) {
       const substring = label.substring(0, i) + "...";
-      if (getTextSize(substring).width < width - this.textPadding) {
+      if (getTextSize(substring).width <= width - this.textPadding) {
         return substring;
       }
     }
@@ -136,7 +136,7 @@ export class DynamicVertexSpacer extends VertexSpacer {
         this.layerToWidth.set(i, 0);
       } else {
         const allWidths = g.getVerticesInLayer(i).map((v) => getTextSize(v.getLabel()).width);
-        const width = getPercentile(allWidths, show_percentage) + this.textPadding;
+        const width = getPercentile(allWidths, show_percentage) + this.textPadding + 1; //+1 for rounding errors
         this.layerToWidth.set(i, Math.min(Math.max(width_min, width), width_max));
       }
     }
@@ -153,7 +153,7 @@ export class DynamicVertexSpacer extends VertexSpacer {
 
 function getPercentile(arr: number[], percentile: number): number {
   const sorted = _.sortBy(arr);
-  const index = Math.floor(arr.length * percentile);
+  const index = Math.min(Math.ceil(arr.length * percentile), arr.length - 1);
   return sorted[index];
 }
 

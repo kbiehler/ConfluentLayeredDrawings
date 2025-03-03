@@ -5,7 +5,7 @@ export function postProcessCliqueShift(
   yPos: Map<Vertex, number>, //
   g: LayerGraph,
   vertBundeling: Map<Edge, number>,
-  minSpacing: number = 50
+  minSpacing: number
 ): Map<Vertex, number> {
   for (let i = 1; i < g.getLayerCount(); i += 2) {
     const layerPrev = getSortedLayer(g, i - 1, yPos);
@@ -24,12 +24,9 @@ export function postProcessCliqueShift(
 
       //check violation to previous layer
       const prevSameY = getAtY(layerPrev, optPos);
-      const nextSameY = getAtY(layerNext, optPos);
-      console.log(prevSameY, nextSameY);
-      console.log(maxVertRightLayer(prevSameY, v, g, vertBundeling), minVertLeftLayer(v, prevSameY, g, vertBundeling));
-      console.log(maxVertRightLayer(v, nextSameY, g, vertBundeling), minVertLeftLayer(nextSameY, v, g, vertBundeling));
       if (maxVertRightLayer(prevSameY, v, g, vertBundeling) >= minVertLeftLayer(v, prevSameY, g, vertBundeling)) continue;
       //check violation to next layer
+      const nextSameY = getAtY(layerNext, optPos);
       if (maxVertRightLayer(v, nextSameY, g, vertBundeling) >= minVertLeftLayer(nextSameY, v, g, vertBundeling)) continue;
 
       //shift v to optPos
