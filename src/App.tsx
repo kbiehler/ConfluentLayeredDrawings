@@ -2,6 +2,7 @@ import { useState } from "react";
 import ConfigPanel from "@/components/config/ConfigPanel";
 import { ConfigDto } from "./cfg/ConfigDtos";
 import GraphsPanel from "./components/GraphsPanel";
+import "./App.css";
 
 function App() {
   const [config, setConfig] = useState(() => new ConfigDto());

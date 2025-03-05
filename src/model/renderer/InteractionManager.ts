@@ -8,6 +8,7 @@ export interface InteractionInfo {
 
 export class InteractionState {
   selectedVertices: Set<VertexId> = new Set();
+  vertexMouseOver: Set<VertexId> = new Set();
 }
 
 export class InteractionManager extends EventEmitter {
@@ -17,6 +18,16 @@ export class InteractionManager extends EventEmitter {
   constructor(interactionInfo?: InteractionInfo) {
     super();
     this.interactionInfo = interactionInfo || { adjEdges: new Map(), adjVertices: new Map() };
+  }
+
+  vertexMouseOver(vertexId: VertexId) {
+    this.state.vertexMouseOver.add(vertexId);
+    this.triggerRedraw();
+  }
+
+  vertexMouseOut(vertexId: VertexId) {
+    this.state.vertexMouseOver.delete(vertexId);
+    this.triggerRedraw();
   }
 
   vertexClicked(vertexId: VertexId, ctrlKey: boolean) {

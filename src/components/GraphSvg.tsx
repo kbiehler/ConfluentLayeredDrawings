@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 import { GraphSVGRenderer, RenderCfg } from "@/model/renderer/GraphSVGRenderer";
 import { InteractionManager } from "@/model/renderer/InteractionManager";
 import { SvgEventController } from "@/model/renderer/SvgEventController";
+import "./GraphSvg.css";
 
 interface DrawingProps {
   graphLayout: GraphLayout;
@@ -26,7 +27,7 @@ const GraphSvg: React.FC<DrawingProps> = ({ graphLayout: graphDrawing, renderCfg
   }, [graphDrawing]);
 
   return (
-    <div style={{ display: "inline-block" }}>
+    <div id="graph-container" style={{ display: "inline-block" }}>
       <svg ref={svgRef}></svg>
     </div>
   );

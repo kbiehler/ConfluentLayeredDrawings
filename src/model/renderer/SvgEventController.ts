@@ -12,5 +12,8 @@ export class SvgEventController {
     svg.selectAll<SVGCircleElement, VertexLayout>("rect").on("click", (event, value: VertexLayout) => {
       this.interactionManager.vertexClicked(value.id, event.ctrlKey);
     });
+    svg.selectAll<SVGCircleElement, VertexLayout>("rect").on("meouseover", (event, value: VertexLayout) => {
+      this.interactionManager.vertexClicked(value.id, event.ctrlKey);
+    });
   }
 }
