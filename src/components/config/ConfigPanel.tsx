@@ -1,6 +1,6 @@
 import "./ConfigPanel.css";
 import React, { useState } from "react";
-import { ConfigDto } from "@/cfg/ConfigDtos";
+import { ConfigDto, OptimizationCfgDto } from "@/cfg/ConfigDtos";
 import UiConfigPanel from "./subPanels/UiCfgPanel";
 import BarycenterCfgPanel from "./subPanels/BarycenterCfgPanel";
 import GraphConfigPanel from "./subPanels/GraphCfgPanel";
@@ -8,6 +8,7 @@ import AlgorithmConfigPanel from "./subPanels/AlgorithmCfgPanel";
 import BiCliqueCfgPanel from "./subPanels/BiCliqueCfgPanel";
 import LayerSpacingCfgPanel from "./subPanels/LayerSpacingCfgPanel";
 import VertexSpacingCfgPanel from "./subPanels/VertexSpacingCfgPanel";
+import OptimizationCfgPanel from "./subPanels/OptimizationCfgPanel";
 
 type Props = {
   config: ConfigDto;
@@ -45,6 +46,7 @@ const ConfigPanel: React.FC<Props> = ({ config, setConfig }) => {
             <BiCliqueCfgPanel config={localConfig.biCliqueCfg} handleChange={(field, value) => handleChange("biCliqueCfg", field, value)} />
             <LayerSpacingCfgPanel config={localConfig.layerSpacingCfg} handleChange={(field, value) => handleChange("layerSpacingCfg", field, value)} />
             <VertexSpacingCfgPanel config={localConfig.vertexSpacingCfg} handleChange={(field, value) => handleChange("vertexSpacingCfg", field, value)} />
+            <OptimizationCfgPanel config={localConfig.optimizationCfg} handleChange={(field, value) => handleChange("optimizationCfg", field, value)} />
           </div>
           <button className="redraw-button" onClick={handleApply}>
             Apply

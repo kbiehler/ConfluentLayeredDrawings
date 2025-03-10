@@ -23,6 +23,7 @@ export class ConfigDto {
   biCliqueCfg: BiCliqueCfg = new BiCliqueCfg();
   layerSpacingCfg: LayerSpacingCfgDto = new LayerSpacingCfgDto();
   vertexSpacingCfg: VertexSpacingCfgDto = vertexSpacingCfg;
+  optimizationCfg: OptimizationCfgDto = new OptimizationCfgDto();
 }
 
 export class GraphCfgDto {
@@ -47,7 +48,7 @@ export class UiCfgDto {
   highlightColor: string = "#FF6347";
   edgeColor: string = "#999999";
   yDist: number = 100;
-  showCliqueCenter: boolean = true;
+  showCliqueCenter: boolean = false;
 }
 
 export class BiCliqueCfg {
@@ -63,6 +64,10 @@ export class LayerSpacingCfgDto {
   vertLayerFix_addCenterWidth: number = 0;
 
   layerFix_layerSpacing: number = 500;
+}
+
+export class OptimizationCfgDto {
+  metricTries: number = 10;
 }
 
 export function mapToRenderCfg(cfgDto: ConfigDto): RenderCfg {

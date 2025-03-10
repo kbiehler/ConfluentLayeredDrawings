@@ -19,6 +19,7 @@ import { EdgeDrawingAlgorithm } from "./edges/EdgeDrawingAlgorithm";
 import { InteractionInfo } from "../renderer/InteractionManager";
 import _ from "lodash";
 import { BiCliqueCfg } from "@/cfg/ConfigDtos";
+import { LayoutMetrics } from "../metrics/LayoutMetrics";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -34,7 +35,7 @@ export type GraphLayoutCfg = {
  * @param cfg
  * @returns
  */
-export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, InteractionInfo] {
+export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, InteractionInfo, LayoutMetrics] {
   let layerGraph: LayerGraph;
   //for example graphs that are already layered
   if (g instanceof BipartiteGraph) {
@@ -78,7 +79,15 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
 
   const interactInfo = createInteractInfo(adjEdges, layerGraph);
 
-  return [layout, interactInfo];
+  const layoutMetrics = getLayoutMetrics(edgePlans);
+
+  return [layout, interactInfo, layoutMetrics];
+}
+
+function getLayoutMetrics(plan: EdgePlan[]): LayoutMetrics {
+  const vertLayers = countVertLayers(plan);
+  const totalVerticalLayer = _.sum(vertLayers);
+  return { totalVerticalLayer } as LayoutMetrics;
 }
 
 function initLayerSpacer(cfg: GraphLayoutCfg, vertexSpacer: VertexSpacer, biCliqueGraph: LayerGraph<Vertex, Edge<Vertex>>, edgePlans: EdgePlan[]) {

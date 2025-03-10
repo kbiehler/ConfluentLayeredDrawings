@@ -13,7 +13,22 @@ export function draw(cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionI
   const inputG = loadFromCfg(cfgDto.graphCfg);
   const cfg = mapToGraphLayoutCfg(cfgDto);
   const g = convertToLayoutVertices(inputG);
-  const [layout, interactInfo] = generateLayout(g, cfg);
+
+  let bestLayout: GraphLayout | null = null;
+  let bestInteractInfo: InteractionInfo | null = null;
+  let bestMetrics: any = null;
+
+  for (let i = 0; i < cfgDto.optimizationCfg.metricTries; i++) {
+    const [layout, interactInfo, metrics] = generateLayout(g, cfg);
+    if (!bestMetrics || metrics.totalVerticalLayer < bestMetrics.totalVerticalLayer) {
+      bestLayout = layout;
+      bestInteractInfo = interactInfo;
+      bestMetrics = metrics;
+    }
+  }
+
+  const layout = bestLayout!;
+  const interactInfo = bestInteractInfo!;
   return [new RedrawState(g), layout, interactInfo];
 }
 
