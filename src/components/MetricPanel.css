@@ -1,0 +1,139 @@
+.panel {
+    padding: 20px;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    background-color: #f0f8ff;
+  }
+  
+  .panel-title {
+    color: #007bff;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  
+  .panel-content label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  input[type="number"],
+  input[type="checkbox"] {
+    margin-top: 5px;
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+
+  .config-table input[type="color"] {
+    width: 70px; /* Adjust width as needed */
+    height: 25px; /* Optional: Adjust height for better appearance */
+    padding: 0px; /* Optional: Adds a little spacing inside */
+  }
+  
+  
+  .redraw-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 15px;
+  }
+  
+  .redraw-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Styling for the toggle button */
+  .panel-toggle {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s;
+  }
+  
+  .panel-toggle:hover {
+    background-color: #0056b3;
+  }
+  
+  .panel-toggle:active {
+    transform: scale(0.98);
+  }
+  
+  /* Animation for opening and closing the panel */
+  .panel.closed .panel-content {
+    display: none;
+  }
+  
+  .panel.open .panel-content {
+    display: block;
+  }
+
+  /* Styling for select dropdowns */
+select {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Focus effect for better user experience */
+select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Styling for select options */
+select option {
+  padding: 5px;
+  font-size: 14px;
+}
+
+/* Optional: Make dropdowns visually appealing */
+select:hover {
+    border-color: #0056b3;
+}
+
+/* Styling for the metric table */
+.metric-table {
+    border-collapse: collapse;
+    margin-top: 15px;
+    width: 100%;
+}
+
+.metric-table td {
+        padding: 15px;
+        border: 1px solid #ccc;
+        font-size: 18px; /* Increase font size for larger entries */
+}
+
+.metric-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+}
+
+/* Set fixed width for the panel to fit the table */
+.panel2 {
+    width: 640px; /* Adjust width to fit the table and padding */
+    padding: 20px;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    background-color: #f0f8ff;
+}

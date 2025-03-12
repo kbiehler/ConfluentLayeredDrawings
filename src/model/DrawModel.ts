@@ -8,8 +8,9 @@ import { ConfigDto, mapToGraphLayoutCfg } from "@/cfg/ConfigDtos";
 import { loadFromCfg } from "@/input/GraphLoader";
 import { VertexId } from "./types";
 import { buildImplGraph, buildNbrGraph } from "./redraw/RedrawAlg";
+import { LayoutMetrics } from "./metrics/LayoutMetrics";
 
-export function draw(cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionInfo] {
+export function draw(cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionInfo, LayoutMetrics] {
   const inputG = loadFromCfg(cfgDto.graphCfg);
   const cfg = mapToGraphLayoutCfg(cfgDto);
   const g = convertToLayoutVertices(inputG);
@@ -29,7 +30,8 @@ export function draw(cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionI
 
   const layout = bestLayout!;
   const interactInfo = bestInteractInfo!;
-  return [new RedrawState(g), layout, interactInfo];
+  const metrics = bestMetrics!;
+  return [new RedrawState(g), layout, interactInfo, metrics];
 }
 
 /**
@@ -38,12 +40,12 @@ export function draw(cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionI
  * @param selection
  * @returns
  */
-export function redrawNbr(redrawState: RedrawState, selection: Set<VertexId>, cfgDto: ConfigDto): GraphLayout {
+export function redrawNbr(redrawState: RedrawState, selection: Set<VertexId>, cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionInfo, LayoutMetrics] {
   const g = redrawState.g;
   const cfg = mapToGraphLayoutCfg(cfgDto);
   const nbrGraph = buildNbrGraph(g, selection);
-  const [layout, _] = generateLayout(nbrGraph, cfg);
-  return layout;
+  const [layout, interactInfo, metrics] = generateLayout(nbrGraph, cfg);
+  return [new RedrawState(nbrGraph), layout, interactInfo, metrics];
 }
 
 /**
@@ -52,12 +54,12 @@ export function redrawNbr(redrawState: RedrawState, selection: Set<VertexId>, cf
  * @param selection
  * @returns
  */
-export function redrawImpl(redrawState: RedrawState, selection: Set<VertexId>, cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionInfo] {
+export function redrawImpl(redrawState: RedrawState, selection: Set<VertexId>, cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionInfo, LayoutMetrics] {
   const g = redrawState.g;
   const cfg = mapToGraphLayoutCfg(cfgDto);
   const newGraph = buildImplGraph(g, selection);
-  const [layout, interactInfo] = generateLayout(newGraph, cfg);
-  return [new RedrawState(newGraph), layout, interactInfo];
+  const [layout, interactInfo, metrics] = generateLayout(newGraph, cfg);
+  return [new RedrawState(newGraph), layout, interactInfo, metrics];
 }
 
 function convertToLayoutVertices<V>(g: Graph<V>): Graph {

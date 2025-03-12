@@ -7,6 +7,8 @@ import { InteractionManager, MarkVertexInteractionManager } from "@/model/render
 import { Graph } from "@/model/ds";
 import { draw, redrawImpl, redrawNbr } from "@/model/DrawModel";
 import { RedrawState } from "@/model/redraw/RedrawState";
+import { Empty_Layout_Metric } from "@/model/metrics/LayoutMetrics";
+import MetricPanel from "./MetricPanel";
 
 interface GraphsPanelProps {
   config: ConfigDto;
@@ -18,32 +20,38 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
   const [interactMgr, setInteractMgr] = useState(() => new InteractionManager());
   const [renderCfg, setRenderCfg] = useState(() => mapToRenderCfg(config));
   const [panelSelect, setPanelSelect] = useState<"main" | "nbr" | "impl">("main");
+  const [metric, setMetric] = useState(Empty_Layout_Metric);
 
   useEffect(() => {
-    const [redrawState, tmpLayout, tmpInteractInfo] = draw(config);
+    const [redrawState, tmpLayout, tmpInteractInfo, tmpMetric] = draw(config);
     setRedrawState(redrawState);
     setLayout(tmpLayout);
     setInteractMgr(new InteractionManager(tmpInteractInfo));
     setRenderCfg(mapToRenderCfg(config));
+    setMetric(tmpMetric);
   }, [config]);
 
   const [nbrLayout, setNbrLayout] = useState(() => new GraphLayout());
+  const [nbrMetric, setNbrMetric] = useState(Empty_Layout_Metric);
   const [nbrInteractMgr, setNbrInteractMgr] = useState(() => new InteractionManager());
 
   const [implLayout, setImplLayout] = useState(() => new GraphLayout());
   const [implInteractMgr, setImplInteractMgr] = useState(() => new InteractionManager());
+  const [implMetric, setImplMetric] = useState(Empty_Layout_Metric);
 
   useEffect(() => {
     if (panelSelect === "main") {
       return;
     } else if (panelSelect === "nbr") {
-      const tmpLayout = redrawNbr(redrawState, interactMgr.state.selectedVertices, config);
+      const [, tmpLayout, _, tmpMetrics] = redrawNbr(redrawState, interactMgr.state.selectedVertices, config);
       setNbrInteractMgr(new MarkVertexInteractionManager(interactMgr.state.selectedVertices));
       setNbrLayout(tmpLayout);
+      setNbrMetric(tmpMetrics);
     } else if (panelSelect === "impl") {
-      const [, tmpLayout, _] = redrawImpl(redrawState, interactMgr.state.selectedVertices, config);
+      const [, tmpLayout, _, tmpMetrics] = redrawImpl(redrawState, interactMgr.state.selectedVertices, config);
       setImplInteractMgr(new MarkVertexInteractionManager(interactMgr.state.selectedVertices));
       setImplLayout(tmpLayout);
+      setImplMetric(tmpMetrics);
     }
   }, [panelSelect]);
 
@@ -67,6 +75,15 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
 
   return (
     <div>
+      <div style={{ flexGrow: 1 }}>
+        {panelSelect === "main" ? (
+          <MetricPanel metric={metric} />
+        ) : panelSelect === "nbr" ? (
+          <MetricPanel metric={nbrMetric} />
+        ) : (
+          <MetricPanel metric={implMetric} />
+        )}
+      </div>
       <div style={{ flexShrink: 0, padding: "10px", display: "flex", gap: "10px" }}>
         <button onClick={() => setPanelSelect("main")} style={{ background: panelSelect === "main" ? "#ddd" : "#fff" }}>
           Main Graph

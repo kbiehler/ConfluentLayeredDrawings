@@ -67,7 +67,7 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
 
   const layout = new GraphLayout();
 
-  let adjEdges = drawEdges(
+  let { adjEdges, bends, ink } = drawEdges(
     biCliqueGraph,
     layout,
     (v: Vertex) => vertexPositions.get(v)!,
@@ -80,19 +80,18 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
 
   const interactInfo = createInteractInfo(adjEdges, layerGraph);
 
-  const layoutMetrics = getLayoutMetrics(edgePlans, vertexPositions);
+  const layoutMetrics = getLayoutMetrics(edgePlans, vertexPositions, bends, ink);
 
   return [layout, interactInfo, layoutMetrics];
 }
 
-function getLayoutMetrics(plan: EdgePlan[], vertexPositions: Map<Vertex, number>): LayoutMetrics {
+function getLayoutMetrics(plan: EdgePlan[], vertexPositions: Map<Vertex, number>, bends: number, ink: number): LayoutMetrics {
   const vertLayers = countVertLayers(plan);
   const totalVerticalLayer = _.sum(vertLayers);
 
   const totalCrossings = crossingsOfPlan(plan, (v) => vertexPositions.get(v)!);
-  console.log("crossings", totalCrossings);
 
-  return { totalVerticalLayer } as LayoutMetrics;
+  return { totalVerticalLayer, crossings: totalCrossings, bends, ink: Math.round(ink) } as LayoutMetrics;
 }
 
 function initLayerSpacer(cfg: GraphLayoutCfg, vertexSpacer: VertexSpacer, biCliqueGraph: LayerGraph<Vertex, Edge<Vertex>>, edgePlans: EdgePlan[]) {

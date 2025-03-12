@@ -7,32 +7,35 @@ export function postProcessCliqueShift(
   vertBundeling: Map<Edge, number>,
   minSpacing: number
 ): Map<Vertex, number> {
-  for (let i = 1; i < g.getLayerCount(); i += 2) {
-    const layerPrev = getSortedLayer(g, i - 1, yPos);
-    const layer = getSortedLayer(g, i, yPos);
-    const layerNext = getSortedLayer(g, i + 1, yPos);
+  for (let j = 1; j < 5; j++) {
+    for (let i = 1; i < g.getLayerCount(); i += 2) {
+      const layerPrev = getSortedLayer(g, i - 1, yPos);
+      const layer = getSortedLayer(g, i, yPos);
+      const layerNext = getSortedLayer(g, i + 1, yPos);
 
-    for (let j = 0; j < layer.length; j++) {
-      const [v, y] = layer[j];
+      for (let j = 0; j < layer.length; j++) {
+        const [v, y] = layer[j];
 
-      const optPos = computeOptPosition(yPos, g, v);
-      if (optPos === undefined) continue;
-      if (optPos === y) continue;
-      //shift by at most 1/2 layer, this way we only have to consider if unique verticalBundeling is violated locally
-      if (Math.abs(optPos - y) > minSpacing) continue;
-      if (violatesMinSpacing(layer, optPos, y, minSpacing)) continue;
+        const optPos = computeOptPosition(yPos, g, v);
+        if (optPos === undefined) continue;
+        if (optPos === y) continue;
+        //shift by at most 1/2 layer, this way we only have to consider if unique verticalBundeling is violated locally
+        if (Math.abs(optPos - y) > minSpacing) continue;
+        if (violatesMinSpacing(layer, optPos, y, minSpacing)) continue;
 
-      //check violation to previous layer
-      const prevSameY = getAtY(layerPrev, optPos);
-      if (maxVertRightLayer(prevSameY, v, g, vertBundeling) >= minVertLeftLayer(v, prevSameY, g, vertBundeling)) continue;
-      //check violation to next layer
-      const nextSameY = getAtY(layerNext, optPos);
-      if (maxVertRightLayer(v, nextSameY, g, vertBundeling) >= minVertLeftLayer(nextSameY, v, g, vertBundeling)) continue;
+        //check violation to previous layer
+        const prevSameY = getAtY(layerPrev, optPos);
+        if (maxVertRightLayer(prevSameY, v, g, vertBundeling) >= minVertLeftLayer(v, prevSameY, g, vertBundeling)) continue;
+        //check violation to next layer
+        const nextSameY = getAtY(layerNext, optPos);
+        if (maxVertRightLayer(v, nextSameY, g, vertBundeling) >= minVertLeftLayer(nextSameY, v, g, vertBundeling)) continue;
 
-      //shift v to optPos
-      yPos.set(v, optPos);
+        //shift v to optPos
+        yPos.set(v, optPos);
+      }
     }
   }
+
   return yPos;
 }
 
