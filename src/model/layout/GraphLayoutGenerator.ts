@@ -10,7 +10,6 @@ import { createVertexSpacer, VertexSpacer, VertexSpacerConfig } from "./spacing/
 import { FixedVerticalSpacerCfg } from "./spacing/FixedVerticalSpacer";
 import { FixedLayerSpacerCfg } from "./spacing/FixedLayerSpacer";
 import { LayerSpacer, layerSpacerFromCfg } from "./spacing/LayerSpacer";
-import { addCliqueCenterPositons } from "./bicliqueCenter/CliqueCenterPositioner";
 import { computeScaledPositions } from "./positioning/VertexScaler";
 import { computeVerticalBundeling } from "./edges/plan/VerticalBundeling";
 import { EdgePlan } from "./edges/plan/EdgePlan";
@@ -47,9 +46,11 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
 
   let vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(layerGraph);
 
-  let biCliqueGraph = addBlicliqueCenters(layerGraph, cfg.biClique.bicliqueDepth);
+  let biCliqueGraph = layerGraph;
+  if (cfg.biClique.bicliqueDepth > 0) {
+    biCliqueGraph = addBlicliqueCenters(layerGraph, vertexPositions);
+  }
 
-  vertexPositions = addCliqueCenterPositons(biCliqueGraph, vertexPositions, cfg.biClique.bicliqueDepth);
 
   vertexPositions = computeScaledPositions(biCliqueGraph, vertexPositions, cfg.vertexPosition.yDist);
 

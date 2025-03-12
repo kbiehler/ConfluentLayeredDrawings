@@ -13,23 +13,7 @@ import _ from "lodash";
  * @param biCliqueDepth
  * @returns
  */
-export function addCliqueCenterPositons(
-  graph: LayerGraph, //
-  vertexPositions: Map<Vertex, number>,
-  biCliqueDepth: number
-): Map<Vertex, number> {
-  if (biCliqueDepth === 0) {
-    return vertexPositions;
-  }
-  //walk through the center layers
-  for (let i = 2 ** (biCliqueDepth - 1); i < graph.getLayerCount(); i += 2 ** biCliqueDepth) {
-    computeCenterPositions(graph, vertexPositions, i, 2 ** (biCliqueDepth - 1));
-  }
-  addCliqueCenterPositons(graph, vertexPositions, biCliqueDepth - 1);
-  return vertexPositions;
-}
-
-function computeCenterPositions(
+export function computeCenterPositions(
   graph: LayerGraph, //
   vertexPositions: Map<Vertex, number>,
   layer: number,
