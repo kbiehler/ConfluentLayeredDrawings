@@ -20,6 +20,7 @@ import { InteractionInfo } from "../renderer/InteractionManager";
 import _ from "lodash";
 import { BiCliqueCfg } from "@/cfg/ConfigDtos";
 import { LayoutMetrics } from "../metrics/LayoutMetrics";
+import { crossingsOfPlan } from "./metrics/Crossings";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -79,14 +80,18 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
 
   const interactInfo = createInteractInfo(adjEdges, layerGraph);
 
-  const layoutMetrics = getLayoutMetrics(edgePlans);
+  const layoutMetrics = getLayoutMetrics(edgePlans, vertexPositions);
 
   return [layout, interactInfo, layoutMetrics];
 }
 
-function getLayoutMetrics(plan: EdgePlan[]): LayoutMetrics {
+function getLayoutMetrics(plan: EdgePlan[], vertexPositions: Map<Vertex, number>): LayoutMetrics {
   const vertLayers = countVertLayers(plan);
   const totalVerticalLayer = _.sum(vertLayers);
+
+  const totalCrossings = crossingsOfPlan(plan, (v) => vertexPositions.get(v)!);
+  console.log("crossings", totalCrossings);
+
   return { totalVerticalLayer } as LayoutMetrics;
 }
 
