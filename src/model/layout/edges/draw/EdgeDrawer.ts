@@ -70,6 +70,16 @@ class Drawer {
     yTarget: number,
     xVertical: number
   ): Set<string> {
+    const ids = new Set<string>();
+    if (ySource == yTarget) {
+      const l1 = [
+        [xSource, ySource],
+        [xTarget, yTarget],
+      ];
+      ids.add(this.addSegment(layout, l1));
+      return ids;
+    }
+
     const down = ySource < yTarget ? 1 : ySource === yTarget ? 0 : -1;
 
     const l1 = [
@@ -94,10 +104,27 @@ class Drawer {
       [xVertical, ySource + RADIUS * down],
     ];
 
-    const l5 = [
-      [xVertical, ySource + RADIUS * down],
+    // const l5 = [
+    //   [xVertical, ySource + RADIUS * down],
+    //   [xVertical, yTarget - RADIUS * down],
+    // ];
+
+    let currentY = ySource + RADIUS * down;
+    while (Math.abs(currentY - (yTarget - RADIUS * down)) > RADIUS) {
+      const nextY = currentY + RADIUS * down;
+      const segment = [
+        [xVertical, currentY],
+        [xVertical, nextY],
+      ];
+      ids.add(this.addSegment(layout, segment));
+      currentY = nextY;
+    }
+
+    const finalSegment = [
+      [xVertical, currentY],
       [xVertical, yTarget - RADIUS * down],
     ];
+    ids.add(this.addSegment(layout, finalSegment));
 
     const l6 = [
       [xVertical, yTarget - RADIUS * down],
@@ -110,17 +137,37 @@ class Drawer {
       [xTarget, yTarget],
     ];
 
-    const ids = new Set<string>();
-
     ids.add(this.addSegment(layout, l1));
     ids.add(this.addSegment(layout, l2));
     ids.add(this.addSegment(layout, l3));
     ids.add(this.addSegment(layout, l4));
-    ids.add(this.addSegment(layout, l5));
+    // ids.add(this.addSegment(layout, l5));
     ids.add(this.addSegment(layout, l6));
     ids.add(this.addSegment(layout, l7));
     return ids;
   }
+
+  // addVerticalSegment(layout: GraphLayout, x: number, startY: number, endY: number) {
+  //   const start = Math.max(startY, endY);
+  //   const end = Math.max(startY, endY);
+  //   const ids = new Set<string>();
+
+  //   const segmentLength = 20;
+  //   //first segment to 20*20 raster
+  //   let currentY = startY + startY % 20;
+  //   if()
+
+  //   while (endY - startY < RADIUS) {
+  //     const nextY = currentY + RADIUS * down;
+  //     const segment = [
+  //       [xVertical, currentY],
+  //       [xVertical, nextY],
+  //     ];
+  //     ids.add(this.addSegment(layout, segment));
+  //     currentY = nextY;
+  //   }
+
+  // }
 
   addSegment(
     layout: GraphLayout, //
