@@ -27,8 +27,7 @@ const ConfigPanel: React.FC<Props> = ({ config, setConfig }) => {
   };
 
   const handleApply = () => {
-    setConfig(new ConfigDto());
-    setConfig(localConfig);
+    setConfig(new ConfigDto(localConfig));
   };
 
   return (

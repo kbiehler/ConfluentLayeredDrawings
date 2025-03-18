@@ -24,6 +24,12 @@ export class ConfigDto {
   layerSpacingCfg: LayerSpacingCfgDto = new LayerSpacingCfgDto();
   vertexSpacingCfg: VertexSpacingCfgDto = vertexSpacingCfg;
   optimizationCfg: OptimizationCfgDto = new OptimizationCfgDto();
+
+  constructor(config?: Partial<ConfigDto>) {
+    if (config) {
+      Object.assign(this, config);
+    }
+  }
 }
 
 export class GraphCfgDto {
@@ -67,7 +73,7 @@ export class LayerSpacingCfgDto {
 }
 
 export class OptimizationCfgDto {
-  metricTries: number = 10;
+  metricTries: number = 1;
 }
 
 export function mapToRenderCfg(cfgDto: ConfigDto): RenderCfg {

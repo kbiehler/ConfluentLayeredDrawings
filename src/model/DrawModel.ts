@@ -21,7 +21,7 @@ export function draw(cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionI
 
   for (let i = 0; i < cfgDto.optimizationCfg.metricTries; i++) {
     const [layout, interactInfo, metrics] = generateLayout(g, cfg);
-    if (!bestMetrics || metrics.totalVerticalLayer < bestMetrics.totalVerticalLayer) {
+    if (!bestMetrics || metrics.ink < bestMetrics.ink) {
       bestLayout = layout;
       bestInteractInfo = interactInfo;
       bestMetrics = metrics;
