@@ -20,6 +20,7 @@ import _ from "lodash";
 import { BiCliqueCfg } from "@/cfg/ConfigDtos";
 import { LayoutMetrics } from "../metrics/LayoutMetrics";
 import { crossingsOfPlan } from "./metrics/Crossings";
+import { fixCenterPositions } from "./positioning/PostprocessPositioning";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -51,7 +52,6 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
     biCliqueGraph = addBlicliqueCenters(layerGraph, vertexPositions);
   }
 
-
   vertexPositions = computeScaledPositions(biCliqueGraph, vertexPositions, cfg.vertexPosition.yDist);
 
   let vertBundeling = computeVerticalBundeling(biCliqueGraph, (v) => vertexPositions.get(v)!);
@@ -59,6 +59,8 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
   if (cfg.biClique.bicliqueDepth > 0 && cfg.biClique.postProcessShift) {
     vertexPositions = postProcessBicliqueShift(vertexPositions, biCliqueGraph, vertBundeling, cfg.vertexPosition.yDist);
   }
+
+  fixCenterPositions(vertexPositions, biCliqueGraph, vertBundeling, cfg.vertexPosition.yDist);
 
   const edgePlans = generateEdgePlans(vertBundeling, biCliqueGraph);
 
