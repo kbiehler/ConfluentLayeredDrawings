@@ -24,6 +24,8 @@ export enum ExampleGraphs {
   POS_4 = "positioning4",
   CENTER_1 = "center1",
   CENTER_2 = "center2",
+  POST_1 = "post1",
+  SUB_1 = "sub1",
   EPP_1 = "epp1",
   EPP_2 = "epp2",
 }
@@ -192,6 +194,32 @@ export function generateExampleGraph(id: string): BipartiteGraph<Number, Edge<Nu
       createGraph(4, 4, [
         [0, 2],
         [0, 3],
+      ]),
+    post1: () =>
+      createGraph(4, 4, [
+        [0, 1],
+        [0, 2],
+        [0, 3],
+        [2, 1],
+      ]),
+    sub1: () =>
+      createGraph(5, 5, [
+        [0, 0],
+        [1, 0],
+        [1, 1],
+        [1, 2],
+        [1, 3],
+        [1, 4],
+        [2, 0],
+        [2, 1],
+        [2, 2],
+        [2, 3],
+        [2, 4],
+        [3, 2],
+        [3, 3],
+        [3, 4],
+        [4, 3],
+        [4, 4],
       ]),
     epp1: () =>
       createGraph(7, 6, [

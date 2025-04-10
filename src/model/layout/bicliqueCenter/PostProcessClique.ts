@@ -84,7 +84,7 @@ function violatesMinSpacing(layer: [Vertex, number][], optPos: number, oldPositi
   return layer
     .map(([_, y]) => y)
     .filter((y) => y != optPos && y != oldPosition)
-    .find((y) => Math.abs(optPos - y) < minDistance);
+    .find((y) => Math.abs(optPos - y) < minDistance / 2);
 }
 
 function computeOptPosition(yPos: Map<Vertex, number>, g: LayerGraph<Vertex, Edge<Vertex>>, v: Vertex) {
@@ -93,6 +93,7 @@ function computeOptPosition(yPos: Map<Vertex, number>, g: LayerGraph<Vertex, Edg
   }
   if (g.getIncidentOut(v).length === 1) {
     return yPos.get(g.getIncidentOut(v)[0].target)!;
+  } else {
   }
   return undefined;
 }

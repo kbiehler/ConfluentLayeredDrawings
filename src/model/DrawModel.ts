@@ -10,7 +10,7 @@ import { VertexId } from "./types";
 import { buildImplGraph, buildNbrGraph } from "./redraw/RedrawAlg";
 import { LayoutMetrics } from "./metrics/LayoutMetrics";
 
-export function draw(cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionInfo, LayoutMetrics] {
+export function draw(cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionInfo, LayoutMetrics, LayoutMetrics] {
   const inputG = loadFromCfg(cfgDto.graphCfg);
   const cfg = mapToGraphLayoutCfg(cfgDto);
   const g = convertToLayoutVertices(inputG);
@@ -19,8 +19,20 @@ export function draw(cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionI
   let bestInteractInfo: InteractionInfo | null = null;
   let bestMetrics: any = null;
 
+  let totalMetrics: LayoutMetrics = {
+    totalVerticalLayer: 0,
+    ink: 0,
+    crossings: 0,
+    bends: 0,
+  } as LayoutMetrics;
+
   for (let i = 0; i < cfgDto.optimizationCfg.metricTries; i++) {
     const [layout, interactInfo, metrics] = generateLayout(g, cfg);
+    totalMetrics.totalVerticalLayer += metrics.totalVerticalLayer;
+    totalMetrics.ink += metrics.ink;
+    totalMetrics.crossings += metrics.crossings;
+    totalMetrics.bends += metrics.bends;
+
     if (!bestMetrics || metrics.ink < bestMetrics.ink) {
       bestLayout = layout;
       bestInteractInfo = interactInfo;
@@ -28,10 +40,17 @@ export function draw(cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionI
     }
   }
 
+  const avgMetrics: LayoutMetrics = {
+    totalVerticalLayer: totalMetrics.totalVerticalLayer / cfgDto.optimizationCfg.metricTries,
+    ink: totalMetrics.ink / cfgDto.optimizationCfg.metricTries,
+    crossings: totalMetrics.crossings / cfgDto.optimizationCfg.metricTries,
+    bends: totalMetrics.bends / cfgDto.optimizationCfg.metricTries,
+  } as LayoutMetrics;
+
   const layout = bestLayout!;
   const interactInfo = bestInteractInfo!;
   const metrics = bestMetrics!;
-  return [new RedrawState(g), layout, interactInfo, metrics];
+  return [new RedrawState(g), layout, interactInfo, metrics, avgMetrics];
 }
 
 /**

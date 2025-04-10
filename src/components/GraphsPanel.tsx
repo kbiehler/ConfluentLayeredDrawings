@@ -21,14 +21,16 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
   const [renderCfg, setRenderCfg] = useState(() => mapToRenderCfg(config));
   const [panelSelect, setPanelSelect] = useState<"main" | "nbr" | "impl">("main");
   const [metric, setMetric] = useState(Empty_Layout_Metric);
+  const [avgMetric, setAvgMetric] = useState(Empty_Layout_Metric);
 
   useEffect(() => {
-    const [redrawState, tmpLayout, tmpInteractInfo, tmpMetric] = draw(config);
+    const [redrawState, tmpLayout, tmpInteractInfo, tmpMetric, tmpAvgMetric] = draw(config);
     setRedrawState(redrawState);
     setLayout(tmpLayout);
     setInteractMgr(new InteractionManager(tmpInteractInfo));
     setRenderCfg(mapToRenderCfg(config));
     setMetric(tmpMetric);
+    setAvgMetric(tmpAvgMetric);
   }, [config]);
 
   const [nbrLayout, setNbrLayout] = useState(() => new GraphLayout());
@@ -77,7 +79,10 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
     <div>
       <div style={{ flexGrow: 1 }}>
         {panelSelect === "main" ? (
-          <MetricPanel metric={metric} />
+          <div>
+            <MetricPanel metric={metric} />
+            <MetricPanel metric={avgMetric} />
+          </div>
         ) : panelSelect === "nbr" ? (
           <MetricPanel metric={nbrMetric} />
         ) : (

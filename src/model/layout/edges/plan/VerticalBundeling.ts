@@ -44,7 +44,7 @@ function assignLayers(biGraph: BipartiteGraph, vertexPosition: (v: Vertex) => nu
   const conflictGraph = createConflictGraph(biGraph, vertexPosition);
   let bundeling = rlfColoring(conflictGraph);
   const rewardGraph = createRewardGraph(vertexPosition, conflictGraph);
-  // bundeling = improveColoring(bundeling, conflictGraph, rewardGraph);
+  bundeling = improveColoring(bundeling, conflictGraph, rewardGraph);
   // let bundeling2 = solveBundelingLp(conflictGraph);
   let orderedEdges = verticalLayerOrdering(vertexPosition, bundeling);
   return orderedEdges;
@@ -58,7 +58,7 @@ function improveColoring(coloring: Set<Edge<Vertex>>[], conflictGraph: Graph<Edg
     color++;
   });
   let improvement = 0;
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 20; i++) {
     conflictGraph.getVertices().forEach((v) => {
       let bestReward = 0;
       let bestColor = -1;
