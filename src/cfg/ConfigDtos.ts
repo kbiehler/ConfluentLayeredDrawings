@@ -58,7 +58,7 @@ export class UiCfgDto {
 }
 
 export class BiCliqueCfg {
-  bicliqueDepth: number = 1;
+  biClique: boolean = true;
   postProcessShift: boolean = true;
 }
 
@@ -106,7 +106,7 @@ export function mapToGraphLayoutCfg(cfgDto: ConfigDto): GraphLayoutCfg {
       alg: cfgDto.algCfg.vertexPositioning,
     },
     biClique: {
-      bicliqueDepth: cfgDto.biCliqueCfg.bicliqueDepth,
+      biClique: cfgDto.biCliqueCfg.biClique,
       postProcessShift: cfgDto.biCliqueCfg.postProcessShift,
     },
     edgeAlg: cfgDto.algCfg.edgeDrawing,

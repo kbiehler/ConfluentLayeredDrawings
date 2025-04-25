@@ -14,9 +14,9 @@ const BiCliqueConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
       <table className="config-table">
         <tbody>
           <tr>
-            <td>BiClique Depth:</td>
+            <td>Use BiClique:</td>
             <td>
-              <input type="number" value={config.bicliqueDepth} onChange={(e) => handleChange("bicliqueDepth", Number(e.target.value))} />
+              <input type="checkbox" checked={config.biClique} onChange={(e) => handleChange("biClique", Number(e.target.value))} />
             </td>
           </tr>
           <tr>

@@ -31,15 +31,15 @@ function addCenters(G: LayerGraph, layer: number) {
 
   const biGraph = convertLayerToBiGraph(G, layer);
   const biCliques = biCliqueCover(biGraph);
-  const biCliqueTocenter = new Map<any, Vertex>();
+  const biCliqueToCenter = new Map<any, Vertex>();
   biCliques.forEach((biclique) => {
     const center = new CliqueCenter();
-    biCliqueTocenter.set(biclique, center);
+    biCliqueToCenter.set(biclique, center);
     newGraph.addVertexToLayer(center, layer + 1);
   });
   biCliques.forEach((biclique) => {
     biclique.forEach((v) => {
-      const center = biCliqueTocenter.get(biclique);
+      const center = biCliqueToCenter.get(biclique);
       if (newGraph.getLayer(v) === layer) {
         const e = new Edge<any>(v, center);
         newGraph.addEdge(e);

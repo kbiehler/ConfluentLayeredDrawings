@@ -1,5 +1,5 @@
 import { Graph, Edge, BipartiteGraph } from "@/model/ds";
-import { rlfColoring } from "./Coloring";
+import { rsfColoring } from "./Coloring";
 
 /**
  * Heuristic for BiCliqueCover as described in https://ics.uci.edu/~goodrich/pubs/C-100.pdf, Section 3
@@ -33,7 +33,7 @@ export function biCliqueCover<V>(G: BipartiteGraph<V>) {
   });
 
   //find a coloring in restrictedColGraph
-  const coloring = rlfColoring(restrictedColGraph);
+  const coloring = rsfColoring(restrictedColGraph);
 
   //coloring contains set of edges, the subgraph induced by these edges is a biclique in G
   const bicliques: Set<V>[] = [];

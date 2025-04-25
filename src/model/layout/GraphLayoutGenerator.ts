@@ -48,7 +48,7 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
   let vertexPositions = new VertexPositioner(cfg.vertexPosition).computePositions(layerGraph);
 
   let biCliqueGraph = layerGraph;
-  if (cfg.biClique.bicliqueDepth > 0) {
+  if (cfg.biClique.biClique) {
     biCliqueGraph = addBlicliqueCenters(layerGraph, vertexPositions);
   }
 
@@ -56,7 +56,7 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
 
   let vertBundeling = computeVerticalBundeling(biCliqueGraph, (v) => vertexPositions.get(v)!);
 
-  if (cfg.biClique.bicliqueDepth > 0 && cfg.biClique.postProcessShift) {
+  if (cfg.biClique.biClique && cfg.biClique.postProcessShift) {
     vertexPositions = postProcessBicliqueShift(vertexPositions, biCliqueGraph, vertBundeling, cfg.vertexPosition.yDist);
   }
 
