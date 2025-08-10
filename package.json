@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@types/d3": "^7.4.3",
+    "csv-parser": "^3.2.0",
     "d3": "^7.9.0",
     "events": "^3.3.0",
     "graphlib": "^2.1.8",
