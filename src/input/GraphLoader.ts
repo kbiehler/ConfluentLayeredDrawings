@@ -3,6 +3,7 @@ import { Graph } from "@/model/ds";
 import { createRandomLayeredGraph } from "@/examples/GraphGenerator";
 import { generateExampleGraph } from "@/examples/ExampleGraphs";
 import { parseDotFile } from "./DotParser";
+import { readCsv } from "./CsvParser";
 
 export function loadFromCfg(cfg: GraphCfgDto): Graph<any> {
   if (cfg.type === "example") {
@@ -15,6 +16,8 @@ export function loadFromCfg(cfg: GraphCfgDto): Graph<any> {
     } else {
       return parseDotFile(cfg.fileContent!);
     }
+  } else if (cfg.type === "csv") {
+    return readCsv(cfg.fileContent!);
   }
 
   throw new Error("Invalid configuration");

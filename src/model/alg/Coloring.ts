@@ -1,4 +1,4 @@
-import { Graph, Edge } from "@/model/ds/Graph";
+import { Graph } from "@/model/ds/Graph";
 
 /**
  * See https://en.wikipedia.org/wiki/Recursive_largest_first_algorithm

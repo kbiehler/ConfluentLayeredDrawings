@@ -12,7 +12,11 @@ export class Vertex {
   id: VertexId;
 
   constructor(label: any) {
-    this.label = String(label);
+    if (label && typeof label === "object" && "label" in label) {
+      this.label = String(label.label);
+    } else {
+      this.label = String(label);
+    }
     this.id = new VertexId(label);
   }
 

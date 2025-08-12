@@ -30,10 +30,11 @@ const GraphConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
           <tr>
             <td>Graph Type:</td>
             <td>
-              <select value={config.type} onChange={(e) => handleChange("type", e.target.value as "example" | "random" | "file")}>
+              <select value={config.type} onChange={(e) => handleChange("type", e.target.value as "example" | "random" | "file" | "csv")}>
                 <option value="example">Example</option>
                 <option value="random">Random</option>
                 <option value="file">File</option>
+                <option value="csv">CSV</option>
               </select>
             </td>
           </tr>
@@ -58,6 +59,15 @@ const GraphConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
               <td>Upload File:</td>
               <td>
                 <input type="file" accept=".dot" onChange={handleFileUpload} />
+              </td>
+            </tr>
+          )}
+
+          {config.type === "csv" && (
+            <tr>
+              <td>Upload File:</td>
+              <td>
+                <input type="file" accept=".csv" onChange={handleFileUpload} />
               </td>
             </tr>
           )}

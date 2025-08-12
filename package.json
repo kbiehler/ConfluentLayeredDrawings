@@ -12,12 +12,12 @@
   },
   "dependencies": {
     "@types/d3": "^7.4.3",
-    "csv-parser": "^3.2.0",
     "d3": "^7.9.0",
     "events": "^3.3.0",
     "graphlib": "^2.1.8",
     "graphlib-dot": "^0.6.4",
     "lodash": "^4.17.21",
+    "papaparse": "^5.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "uuid": "^11.1.0",
@@ -29,6 +29,7 @@
     "@types/graphlib-dot": "^0.6.4",
     "@types/lodash": "^4.17.15",
     "@types/node": "^22.13.5",
+    "@types/papaparse": "^5.3.16",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
@@ -39,6 +40,7 @@
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.22.0",
     "vite": "^6.1.0",
+    "vite-plugin-singlefile": "^2.3.0",
     "vite-tsconfig-paths": "^5.1.4"
   }
 }

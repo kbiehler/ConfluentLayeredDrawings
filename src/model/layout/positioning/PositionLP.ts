@@ -18,7 +18,7 @@ import { Graph } from "@/model/ds/Graph";
 export function solveLp<V>(g: Graph<V>, layerOrder: V[][]) {
   const model = buildLpModel(g, layerOrder);
 
-  const solution = solve(model);
+  const solution = solve(model, { checkCycles: true, maxPivots: 16384 /* or higher */, precision: 1e-9 });
 
   const solutionMap = new Map<any, number>();
   solution.variables.forEach((key) => {

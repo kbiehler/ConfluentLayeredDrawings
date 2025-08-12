@@ -105,6 +105,7 @@ function convertToLayoutVertices<V>(g: Graph<V>): Graph {
   const vToNew = new Map<V, Vertex>();
   g.getVertices().forEach((v) => {
     const newV = new Vertex(v);
+
     newGraph.addVertex(newV);
     vToNew.set(v, newV);
   });

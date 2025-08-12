@@ -1,6 +1,6 @@
 import "./ConfigPanel.css";
 import React, { useState } from "react";
-import { ConfigDto, OptimizationCfgDto } from "@/cfg/ConfigDtos";
+import { ConfigDto } from "@/cfg/ConfigDtos";
 import UiConfigPanel from "./subPanels/UiCfgPanel";
 import BarycenterCfgPanel from "./subPanels/BarycenterCfgPanel";
 import GraphConfigPanel from "./subPanels/GraphCfgPanel";

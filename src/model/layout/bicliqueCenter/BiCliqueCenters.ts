@@ -14,7 +14,6 @@ export function addBlicliqueCenters(G: LayerGraph, vertexPositions: Map<Vertex, 
     G = addCenters(G, i);
     computeCenterPositions(G, vertexPositions, i + 1, 1);
   }
-
   return G;
 }
 
