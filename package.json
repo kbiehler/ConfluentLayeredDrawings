@@ -20,6 +20,7 @@
     "papaparse": "^5.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-dropzone": "^14.3.8",
     "uuid": "^11.1.0",
     "vitest": "^3.0.6",
     "yalps": "^0.5.6"

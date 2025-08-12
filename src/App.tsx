@@ -10,13 +10,13 @@ function App() {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       {" "}
+      <div style={{ flexShrink: 0, padding: "10px", display: "flex", gap: "10px" }}>
+        <GraphsPanel config={config} />
+      </div>
       <div style={{ flexShrink: 0 }}>
         {" "}
         <ConfigPanel config={config} setConfig={setConfig} />{" "}
       </div>{" "}
-      <div style={{ flexShrink: 0, padding: "10px", display: "flex", gap: "10px" }}>
-        <GraphsPanel config={config} />
-      </div>
     </div>
   );
 }

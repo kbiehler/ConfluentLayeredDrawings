@@ -1,6 +1,7 @@
 import React from "react";
 import { GraphCfgDto } from "@/cfg/ConfigDtos";
 import { ExampleGraphs } from "@/examples/ExampleGraphs";
+import CSVUploader from "./CsvUploader";
 
 type Props = {
   config: GraphCfgDto;
@@ -8,18 +9,15 @@ type Props = {
 };
 
 const GraphConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // Process the file (e.g., read contents)
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          handleChange("fileContent", e.target.result);
-        }
-      };
-      reader.readAsText(file);
-    }
+  const handleFileUpload = (file: File) => {
+    // Process the file (e.g., read contents)
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        handleChange("fileContent", e.target.result);
+      }
+    };
+    reader.readAsText(file);
   };
 
   return (
@@ -54,20 +52,20 @@ const GraphConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
             </tr>
           )}
 
-          {config.type === "file" && (
+          {/* {config.type === "file" && (
             <tr>
               <td>Upload File:</td>
               <td>
                 <input type="file" accept=".dot" onChange={handleFileUpload} />
               </td>
             </tr>
-          )}
+          )} */}
 
           {config.type === "csv" && (
             <tr>
               <td>Upload File:</td>
               <td>
-                <input type="file" accept=".csv" onChange={handleFileUpload} />
+                <CSVUploader handleFileUpload={handleFileUpload} />
               </td>
             </tr>
           )}

@@ -77,18 +77,6 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
 
   return (
     <div>
-      <div style={{ flexGrow: 1 }}>
-        {panelSelect === "main" ? (
-          <div>
-            <MetricPanel metric={metric} />
-            <MetricPanel metric={avgMetric} />
-          </div>
-        ) : panelSelect === "nbr" ? (
-          <MetricPanel metric={nbrMetric} />
-        ) : (
-          <MetricPanel metric={implMetric} />
-        )}
-      </div>
       <div style={{ flexShrink: 0, padding: "10px", display: "flex", gap: "10px" }}>
         <button onClick={() => setPanelSelect("main")} style={{ background: panelSelect === "main" ? "#ddd" : "#fff" }}>
           Main Graph
@@ -107,6 +95,18 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
           <GraphSvg graphLayout={nbrLayout} renderCfg={renderCfg} interactionManager={nbrInteractMgr} />
         ) : (
           <GraphSvg graphLayout={implLayout} renderCfg={renderCfg} interactionManager={implInteractMgr} />
+        )}
+      </div>
+      <div style={{ flexGrow: 1 }}>
+        {panelSelect === "main" ? (
+          <div>
+            <MetricPanel metric={metric} />
+            <MetricPanel metric={avgMetric} />
+          </div>
+        ) : panelSelect === "nbr" ? (
+          <MetricPanel metric={nbrMetric} />
+        ) : (
+          <MetricPanel metric={implMetric} />
         )}
       </div>
     </div>
