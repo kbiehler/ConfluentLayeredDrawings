@@ -33,21 +33,45 @@ export class GraphSVGRenderer {
     edgesNoHighlight.forEach((e) => (e.id = "no_highlight"));
     edgesHighlight.forEach((e) => (e.id = "highlight"));
 
-    const edges = [...edgesNoHighlight, ...edgesHighlight];
+    [...edgesNoHighlight, ...edgesHighlight].forEach((edge) => {
+      const p = d3path();
 
-    svg
-      .selectAll<SVGPathElement, EdgeLayout>("path")
-      .data(edges)
-      .join("path")
-      .attr("fill", "none")
-      .attr("stroke", (d: EdgeLayout) => (d.id == "highlight" ? renderCfg.highlightColor : renderCfg.edgeColor))
-      .attr("stroke-width", (d: EdgeLayout) => (d.id == "highlight" ? 5 : 1))
-      .attr("d", (d: EdgeLayout) => {
-        return lineGenerator(d.points.map((p) => [p.x, p.y]));
-      })
-      .attr("transform", "translate(0.5,0.5)")
-      .attr("stroke-opacity", 1)
-      .attr("stroke-miterlimit", 1);
+      if (edge.points.length === 2) {
+        p.moveTo(edge.points[0].x, edge.points[0].y);
+
+        edge.points.slice(1).forEach((point) => {
+          p.lineTo(point.x, point.y);
+        });
+      } else if (edge.points.length > 2) {
+        p.moveTo(edge.points[0].x, edge.points[0].y);
+        p.quadraticCurveTo(edge.points[1].x, edge.points[1].y, edge.points[2].x, edge.points[2].y);
+      }
+      svg
+        .append("path")
+        .attr("d", p.toString())
+        .attr("fill", "none")
+        .attr("stroke", edge.id == "highlight" ? renderCfg.highlightColor : renderCfg.edgeColor)
+        .attr("stroke-width", edge.id == "highlight" ? 5 : 1)
+        .attr("transform", "translate(0.5,0.5)")
+        .attr("stroke-opacity", 1)
+        .attr("stroke-miterlimit", 1);
+    });
+
+    // const edges = [...edgesNoHighlight, ...edgesHighlight];
+
+    // svg
+    //   .selectAll<SVGPathElement, EdgeLayout>("path")
+    //   .data(edges)
+    //   .join("path")
+    //   .attr("fill", "none")
+    //   .attr("stroke", (d: EdgeLayout) => (d.id == "highlight" ? renderCfg.highlightColor : renderCfg.edgeColor))
+    //   .attr("stroke-width", (d: EdgeLayout) => (d.id == "highlight" ? 5 : 1))
+    //   .attr("d", (d: EdgeLayout) => {
+    //     return lineGenerator(d.points.map((p) => [p.x, p.y]));
+    //   })
+    //   .attr("transform", "translate(0.5,0.5)")
+    //   .attr("stroke-opacity", 1)
+    //   .attr("stroke-miterlimit", 1);
 
     const defs = svg.append("defs");
 
