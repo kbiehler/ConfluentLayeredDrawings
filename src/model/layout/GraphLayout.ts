@@ -19,12 +19,10 @@ export interface EdgeLayout {
 export class GraphLayout {
   private vertices: Map<string, VertexLayout>;
   private edges: EdgeLayout[];
-  private edges2: EdgeLayout[][];
 
   constructor(vertices: Map<string, VertexLayout> = new Map<string, VertexLayout>(), edges: EdgeLayout[] = []) {
     this.vertices = vertices;
     this.edges = edges;
-    this.edges2 = [];
   }
 
   addVertex(
@@ -47,20 +45,12 @@ export class GraphLayout {
     this.edges.push(e);
   }
 
-  addEdgeDrawing2(e: EdgeLayout[]): void {
-    this.edges2.push(e);
-  }
-
   getVertices(): VertexLayout[] {
     return Array.from(this.vertices.values());
   }
 
   getEdgeDrawings(): EdgeLayout[] {
     return this.edges;
-  }
-
-  getEdgeDrawings2(): EdgeLayout[][] {
-    return this.edges2;
   }
 
   /**
