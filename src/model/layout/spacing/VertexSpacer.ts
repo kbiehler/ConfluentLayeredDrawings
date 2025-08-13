@@ -55,7 +55,7 @@ export abstract class VertexSpacer {
     }
     for (let i = label.length - 1; i > 0; i--) {
       const substring = label.substring(0, i) + "...";
-      if (getTextSize(substring).width <= width - this.textPadding) {
+      if (getTextSize(substring).width <= width - this.textPadding - 5) {
         return substring;
       }
     }

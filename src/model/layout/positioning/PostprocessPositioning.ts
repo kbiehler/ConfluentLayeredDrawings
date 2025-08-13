@@ -9,10 +9,6 @@ export function fixCenterPositions(
   g.getVertices().forEach((center) => {
     if (center.isCliqueCenter()) {
       //check if left side is end
-      if (g.getAdjacentOut(center).some((v) => v.getLabel() == "Control Algorithm")) {
-        console.log("No sensor_4 measurement");
-      }
-      // g.getAdjacentOut(center).map((v) => g.outDegree(v) > 0);
       const hasRightAncenstor = g.getAdjacentOut(center).some((v) => g.outDegree(v) > 0);
       if (!hasRightAncenstor) {
         const leftV = g.getAdjacentIn(center);

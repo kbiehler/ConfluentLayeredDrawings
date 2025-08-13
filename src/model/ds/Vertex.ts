@@ -31,6 +31,10 @@ export class Vertex {
   public isCliqueCenter(): boolean {
     return false;
   }
+
+  public isDummyVertex(): boolean {
+    return false;
+  }
 }
 
 export class CliqueCenter extends Vertex {
@@ -39,6 +43,17 @@ export class CliqueCenter extends Vertex {
   }
 
   public isCliqueCenter(): boolean {
+    return true;
+  }
+}
+
+//used for edges overt multiple layers
+export class DummyVertex extends Vertex {
+  constructor(label: string) {
+    super(label);
+  }
+
+  public isDummyVertex(): boolean {
     return true;
   }
 }

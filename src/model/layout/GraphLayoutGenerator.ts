@@ -21,6 +21,7 @@ import { BiCliqueCfg } from "@/cfg/ConfigDtos";
 import { LayoutMetrics } from "../metrics/LayoutMetrics";
 import { crossingsOfPlan } from "./metrics/Crossings";
 import { fixCenterPositions } from "./positioning/PostprocessPositioning";
+import { hasCycleDirected } from "../alg/CycleDetector";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -42,6 +43,9 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
   if (g instanceof BipartiteGraph) {
     layerGraph = g;
   } else {
+    if (hasCycleDirected(g)) {
+      throw new Error("Graph contains cycles, cannot generate layout");
+    }
     layerGraph = assignLayers(g);
   }
 
@@ -124,7 +128,7 @@ function addVerticesToLayout(
     drawing.addVertex(
       vertex.getId(), //
       { x: vertLayerSpacer.xPosition(vertex), y: vertexPositions.get(vertex)! },
-      !vertex.isCliqueCenter(),
+      !vertex.isCliqueCenter() && !vertex.isDummyVertex(),
       vertexSpacer.width(biCliqueGraph.getLayer(vertex)),
       vertexSpacer.height(biCliqueGraph.getLayer(vertex)),
       vertex.getLabel(),
