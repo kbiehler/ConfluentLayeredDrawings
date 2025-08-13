@@ -78,14 +78,14 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
     biCliqueGraph,
     layout,
     (v: Vertex) => vertexPositions.get(v)!,
-    (v: Vertex) => v.isCliqueCenter(),
+    (v: Vertex) => v.isCliqueCenter() || v.isDummyVertex(),
     edgePlans,
     layerSpacer
   );
 
   addVerticesToLayout(vertexPositions, layout, layerSpacer, vertexSpacer, biCliqueGraph);
 
-  const interactInfo = createInteractInfo(adjEdges, layerGraph);
+  const interactInfo = createInteractInfo(adjEdges, g);
 
   const layoutMetrics = getLayoutMetrics(edgePlans, vertexPositions, bends, ink);
 
@@ -108,7 +108,7 @@ function initLayerSpacer(cfg: GraphLayoutCfg, vertexSpacer: VertexSpacer, biCliq
   return layerSpacer;
 }
 
-function createInteractInfo(adjEdges: Map<Vertex, Set<string>>, inputGraph: LayerGraph<Vertex, Edge<Vertex>>): InteractionInfo {
+function createInteractInfo(adjEdges: Map<Vertex, Set<string>>, inputGraph: Graph): InteractionInfo {
   let idAdjEdges = new Map<VertexId, Set<string>>();
   adjEdges.forEach((edges, v) => idAdjEdges.set(v.getId(), edges));
   let idAdjVertices = new Map<VertexId, Set<VertexId>>();
