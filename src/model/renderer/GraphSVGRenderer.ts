@@ -1,5 +1,6 @@
 import { EdgeLayout, GraphLayout, VertexLayout } from "@/model/layout/GraphLayout";
 import * as d3 from "d3";
+import { path as d3path } from "d3-path";
 import { VertexId } from "@/model/types";
 
 export interface RenderCfg {
@@ -27,17 +28,49 @@ export class GraphSVGRenderer {
       return highlightEdge(a.id) ? 1 : -1;
     });
 
+    // graphLayout.getEdgeDrawings2().forEach((edges) => {
+    //   const p = d3path();
+    //   edges.forEach((edge) => {
+    //     if (edge.points.length === 2) {
+    //       p.moveTo(edge.points[0].x, edge.points[0].y);
+
+    //       edge.points.slice(1).forEach((point) => {
+    //         p.lineTo(point.x, point.y);
+    //       });
+    //     } else if (edge.points.length > 2) {
+    //       p.moveTo(edge.points[0].x, edge.points[0].y);
+    //       p.quadraticCurveTo(edge.points[1].x, edge.points[1].y, edge.points[2].x, edge.points[2].y);
+    //     }
+    //   });
+    //   svg
+    //     .append("path")
+    //     .attr("d", p.toString())
+    //     .attr("fill", "none")
+    //     .attr("stroke", "#9a9a9a")
+    //     .attr("stroke-width", 1)
+    //     .attr("stroke-linecap", "round")
+    //     .attr("stroke-linejoin", "round")
+    //     .attr("transform", "translate(0.5,0.5)")
+    //     .attr("stroke-opacity", 1)
+    //     .attr("stroke-miterlimit", 1);
+    // });
+
     svg
       .selectAll<SVGPathElement, EdgeLayout>("path")
       .data(edges)
       .join("path")
-      .attr("class", "link")
+      // .attr("class", "line")
       .attr("fill", "none")
       .attr("stroke", (d: EdgeLayout) => (highlightEdge(d.id) ? renderCfg.highlightColor : renderCfg.edgeColor))
       .attr("stroke-width", (d: EdgeLayout) => (highlightEdge(d.id) ? 5 : 1))
+      // .attr("stroke-linecap", "butt")
+      // .attr("shape-rendering", "crispEdges")
       .attr("d", (d: EdgeLayout) => {
         return lineGenerator(d.points.map((p) => [p.x, p.y]));
-      });
+      })
+      .attr("transform", "translate(0.5,0.5)")
+      .attr("stroke-opacity", 1)
+      .attr("stroke-miterlimit", 1);
 
     const defs = svg.append("defs");
 

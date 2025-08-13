@@ -1,6 +1,6 @@
 import { Edge, LayerGraph, Vertex } from "@/model/ds";
 import { EdgePlan } from "../plan/EdgePlan";
-import { GraphLayout } from "../../GraphLayout";
+import { EdgeLayout, GraphLayout } from "../../GraphLayout";
 import _ from "lodash";
 import { LayerSpacer } from "../../spacing/LayerSpacer";
 import { v4 as uuidv4 } from "uuid";
@@ -76,7 +76,16 @@ class Drawer {
     yTarget: number,
     xVertical: number
   ): Set<string> {
+    const layouts: EdgeLayout[] = [];
+    layout.addEdgeDrawing2(layouts);
     if (ySource == yTarget) {
+      layouts.push({
+        id: uuidv4(),
+        points: [
+          { x: xSource, y: ySource },
+          { x: xTarget, y: ySource },
+        ],
+      });
       return this.addHorizontalSegment(layout, ySource, xSource, xTarget);
     }
     const ids = new Set<string>();
@@ -85,13 +94,38 @@ class Drawer {
 
     this.addHorizontalSegment(layout, ySource, xSource, xVertical - RADIUS).forEach((s) => ids.add(s));
 
+    layouts.push({
+      id: uuidv4(),
+      points: [
+        { x: xSource, y: ySource },
+        { x: xVertical - RADIUS, y: ySource },
+      ],
+    });
+
     const bend1 = [
       [xVertical - RADIUS, ySource],
       [xVertical, ySource],
       [xVertical, ySource + RADIUS * down],
     ];
 
+    layouts.push({
+      id: uuidv4(),
+      points: [
+        { x: xVertical - RADIUS, y: ySource },
+        { x: xVertical, y: ySource },
+        { x: xVertical, y: ySource + RADIUS * down },
+      ],
+    });
+
     this.addVerticalSegment(layout, xVertical, ySource + RADIUS * down, yTarget - RADIUS * down).forEach((s) => ids.add(s));
+
+    layouts.push({
+      id: uuidv4(),
+      points: [
+        { x: xVertical, y: ySource + RADIUS * down },
+        { x: xVertical, y: yTarget - RADIUS * down },
+      ],
+    });
 
     const bend2 = [
       [xVertical, yTarget - RADIUS * down],
@@ -99,10 +133,28 @@ class Drawer {
       [xVertical + RADIUS, yTarget],
     ];
 
+    layouts.push({
+      id: uuidv4(),
+      points: [
+        { x: xVertical, y: yTarget - RADIUS * down },
+        { x: xVertical, y: yTarget },
+        { x: xVertical + RADIUS, y: yTarget },
+      ],
+    });
+
     this.addHorizontalSegment(layout, yTarget, xVertical + RADIUS, xTarget).forEach((s) => ids.add(s));
+
+    layouts.push({
+      id: uuidv4(),
+      points: [
+        { x: xVertical + RADIUS, y: yTarget },
+        { x: xTarget, y: yTarget },
+      ],
+    });
 
     ids.add(this.addSegment(layout, bend1));
     ids.add(this.addSegment(layout, bend2));
+
     return ids;
   }
 
