@@ -9,6 +9,7 @@ import { draw, redrawImpl, redrawNbr } from "@/model/DrawModel";
 import { RedrawState } from "@/model/redraw/RedrawState";
 import { Empty_Layout_Metric } from "@/model/metrics/LayoutMetrics";
 import MetricPanel from "./MetricPanel";
+import "./GraphsPanel.css";
 
 interface GraphsPanelProps {
   config: ConfigDto;
@@ -78,13 +79,13 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
   return (
     <div>
       <div style={{ flexShrink: 0, padding: "10px", display: "flex", gap: "10px" }}>
-        <button onClick={() => setPanelSelect("main")} style={{ background: panelSelect === "main" ? "#ddd" : "#fff" }}>
+        <button onClick={() => setPanelSelect("main")} className={panelSelect === "main" ? "active" : ""}>
           Main Graph
         </button>
-        <button onClick={() => setPanelSelect("nbr")} style={{ background: panelSelect === "nbr" ? "#ddd" : "#fff" }}>
+        <button onClick={() => setPanelSelect("nbr")} className={panelSelect === "nbr" ? "active" : ""}>
           Show selected + neighbours
         </button>
-        <button onClick={() => setPanelSelect("impl")} style={{ background: panelSelect === "impl" ? "#ddd" : "#fff" }}>
+        <button onClick={() => setPanelSelect("impl")} className={panelSelect === "impl" ? "active" : ""}>
           Show implied
         </button>
       </div>

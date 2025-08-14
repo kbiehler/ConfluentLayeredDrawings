@@ -1,0 +1,18 @@
+/* styles.css */
+button {
+  background: #fff;
+}
+
+button.active {
+  background: #ddd;
+}
+
+@media (prefers-color-scheme: dark) {
+  button {
+    background: #555;
+    color: white;
+  }
+  button.active {
+    background: #333;
+  }
+}
