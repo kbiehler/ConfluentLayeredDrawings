@@ -1,6 +1,6 @@
 import { Edge, LayerGraph, Vertex } from "@/model/ds";
 import { EdgePlan } from "../plan/EdgePlan";
-import { EdgeLayout, GraphLayout } from "../../GraphLayout";
+import { GraphLayout } from "../../GraphLayout";
 import _ from "lodash";
 import { LayerSpacer } from "../../spacing/LayerSpacer";
 import { v4 as uuidv4 } from "uuid";
@@ -14,7 +14,6 @@ export function drawEdges(
   g: LayerGraph, //
   layout: GraphLayout,
   yPosition: (v: Vertex) => number,
-  isCliqueCenter: (v: Vertex) => boolean,
   plan: EdgePlan[],
   layerSpacer: LayerSpacer
 ): { adjEdges: Map<Vertex, Set<string>>; ink: number; bends: number } {
@@ -22,7 +21,7 @@ export function drawEdges(
   for (let edgePlan of plan) {
     edgeToX.set(edgePlan.edge, layerSpacer.xPositionVertical(edgePlan.layer, edgePlan.relativeVertLayer));
   }
-  return draw(g, edgeToX, layout, layerSpacer, yPosition, isCliqueCenter);
+  return draw(g, edgeToX, layout, layerSpacer, yPosition);
 }
 
 function draw(
@@ -30,8 +29,7 @@ function draw(
   edgeToX: Map<Edge<Vertex>, number>,
   layout: GraphLayout,
   xPositions: LayerSpacer,
-  yPosition: (v: Vertex) => number,
-  isCliqueCenter: (v: Vertex) => boolean
+  yPosition: (v: Vertex) => number
 ): { adjEdges: Map<Vertex, Set<string>>; ink: number; bends: number } {
   const adjEdges = new Map<Vertex, Set<string>>(); //vertex to edge ids of drawn edges
   g.getVertices().forEach((v) => adjEdges.set(v, new Set()));
@@ -46,17 +44,12 @@ function draw(
       yPosition(edge.target),
       x
     );
-    if (isCliqueCenter(edge.source)) {
-      //add ids to vertices infront of TreeCenter
-      g.getIncidentIn(edge.source).forEach((e) => edgeIds.forEach((id) => adjEdges.get(e.source)!.add(id)));
-    } else {
-      edgeIds.forEach((id) => adjEdges.get(edge.source)!.add(id));
-    }
-    if (isCliqueCenter(edge.target)) {
-      g.getIncidentOut(edge.target).forEach((e) => edgeIds.forEach((id) => adjEdges.get(e.target)!.add(id)));
-    } else {
-      edgeIds.forEach((id) => adjEdges.get(edge.target)!.add(id));
-    }
+
+    //source vertices, ignores clique centers and dummy vertices
+    const sourceVertices = getPreviousDrawnVertices(g, edge.source);
+    sourceVertices.forEach((v) => edgeIds.forEach((id) => adjEdges.get(v)!.add(id)));
+    const targetVertices = getnextDrawnVertices(g, edge.target);
+    targetVertices.forEach((v) => edgeIds.forEach((id) => adjEdges.get(v)!.add(id)));
   });
   console.log("bends", drawer.bends);
   console.log("ink", drawer.ink);
@@ -217,5 +210,20 @@ class Drawer {
     layout.addEdgeDrawing({ id: id, points: points.map((p) => ({ x: p[0], y: p[1] })) });
     this.drawnEdgesToID.set(pointsKey, id);
     return id;
+  }
+}
+function getPreviousDrawnVertices(g: LayerGraph<Vertex, Edge<Vertex>>, v: Vertex): Vertex[] {
+  if (v.isCliqueCenter() || v.isDummyVertex()) {
+    return g.getAdjacentIn(v).flatMap((v) => getPreviousDrawnVertices(g, v));
+  } else {
+    return [v];
+  }
+}
+
+function getnextDrawnVertices(g: LayerGraph<Vertex, Edge<Vertex>>, v: Vertex): Vertex[] {
+  if (v.isCliqueCenter() || v.isDummyVertex()) {
+    return g.getAdjacentOut(v).flatMap((v) => getnextDrawnVertices(g, v));
+  } else {
+    return [v];
   }
 }

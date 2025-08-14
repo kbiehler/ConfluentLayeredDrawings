@@ -74,14 +74,7 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
 
   const layout = new GraphLayout();
 
-  let { adjEdges, bends, ink } = drawEdges(
-    biCliqueGraph,
-    layout,
-    (v: Vertex) => vertexPositions.get(v)!,
-    (v: Vertex) => v.isCliqueCenter() || v.isDummyVertex(),
-    edgePlans,
-    layerSpacer
-  );
+  let { adjEdges, bends, ink } = drawEdges(biCliqueGraph, layout, (v: Vertex) => vertexPositions.get(v)!, edgePlans, layerSpacer);
 
   addVerticesToLayout(vertexPositions, layout, layerSpacer, vertexSpacer, biCliqueGraph);
 

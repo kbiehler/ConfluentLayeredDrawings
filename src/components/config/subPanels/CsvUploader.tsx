@@ -25,16 +25,19 @@ export default function CSVUploader({ handleFileUpload }: Props) {
     <div
       {...getRootProps()}
       style={{
-        border: "2px dashed #888",
+        border: "2px dashed var(--dz-border)",
         borderRadius: "8px",
         padding: "20px",
         textAlign: "center",
-        background: isDragActive ? "#e0f7fa" : "#fafafa",
+        background: isDragActive ? "var(--dz-bg-active)" : "var(--dz-bg)",
+        color: "var(--dz-text)",
         cursor: "pointer",
+        transition: "background 120ms ease, border-color 120ms ease, color 120ms ease",
       }}
+      aria-label="CSV file dropzone"
     >
       <input {...getInputProps()} />
-      {isDragActive ? <p>Drop the CSV file here…</p> : <p>Drag & drop a CSV file here, or click to select one</p>}
+      {isDragActive ? <p>Drop the CSV file here…</p> : <p>Drag &amp; drop a CSV file here, or click to select one</p>}
     </div>
   );
 }

@@ -98,18 +98,20 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
           <GraphSvg graphLayout={implLayout} renderCfg={renderCfg} interactionManager={implInteractMgr} />
         )}
       </div>
-      <div style={{ flexGrow: 1 }}>
-        {panelSelect === "main" ? (
-          <div>
-            <MetricPanel metric={metric} />
-            <MetricPanel metric={avgMetric} />
-          </div>
-        ) : panelSelect === "nbr" ? (
-          <MetricPanel metric={nbrMetric} />
-        ) : (
-          <MetricPanel metric={implMetric} />
-        )}
-      </div>
+      {process.env.NODE_ENV === "development" && (
+        <div style={{ flexGrow: 1 }}>
+          {panelSelect === "main" ? (
+            <div>
+              <MetricPanel metric={metric} />
+              <MetricPanel metric={avgMetric} />
+            </div>
+          ) : panelSelect === "nbr" ? (
+            <MetricPanel metric={nbrMetric} />
+          ) : (
+            <MetricPanel metric={implMetric} />
+          )}
+        </div>
+      )}
     </div>
   );
 };
