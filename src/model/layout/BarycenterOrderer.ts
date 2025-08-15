@@ -1,6 +1,7 @@
 import { LayerGraph } from "@/model/ds/LayerGraph";
 import _ from "lodash";
 import { findComponents } from "../alg/Components";
+import seedrandom from "seedrandom";
 
 export class BarycenterOrderer {
   depth: number;

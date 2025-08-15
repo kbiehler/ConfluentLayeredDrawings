@@ -55,7 +55,9 @@ export function readCsv(content: string): Graph {
   });
 
   edges.forEach((edge) => {
-    graph.addEdge(edge);
+    if (!graph.getAdjacentOut(edge.source).includes(edge.target)) {
+      graph.addEdge(edge);
+    }
   });
 
   const emptyVertex = getOrCreate(nodeMap, "");
