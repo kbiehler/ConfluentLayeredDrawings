@@ -35,6 +35,10 @@ export class Vertex {
   public isDummyVertex(): boolean {
     return false;
   }
+
+  public copy(): Vertex {
+    return new Vertex(this.label);
+  }
 }
 
 export class CliqueCenter extends Vertex {
@@ -44,6 +48,10 @@ export class CliqueCenter extends Vertex {
 
   public isCliqueCenter(): boolean {
     return true;
+  }
+
+  public copy(): Vertex {
+    return new CliqueCenter();
   }
 }
 
@@ -55,5 +63,9 @@ export class DummyVertex extends Vertex {
 
   public isDummyVertex(): boolean {
     return true;
+  }
+
+  public copy(): Vertex {
+    return new DummyVertex(this.label);
   }
 }

@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import { path as d3path } from "d3-path";
 import { VertexId } from "@/model/types";
 import { mergeEdgeDrawings } from "@/model/renderer/EdgeMerger";
+import { CsvVertex } from "@/input/CsvParser";
 
 export interface RenderCfg {
   vertexColor: string;
@@ -125,6 +126,15 @@ export class GraphSVGRenderer {
       .attr("stroke-width", (v) => (isSelectedVertex(v.id) || markVertex(v.id) ? 3 : 1))
       .style("fill", (v) => (highlightVertex(v.id) ? renderCfg.highlightColor : renderCfg.vertexColor));
 
+    // Map properties → label + color
+    const propDefs = [
+      { key: "isFunction", label: "Function", color: "#3b82f6", func: (v: CsvVertex) => v.isFunction() }, // blue
+      { key: "failureMode", label: "Failure Mode", color: "#ef4444", func: (v: CsvVertex) => v.isFailureMode() }, // red
+      { key: "failureCause", label: "Failure Cause", color: "#f59e0b", func: (v: CsvVertex) => v.isFailureCause() }, // amber
+      { key: "failureDetection", label: "Failure Detection", color: "#10b981", func: (v: CsvVertex) => v.isFailureDetection() }, // green
+      { key: "compensationProvision", label: "Compensation Provision", color: "#8b5cf6", func: (v: CsvVertex) => v.isCompensationProvision() }, // violet
+    ];
+
     vertexGroups
       .append("text")
       .attr("class", "vertex-label")
@@ -132,6 +142,85 @@ export class GraphSVGRenderer {
       .attr("y", 5)
       .attr("text-anchor", "middle")
       .text((d) => d.displayLabel);
+
+    vertexGroups.each(function (v, i) {
+      const g = d3.select(this);
+      const clipId = `clip-${crypto.randomUUID()}`;
+
+      const rectX = -v.width / 2;
+      const rectY = -v.height / 2;
+      const rectW = v.width;
+      const rectH = v.height;
+      const rx = 5,
+        ry = 5;
+
+      const barWidth = 8; // width of the colored bar area
+      const barX = rectX + rectW - barWidth; // right edge inside
+
+      const active = propDefs.filter((p) => v.csvVertex != null && p.func(v.csvVertex));
+
+      const n = active.length;
+      if (!n) return;
+
+      // clipPath for rounded rect
+      g.append("clipPath")
+        .attr("id", clipId)
+        .append("rect")
+        .attr("x", rectX)
+        .attr("y", rectY)
+        .attr("width", rectW)
+        .attr("height", rectH)
+        .attr("rx", rx)
+        .attr("ry", ry);
+
+      // bars + dividers in a clipped group
+      const barsG = g.append("g").attr("clip-path", `url(#${clipId})`);
+
+      const segH = rectH / n;
+
+      // bars
+      barsG
+        .selectAll("rect.bar")
+        .data(active, (d) => d.key)
+        .join("rect")
+        .attr("class", "bar")
+        .attr("x", barX)
+        .attr("y", (_, i) => rectY + i * segH)
+        .attr("width", barWidth)
+        .attr("height", segH)
+        .attr("fill", (d) => d.color)
+        .append("title")
+        .text((d) => d.label);
+
+      // left border of bar area
+      barsG.append("rect").attr("x", barX).attr("y", rectY).attr("width", 1).attr("height", rectH).attr("fill", "black");
+
+      // dividers between bars
+      if (n > 1) {
+        barsG
+          .selectAll("rect.divider")
+          .data(d3.range(1, n))
+          .join("rect")
+          .attr("class", "divider")
+          .attr("x", barX + 1)
+          .attr("y", (i) => rectY + i * segH)
+          .attr("width", barWidth - 2)
+          .attr("height", 1)
+          .attr("fill", "black");
+      }
+
+      // outer stroke on top to hide antialiasing
+      g.append("rect")
+        .attr("x", rectX)
+        .attr("y", rectY)
+        .attr("width", rectW)
+        .attr("height", rectH)
+        .attr("rx", rx)
+        .attr("ry", ry)
+        .attr("fill", "none")
+        .attr("stroke", "black")
+        .attr("stroke-width", 1);
+    });
 
     if (renderCfg.showCliqueCenter) {
       svg

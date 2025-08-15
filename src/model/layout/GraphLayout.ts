@@ -1,5 +1,7 @@
+import { CsvVertex } from "@/input/CsvParser";
 import { Point2d } from "../types/Point";
 import { VertexId } from "@/model/types";
+import { csv } from "d3";
 
 export interface VertexLayout {
   id: VertexId;
@@ -9,6 +11,7 @@ export interface VertexLayout {
   height: number;
   label: string;
   displayLabel: string;
+  csvVertex: CsvVertex | null;
 }
 
 export interface EdgeLayout {
@@ -32,10 +35,11 @@ export class GraphLayout {
     width: number,
     height: number,
     label: string = "",
-    displayLabel: string = ""
+    displayLabel: string = "",
+    csvVertex: CsvVertex | null = null
   ): void {
     if (!this.vertices.has(id)) {
-      this.vertices.set(id, { id, position, draw, label, displayLabel, width, height });
+      this.vertices.set(id, { id, position, draw, label, displayLabel, width, height, csvVertex });
     } else {
       throw new Error(`Vertex with id ${id} already exists.`);
     }

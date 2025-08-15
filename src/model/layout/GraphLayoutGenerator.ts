@@ -22,6 +22,7 @@ import { LayoutMetrics } from "../metrics/LayoutMetrics";
 import { crossingsOfPlan } from "./metrics/Crossings";
 import { fixCenterPositions } from "./positioning/PostprocessPositioning";
 import { hasCycleDirected } from "../alg/CycleDetector";
+import { CsvVertex } from "@/input/CsvParser";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -125,7 +126,8 @@ function addVerticesToLayout(
       vertexSpacer.width(biCliqueGraph.getLayer(vertex)),
       vertexSpacer.height(biCliqueGraph.getLayer(vertex)),
       vertex.getLabel(),
-      vertexSpacer.label(vertex)
+      vertexSpacer.label(vertex),
+      vertex instanceof CsvVertex ? vertex : null
     );
   });
 }
