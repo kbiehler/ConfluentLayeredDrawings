@@ -4,6 +4,7 @@ import { path as d3path } from "d3-path";
 import { VertexId } from "@/model/types";
 import { mergeEdgeDrawings } from "@/model/renderer/EdgeMerger";
 import { CsvVertex } from "@/input/CsvParser";
+import { CsvProp, csvPropDefs } from "@/cfg/CsvProps";
 
 export interface RenderCfg {
   vertexColor: string;
@@ -100,15 +101,6 @@ export class GraphSVGRenderer {
       .attr("stroke-width", (v) => (isSelectedVertex(v.id) || markVertex(v.id) ? 3 : 1))
       .style("fill", (v) => (highlightVertex(v.id) ? renderCfg.highlightColor : renderCfg.vertexColor));
 
-    // Map properties → label + color
-    const propDefs = [
-      { key: "isFunction", label: "Function", color: "#3b82f6", func: (v: CsvVertex) => v.isFunction() }, // blue
-      { key: "failureMode", label: "Failure Mode", color: "#ef4444", func: (v: CsvVertex) => v.isFailureMode() }, // red
-      { key: "failureCause", label: "Failure Cause", color: "#f59e0b", func: (v: CsvVertex) => v.isFailureCause() }, // amber
-      { key: "failureDetection", label: "Failure Detection", color: "#10b981", func: (v: CsvVertex) => v.isFailureDetection() }, // green
-      { key: "compensationProvision", label: "Compensation Provision", color: "#8b5cf6", func: (v: CsvVertex) => v.isCompensationProvision() }, // violet
-    ];
-
     vertexGroups
       .append("text")
       .attr("class", "vertex-label")
@@ -131,7 +123,7 @@ export class GraphSVGRenderer {
       const barWidth = 8; // width of the colored bar area
       const barX = rectX + rectW - barWidth; // right edge inside
 
-      const active = propDefs.filter((p) => v.csvVertex != null && p.func(v.csvVertex));
+      const active = csvPropDefs.filter((p) => v.csvVertex != null && p.func(v.csvVertex));
 
       const n = active.length;
       if (!n) return;
@@ -154,7 +146,7 @@ export class GraphSVGRenderer {
 
       // bars
       barsG
-        .selectAll("rect.bar")
+        .selectAll<SVGGElement, CsvProp>("rect.bar")
         .data(active, (d) => d.key)
         .join("rect")
         .attr("class", "bar")

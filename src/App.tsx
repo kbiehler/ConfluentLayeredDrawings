@@ -4,6 +4,8 @@ import { ConfigDto } from "./cfg/ConfigDtos";
 import GraphsPanel from "./components/GraphsPanel";
 import "./App.css";
 import InputPanel from "./components/InputPanel";
+import { Vertex } from "./model/ds";
+import VertexLegend from "./components/VertexLegend";
 
 function App() {
   const [config, setConfig] = useState(() => new ConfigDto());

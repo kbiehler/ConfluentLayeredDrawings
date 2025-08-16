@@ -10,6 +10,7 @@ import { RedrawState } from "@/model/redraw/RedrawState";
 import { Empty_Layout_Metric } from "@/model/metrics/LayoutMetrics";
 import MetricPanel from "./MetricPanel";
 import "./GraphsPanel.css";
+import VertexLegend from "./VertexLegend";
 
 interface GraphsPanelProps {
   config: ConfigDto;
@@ -78,6 +79,7 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
 
   return (
     <div>
+      <VertexLegend />
       <div style={{ flexShrink: 0, padding: "10px", display: "flex", gap: "10px" }}>
         <button onClick={() => setPanelSelect("main")} className={panelSelect === "main" ? "active" : ""}>
           Main Graph
