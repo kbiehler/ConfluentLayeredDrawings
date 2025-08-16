@@ -6,6 +6,7 @@ import { FixedLayerSpacerCfg } from "@/model/layout/spacing/FixedLayerSpacer";
 import { FixedVerticalSpacerCfg } from "@/model/layout/spacing/FixedVerticalSpacer";
 import { vertexSpacingCfg, VertexSpacingCfgDto } from "./VertexSpacingCfgDto";
 import { EdgeDrawingAlgorithm } from "@/model/layout/edges/EdgeDrawingAlgorithm";
+import { NumberFilterCfgDto } from "@/components/csv/NumberFilterPanel";
 
 /**
  * Data Transfer Object (DTO) for configuration settings.
@@ -24,6 +25,7 @@ export class ConfigDto {
   layerSpacingCfg: LayerSpacingCfgDto = new LayerSpacingCfgDto();
   vertexSpacingCfg: VertexSpacingCfgDto = vertexSpacingCfg;
   optimizationCfg: OptimizationCfgDto = new OptimizationCfgDto();
+  numberCfg: NumberFilterCfgDto = new NumberFilterCfgDto();
 
   constructor(config?: Partial<ConfigDto>) {
     if (config) {

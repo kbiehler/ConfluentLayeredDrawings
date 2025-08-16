@@ -10,7 +10,7 @@ import { RedrawState } from "@/model/redraw/RedrawState";
 import { Empty_Layout_Metric } from "@/model/metrics/LayoutMetrics";
 import MetricPanel from "./MetricPanel";
 import "./GraphsPanel.css";
-import VertexLegend from "./VertexLegend";
+import VertexLegend from "./csv/VertexLegend";
 
 interface GraphsPanelProps {
   config: ConfigDto;

@@ -5,7 +5,7 @@ export const VertexLegend: React.FC = () => {
   return (
     <div
       style={{
-        display: "inline-flex", // <-- only as wide as content
+        display: "inline-flex",
         alignItems: "center",
         border: "1px solid #ccc",
         borderRadius: 6,

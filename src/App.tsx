@@ -4,8 +4,7 @@ import { ConfigDto } from "./cfg/ConfigDtos";
 import GraphsPanel from "./components/GraphsPanel";
 import "./App.css";
 import InputPanel from "./components/InputPanel";
-import { Vertex } from "./model/ds";
-import VertexLegend from "./components/VertexLegend";
+import CsvFilterPanel from "./components/csv/CsvFilterPanel";
 
 function App() {
   const [config, setConfig] = useState(() => new ConfigDto());
@@ -13,7 +12,7 @@ function App() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      {" "}
+      {(process.env.NODE_ENV == "development" || showGraph) && <CsvFilterPanel config={config} setConfig={setConfig} />}{" "}
       {(process.env.NODE_ENV === "development" || showGraph) && (
         <div style={{ flexShrink: 0, padding: "10px", display: "flex", gap: "10px" }}>
           <GraphsPanel config={config} />
