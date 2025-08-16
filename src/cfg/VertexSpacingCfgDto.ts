@@ -13,7 +13,7 @@ export type VertexSpacingCfgDto = {
 // Example configuration
 export const vertexSpacingCfg: VertexSpacingCfgDto = {
   type: VertexSpacerType.DYNAMIC,
-  textPadding: 5,
+  textPadding: 10,
   v_height: 50,
   v_width: 250,
   width_min: 150,

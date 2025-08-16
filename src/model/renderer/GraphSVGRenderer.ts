@@ -1,4 +1,4 @@
-import { EdgeLayout, GraphLayout, VertexLayout } from "@/model/layout/GraphLayout";
+import { GraphLayout, VertexLayout } from "@/model/layout/GraphLayout";
 import * as d3 from "d3";
 import { path as d3path } from "d3-path";
 import { VertexId } from "@/model/types";
@@ -22,13 +22,6 @@ export class GraphSVGRenderer {
     isSelectedVertex: (vertexId: VertexId) => boolean,
     markVertex: (vertexId: VertexId) => boolean
   ) {
-    const lineGenerator = d3.line<[number, number]>().curve(d3.curveBasis);
-
-    //draw first non-highlighed edges, then highlighted
-    // const edges = graphLayout.getEdgeDrawings().sort((a, b) => {
-    //   if (highlightEdge(a.id) === highlightEdge(b.id)) return 0;
-    //   return highlightEdge(a.id) ? 1 : -1;
-    // });
     const edgesNoHighlight = mergeEdgeDrawings(graphLayout.getEdgeDrawings().filter((e) => !highlightEdge(e.id)));
     const edgesHighlight = mergeEdgeDrawings(graphLayout.getEdgeDrawings().filter((e) => highlightEdge(e.id)));
     edgesNoHighlight.forEach((e) => (e.id = "no_highlight"));
@@ -57,22 +50,6 @@ export class GraphSVGRenderer {
         .attr("stroke-opacity", 1)
         .attr("stroke-miterlimit", 1);
     });
-
-    // const edges = [...edgesNoHighlight, ...edgesHighlight];
-
-    // svg
-    //   .selectAll<SVGPathElement, EdgeLayout>("path")
-    //   .data(edges)
-    //   .join("path")
-    //   .attr("fill", "none")
-    //   .attr("stroke", (d: EdgeLayout) => (d.id == "highlight" ? renderCfg.highlightColor : renderCfg.edgeColor))
-    //   .attr("stroke-width", (d: EdgeLayout) => (d.id == "highlight" ? 5 : 1))
-    //   .attr("d", (d: EdgeLayout) => {
-    //     return lineGenerator(d.points.map((p) => [p.x, p.y]));
-    //   })
-    //   .attr("transform", "translate(0.5,0.5)")
-    //   .attr("stroke-opacity", 1)
-    //   .attr("stroke-miterlimit", 1);
 
     const defs = svg.append("defs");
 
@@ -109,9 +86,6 @@ export class GraphSVGRenderer {
       })
       .on("mouseover", function (_, d) {
         d3.select(this).append("title").text(d.label);
-      })
-      .on("mouseout", function () {
-        d3.select(this).select("title").remove();
       });
 
     vertexGroups
@@ -138,7 +112,7 @@ export class GraphSVGRenderer {
     vertexGroups
       .append("text")
       .attr("class", "vertex-label")
-      .attr("x", 0)
+      .attr("x", -3)
       .attr("y", 5)
       .attr("text-anchor", "middle")
       .text((d) => d.displayLabel);
@@ -204,7 +178,7 @@ export class GraphSVGRenderer {
           .attr("class", "divider")
           .attr("x", barX + 1)
           .attr("y", (i) => rectY + i * segH)
-          .attr("width", barWidth - 2)
+          .attr("width", barWidth)
           .attr("height", 1)
           .attr("fill", "black");
       }
@@ -219,7 +193,7 @@ export class GraphSVGRenderer {
         .attr("ry", ry)
         .attr("fill", "none")
         .attr("stroke", "black")
-        .attr("stroke-width", 1);
+        .attr("stroke-width", isSelectedVertex(v.id) || markVertex(v.id) ? 3 : 1);
     });
 
     if (renderCfg.showCliqueCenter) {
