@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { viteSingleFile } from "vite-plugin-singlefile";
+import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -10,6 +11,7 @@ export default defineConfig({
     tsconfigPaths(),
     react(),
     viteSingleFile(), // inlines JS, CSS, assets into index.html
+    tailwindcss(),
   ],
   build: {
     target: "es2018",
