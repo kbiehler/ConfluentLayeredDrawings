@@ -1,0 +1,11 @@
+/* Firefox */
+@media (prefers-color-scheme: dark) {
+    * { scrollbar-color: #4b5563 #0b0f19; }
+}
+/* WebKit */
+@media (prefers-color-scheme: dark) {
+    ::-webkit-scrollbar { width: 12px; height: 12px; }
+    ::-webkit-scrollbar-track { background: #0b0f19; }
+    ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 8px; border: 2px solid #0b0f19; }
+    ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+}

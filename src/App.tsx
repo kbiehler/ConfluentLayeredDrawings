@@ -1,4 +1,6 @@
 import React, { useRef, useState } from "react";
+import "./scrollbars.css";
+import "./GraphFrontend.css";
 
 // ---------- Helpers --------------------------------------------------------
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
@@ -68,9 +70,9 @@ export default function GraphFrontendProposal() {
 
   function ConfigPanel() {
     return (
-      <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded p-2 shadow-sm">
+      <div className="panel">
         <div className="flex items-center justify-between sticky top-0 bg-gray-50 dark:bg-gray-900 z-10">
-          <h3 className="font-semibold">Config</h3>
+          <h3>Config</h3>
           <button
             className="text-sm px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
             onClick={() => setConfigOpen((s) => !s)}
@@ -120,112 +122,82 @@ export default function GraphFrontendProposal() {
 
   return (
     <>
-      <style>{`
-        /* Firefox */
-        @media (prefers-color-scheme: dark) {
-          * { scrollbar-color: #4b5563 #0b0f19; }
-        }
-        /* WebKit */
-        @media (prefers-color-scheme: dark) {
-          ::-webkit-scrollbar { width: 12px; height: 12px; }
-          ::-webkit-scrollbar-track { background: #0b0f19; }
-          ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 8px; border: 2px solid #0b0f19; }
-          ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
-        }
-      `}</style>
-
-      <div className="h-screen flex flex-col bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+      <div className="app">
         {/* Header */}
-        <header className="flex items-center gap-4 p-3 border-b border-gray-200 dark:border-gray-800">
-          <h1 className="text-xl font-bold">Graph Studio</h1>
-          <div className="flex-1" />
-          <div className="flex items-center gap-2">
-            <button className="px-3 py-1 border rounded border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800" onClick={fit}>
+        <header className="header">
+          <h1>Confluent Layered Drawer</h1>
+          <div className="toolbar">
+            <button className="btn" onClick={fit}>
               Fit
             </button>
-            <button className="px-3 py-1 border rounded border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800" onClick={() => zoom(1.1)}>
+            <button className="btn" onClick={() => zoom(1.1)}>
               ＋
             </button>
-            <button className="px-3 py-1 border rounded border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800" onClick={() => zoom(0.9)}>
+            <button className="btn" onClick={() => zoom(0.9)}>
               －
             </button>
-            <button className="px-3 py-1 border rounded border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800" onClick={reset}>
+            <button className="btn" onClick={reset}>
               Reset
             </button>
           </div>
         </header>
 
-        <main className="flex-1 flex overflow-hidden">
+        <main className="main">
           {/* Left sidebar (collapsible) */}
-          <aside
-            className="relative border-r border-gray-200 dark:border-gray-800 flex-none transition-all duration-200 ease-in-out bg-white dark:bg-gray-900"
-            style={{ width: sidebarOpen ? 384 : 28, overflowY: sidebarOpen ? "auto" : "hidden" }}
-            aria-expanded={sidebarOpen}
-          >
+          <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`} aria-expanded={sidebarOpen}>
             {/* Toggle pill always visible inside rail */}
-            <button
-              className="absolute right-1 top-4 w-8 h-8 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 shadow flex items-center justify-center z-20"
-              title={sidebarOpen ? "Collapse" : "Expand"}
-              aria-label={sidebarOpen ? "Collapse left panel" : "Expand left panel"}
-              onClick={() => setSidebarOpen((s) => !s)}
-            >
+            <button className="sidebar-toggle" title={sidebarOpen ? "Collapse" : "Expand"} onClick={() => setSidebarOpen((s) => !s)}>
               {sidebarOpen ? "⟨" : "⟩"}
             </button>
 
-            <div
-              className={
-                "p-3 flex flex-col gap-3 transition-opacity duration-150 " + (sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none select-none")
-              }
-            >
-              <ConfigPanel />
-
-              <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded p-2">
-                <h3 className="font-semibold mb-2">Data</h3>
-                <div className="p-3 border-2 border-dashed rounded text-center hover:bg-gray-50 dark:hover:bg-gray-800 border-gray-300 dark:border-gray-700">
+            <div className={`sidebar-content ${sidebarOpen ? "open" : "closed"}`}>
+              <div className="panel">
+                <h3>Data</h3>
+                <div className="dropzone">
                   <p className="text-sm">Drag & drop CSV here</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Or</p>
+                  <p className="text-xs">or</p>
                   <input id="csv-file-input" type="file" accept=".csv" className="hidden" />
                   <button className="mt-2 px-3 py-1 border rounded border-gray-300 dark:border-gray-700">Upload CSV</button>
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded p-2">
-                <h3 className="font-semibold">Filters</h3>
+              <div className="panel">
+                <h3>Number Filter</h3>
+                <div className="relative">
+                  <select className="input">
+                    <option>Force-directed (worker)</option>
+                    <option>Precomputed (CSV)</option>
+                    <option>Hierarchical</option>
+                    <option>Random</option>
+                  </select>
+                </div>
+
                 <input
                   placeholder="Search label or id"
-                  className="w-full p-2 border rounded mt-2 bg-white dark:bg-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-700"
+                  className="input"
                   value={filters.search}
                   onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value }))}
                 />
-                <div className="flex gap-2 mt-2">
+                <div className="flex gap-2">
                   <input
                     type="number"
-                    className="w-1/2 p-2 border rounded bg-white dark:bg-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-700"
+                    className="input"
                     placeholder="min deg"
                     onChange={(e) => setFilters((f) => ({ ...f, degreeMin: Number(e.target.value || 0) }))}
                   />
                   <input
                     type="number"
-                    className="w-1/2 p-2 border rounded bg-white dark:bg-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-700"
+                    className="input"
                     placeholder="max deg"
                     onChange={(e) => setFilters((f) => ({ ...f, degreeMax: Number(e.target.value || Infinity) }))}
                   />
                 </div>
-                <button
-                  className="w-full mt-2 px-3 py-1 rounded bg-indigo-600 text-white"
-                  onClick={() => setFilters({ search: "", degreeMin: 0, degreeMax: Infinity })}
-                >
+                <button className="btn-primary" onClick={() => setFilters({ search: "", degreeMin: 0, degreeMax: Infinity })}>
                   Clear filters
                 </button>
-                <div className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                  <div>Nodes: {nodes.length}</div>
-                  <div>Edges: {edges.length}</div>
-                </div>
               </div>
 
-              <div className="mt-auto text-xs text-gray-500 dark:text-gray-400">
-                Tips: For very large graphs, precompute layout or use server-side clustering. SVG + scrollbars + toolbar zoom keeps interactions simple.
-              </div>
+              <ConfigPanel />
             </div>
           </aside>
 
@@ -261,37 +233,6 @@ export default function GraphFrontendProposal() {
               </svg>
             </div>
           </section>
-
-          {/* Right sidebar */}
-          <aside className="w-80 border-l border-gray-200 dark:border-gray-800 p-3 overflow-y-auto flex-shrink-0 bg-white dark:bg-gray-900">
-            <h3 className="font-semibold">Details</h3>
-            {selectedNodes.length ? (
-              <div className="mt-2">
-                <div className="font-medium">{selectedNodes.join(", ")}</div>
-                <pre className="text-xs mt-2 bg-gray-50 dark:bg-gray-900 p-2 rounded">
-                  {JSON.stringify(nodes.find((n) => n.id === selectedNodes[0])?.raw, null, 2)}
-                </pre>
-              </div>
-            ) : (
-              <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">No node selected. Click a node in the graph to view details.</div>
-            )}
-            <div className="mt-4">
-              <h4 className="font-semibold">View Mode</h4>
-              <div className="flex flex-col gap-1 mt-2">
-                <label>
-                  <input type="radio" name="viewmode" value="main" checked={viewMode === "main"} onChange={() => setViewMode("main")} /> Main Graph
-                </label>
-                <label>
-                  <input type="radio" name="viewmode" value="neighbors" checked={viewMode === "neighbors"} onChange={() => setViewMode("neighbors")} /> Selected
-                  + Neighbors
-                </label>
-                <label>
-                  <input type="radio" name="viewmode" value="implied" checked={viewMode === "implied"} onChange={() => setViewMode("implied")} /> Implied
-                  (neighbors-of-neighbors)
-                </label>
-              </div>
-            </div>
-          </aside>
         </main>
 
         <footer className="p-2 text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-800">
