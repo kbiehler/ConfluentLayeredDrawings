@@ -8,9 +8,6 @@ import { Graph } from "@/model/ds";
 import { draw, redrawImpl, redrawNbr } from "@/model/DrawModel";
 import { RedrawState } from "@/model/redraw/RedrawState";
 import { Empty_Layout_Metric } from "@/model/metrics/LayoutMetrics";
-import MetricPanel from "./MetricPanel";
-import "./GraphsPanel.css";
-import VertexLegend from "./csv/VertexLegend";
 
 interface GraphsPanelProps {
   config: ConfigDto;
@@ -83,18 +80,6 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config, graphCfg }) => {
 
   return (
     <div>
-      <VertexLegend />
-      <div style={{ flexShrink: 0, padding: "10px", display: "flex", gap: "10px" }}>
-        <button onClick={() => setPanelSelect("main")} className={panelSelect === "main" ? "active" : ""}>
-          Main Graph
-        </button>
-        <button onClick={() => setPanelSelect("nbr")} className={panelSelect === "nbr" ? "active" : ""}>
-          Show selected + neighbours
-        </button>
-        <button onClick={() => setPanelSelect("impl")} className={panelSelect === "impl" ? "active" : ""}>
-          Show implied
-        </button>
-      </div>
       <div style={{ flexGrow: 1 }}>
         {panelSelect === "main" ? (
           <GraphSvg graphLayout={layout} renderCfg={renderCfg} interactionManager={interactMgr} />
@@ -104,20 +89,6 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config, graphCfg }) => {
           <GraphSvg graphLayout={implLayout} renderCfg={renderCfg} interactionManager={implInteractMgr} />
         )}
       </div>
-      {process.env.NODE_ENV === "development" && (
-        <div style={{ flexGrow: 1 }}>
-          {panelSelect === "main" ? (
-            <div>
-              <MetricPanel metric={metric} />
-              <MetricPanel metric={avgMetric} />
-            </div>
-          ) : panelSelect === "nbr" ? (
-            <MetricPanel metric={nbrMetric} />
-          ) : (
-            <MetricPanel metric={implMetric} />
-          )}
-        </div>
-      )}
     </div>
   );
 };

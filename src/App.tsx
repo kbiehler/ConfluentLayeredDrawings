@@ -1,6 +1,11 @@
 import React, { useRef, useState } from "react";
 import "./scrollbars.css";
 import "./GraphFrontend.css";
+import GraphsPanel from "./components/GraphsPanel";
+import { ConfigDto, GraphCfgDto } from "./cfg/ConfigDtos";
+import { Vertex } from "./model/ds";
+import VertexLegend from "./components/new/VertexLegend";
+import DisplayModePanel from "./components/new/DisplayModePanel";
 
 // ---------- Helpers --------------------------------------------------------
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
@@ -35,10 +40,12 @@ export default function GraphFrontendProposal() {
   });
 
   // UI state
+  const [config, setConfig] = useState(() => new ConfigDto());
+  const [graphCfg, setGraphCfg] = useState(() => new GraphCfgDto());
   const [filters, setFilters] = useState({ search: "", degreeMin: 0, degreeMax: Infinity });
   const [configOpen, setConfigOpen] = useState(true);
   const [selectedNodes, setSelectedNodes] = useState([]);
-  const [viewMode, setViewMode] = useState("main");
+  const [displayMode, setDisplayMode] = useState("main");
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Viewport/zoom
@@ -204,34 +211,10 @@ export default function GraphFrontendProposal() {
           {/* Center: fixed scroll canvas; zoom only affects inner <g> */}
           <section className="flex-1 min-w-0 relative bg-gray-100 dark:bg-gray-950 overflow-hidden">
             <div ref={graphContainerRef} id="graph-canvas" className="w-full h-full overflow-auto bg-white dark:bg-gray-900">
-              <svg width={contentWidth} height={contentHeight} className="block">
-                <g transform={`translate(${margin},${margin}) scale(${scale})`}>
-                  {nodes.map((n, i) => (
-                    <g
-                      key={n.id}
-                      className="vertex-group cursor-pointer text-gray-900 dark:text-gray-100"
-                      transform={`translate(${200 + (i % 6) * 220}, ${200 + Math.floor(i / 6) * 100})`}
-                      onClick={() => setSelectedNodes([n.id])}
-                    >
-                      <rect
-                        width="200"
-                        height="50"
-                        x="-100"
-                        y="-25"
-                        rx="5"
-                        ry="5"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        className="fill-[tomato] dark:fill-pink-600"
-                      />
-                      <text className="vertex-label" x="0" y="5" textAnchor="middle">
-                        {n.label}
-                      </text>
-                    </g>
-                  ))}
-                </g>
-              </svg>
+              <GraphsPanel config={config} graphCfg={graphCfg} />
             </div>
+            <VertexLegend />
+            <DisplayModePanel displayMode={displayMode} setDisplayMode={setDisplayMode} />
           </section>
         </main>
 

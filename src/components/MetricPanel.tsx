@@ -1,6 +1,5 @@
 import { LayoutMetrics } from "@/model/metrics/LayoutMetrics";
 import React from "react";
-import "./MetricPanel.css";
 
 type MetricPanelProps = {
   metric: LayoutMetrics;

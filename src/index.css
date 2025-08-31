@@ -6,7 +6,7 @@ html, body, #root { height: 100%; }
 
 
 
-/* body {
+body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
     Noto Sans, Ubuntu, Cantarell, Helvetica Neue, Arial, "Apple Color Emoji",
@@ -15,4 +15,4 @@ html, body, #root { height: 100%; }
   -moz-osx-font-smoothing: grayscale;
   background-color: white; /* ChatGPT preview uses white app background */
   color: rgb(17,24,39); /* Tailwind gray-900 */
-/* } */ */
+}

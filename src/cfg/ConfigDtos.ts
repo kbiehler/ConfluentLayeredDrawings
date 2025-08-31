@@ -40,7 +40,7 @@ export class GraphCfgDto {
     }
   }
 
-  type: "empty" | "example" | "random" | "file" | "csv" = "empty";
+  type: "empty" | "example" | "random" | "file" | "csv" = "example";
   example_type: ExampleGraphs = ExampleGraphs.CENTER_2;
   fileContent?: string; // Store uploaded file contents
 }
