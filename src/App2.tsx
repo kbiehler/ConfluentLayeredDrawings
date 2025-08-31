@@ -3,7 +3,7 @@ import ConfigPanel from "@/components/config/ConfigPanel";
 import { ConfigDto, GraphCfgDto } from "./cfg/ConfigDtos";
 import GraphsPanel from "./components/GraphsPanel";
 import "./App.css";
-import InputPanel from "./components/InputPanel";
+import InputPanel from "./components/new/InputPanel";
 import CsvFilterPanel from "./components/csv/CsvFilterPanel";
 
 function App() {

@@ -6,6 +6,8 @@ import { ConfigDto, GraphCfgDto } from "./cfg/ConfigDtos";
 import { Vertex } from "./model/ds";
 import VertexLegend from "./components/new/VertexLegend";
 import DisplayModePanel from "./components/new/DisplayModePanel";
+import { useLocalStorageState } from "./components/new/LocalStorageState";
+import InputPanel from "./components/new/InputPanel";
 
 // ---------- Helpers --------------------------------------------------------
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
@@ -43,7 +45,7 @@ export default function GraphFrontendProposal() {
   const [config, setConfig] = useState(() => new ConfigDto());
   const [graphCfg, setGraphCfg] = useState(() => new GraphCfgDto());
   const [filters, setFilters] = useState({ search: "", degreeMin: 0, degreeMax: Infinity });
-  const [configOpen, setConfigOpen] = useState(true);
+  const [configOpen, setConfigOpen] = useLocalStorageState("configOpen", true);
   const [selectedNodes, setSelectedNodes] = useState([]);
   const [displayMode, setDisplayMode] = useState("main");
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -158,15 +160,7 @@ export default function GraphFrontendProposal() {
             </button>
 
             <div className={`sidebar-content ${sidebarOpen ? "open" : "closed"}`}>
-              <div className="panel">
-                <h3>Data</h3>
-                <div className="dropzone">
-                  <p className="text-sm">Drag & drop CSV here</p>
-                  <p className="text-xs">or</p>
-                  <input id="csv-file-input" type="file" accept=".csv" className="hidden" />
-                  <button className="mt-2 px-3 py-1 border rounded border-gray-300 dark:border-gray-700">Upload CSV</button>
-                </div>
-              </div>
+              <InputPanel graphCfg={graphCfg} setConfig={setGraphCfg} setShowGraph={() => {}} />
 
               <div className="panel">
                 <h3>Number Filter</h3>
