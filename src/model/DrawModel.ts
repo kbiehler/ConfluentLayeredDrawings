@@ -4,14 +4,14 @@ import { Vertex } from "./ds/Vertex";
 import { GraphLayout } from "./layout/GraphLayout";
 import { RedrawState } from "./redraw/RedrawState";
 import { InteractionInfo } from "./renderer/InteractionManager";
-import { ConfigDto, mapToGraphLayoutCfg } from "@/cfg/ConfigDtos";
+import { ConfigDto, GraphCfgDto, mapToGraphLayoutCfg } from "@/cfg/ConfigDtos";
 import { loadFromCfg } from "@/input/GraphLoader";
 import { VertexId } from "./types";
 import { buildImplGraph, buildNbrGraph } from "./redraw/RedrawAlg";
 import { LayoutMetrics } from "./metrics/LayoutMetrics";
 
-export function draw(cfgDto: ConfigDto): [RedrawState, GraphLayout, InteractionInfo, LayoutMetrics, LayoutMetrics] {
-  const inputG = loadFromCfg(cfgDto.graphCfg, cfgDto.numberCfg);
+export function draw(cfgDto: ConfigDto, graphCfg: GraphCfgDto): [RedrawState, GraphLayout, InteractionInfo, LayoutMetrics, LayoutMetrics] {
+  const inputG = loadFromCfg(graphCfg, cfgDto.numberCfg);
 
   const cfg = mapToGraphLayoutCfg(cfgDto);
   const g = convertToLayoutVertices(inputG);

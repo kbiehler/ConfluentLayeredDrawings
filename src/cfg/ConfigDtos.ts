@@ -5,8 +5,8 @@ import { VertexPositionAlgorithm } from "@/model/layout/positioning/VertexPositi
 import { FixedLayerSpacerCfg } from "@/model/layout/spacing/FixedLayerSpacer";
 import { FixedVerticalSpacerCfg } from "@/model/layout/spacing/FixedVerticalSpacer";
 import { vertexSpacingCfg, VertexSpacingCfgDto } from "./VertexSpacingCfgDto";
-import { EdgeDrawingAlgorithm } from "@/model/layout/edges/EdgeDrawingAlgorithm";
 import { NumberFilterCfgDto } from "@/components/csv/NumberFilterPanel";
+import { Graph } from "graphlib";
 
 /**
  * Data Transfer Object (DTO) for configuration settings.
@@ -17,7 +17,6 @@ import { NumberFilterCfgDto } from "@/components/csv/NumberFilterPanel";
  * configuration used by individual components and algorithms.
  */
 export class ConfigDto {
-  graphCfg: GraphCfgDto = new GraphCfgDto();
   barycenterCfg: BarycenterCfgDto = new BarycenterCfgDto();
   uiCfg: UiCfgDto = new UiCfgDto();
   algCfg: AlgorithmCfgDto = new AlgorithmCfgDto();
@@ -35,7 +34,13 @@ export class ConfigDto {
 }
 
 export class GraphCfgDto {
-  type: "example" | "random" | "file" | "csv" = "example";
+  constructor(config?: Partial<GraphCfgDto>) {
+    if (config) {
+      Object.assign(this, config);
+    }
+  }
+
+  type: "empty" | "example" | "random" | "file" | "csv" = "empty";
   example_type: ExampleGraphs = ExampleGraphs.CENTER_2;
   fileContent?: string; // Store uploaded file contents
 }
@@ -47,7 +52,6 @@ export class BarycenterCfgDto {
 }
 
 export class AlgorithmCfgDto {
-  edgeDrawing: EdgeDrawingAlgorithm = EdgeDrawingAlgorithm.VERTICAL_BUNDELING;
   vertexPositioning: VertexPositionAlgorithm = VertexPositionAlgorithm.LP;
 }
 
@@ -111,7 +115,6 @@ export function mapToGraphLayoutCfg(cfgDto: ConfigDto): GraphLayoutCfg {
       biClique: cfgDto.biCliqueCfg.biClique,
       postProcessShift: cfgDto.biCliqueCfg.postProcessShift,
     },
-    edgeAlg: cfgDto.algCfg.edgeDrawing,
     layerSpacing: layerSpacingCfg,
     vertexSpacing: {
       type: cfgDto.vertexSpacingCfg.type,

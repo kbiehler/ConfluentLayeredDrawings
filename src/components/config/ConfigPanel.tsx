@@ -38,7 +38,6 @@ const ConfigPanel: React.FC<Props> = ({ config, setConfig }) => {
       {isOpen && (
         <div className="panel-content">
           <div className="config-grid" style={{ display: "flex", gap: "50px" }}>
-            <GraphConfigPanel config={localConfig.graphCfg} handleChange={(field, value) => handleChange("graphCfg", field, value)} />
             <UiConfigPanel config={localConfig.uiCfg} handleChange={(field, value) => handleChange("uiCfg", field, value)} />
             <BarycenterCfgPanel config={localConfig.barycenterCfg} handleChange={(field, value) => handleChange("barycenterCfg", field, value)} />
             <AlgorithmConfigPanel config={localConfig.algCfg} handleChange={(field, value) => handleChange("algCfg", field, value)} />

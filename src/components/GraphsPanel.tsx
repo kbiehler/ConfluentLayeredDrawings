@@ -1,7 +1,7 @@
 import React from "react";
 import GraphSvg from "@/components/GraphSvg";
 import { useEffect, useState } from "react";
-import { ConfigDto, mapToRenderCfg } from "@/cfg/ConfigDtos";
+import { ConfigDto, GraphCfgDto, mapToRenderCfg } from "@/cfg/ConfigDtos";
 import { GraphLayout } from "@/model/layout/GraphLayout";
 import { InteractionManager, MarkVertexInteractionManager } from "@/model/renderer/InteractionManager";
 import { Graph } from "@/model/ds";
@@ -14,9 +14,13 @@ import VertexLegend from "./csv/VertexLegend";
 
 interface GraphsPanelProps {
   config: ConfigDto;
+  graphCfg: GraphCfgDto;
 }
 
-const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
+const GraphsPanel: React.FC<GraphsPanelProps> = ({ config, graphCfg }) => {
+  if (graphCfg.type === "empty") {
+    return null;
+  }
   const [layout, setLayout] = useState(() => new GraphLayout());
   const [redrawState, setRedrawState] = useState(() => new RedrawState(new Graph()));
   const [interactMgr, setInteractMgr] = useState(() => new InteractionManager());
@@ -26,14 +30,14 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config }) => {
   const [avgMetric, setAvgMetric] = useState(Empty_Layout_Metric);
 
   useEffect(() => {
-    const [redrawState, tmpLayout, tmpInteractInfo, tmpMetric, tmpAvgMetric] = draw(config);
+    const [redrawState, tmpLayout, tmpInteractInfo, tmpMetric, tmpAvgMetric] = draw(config, graphCfg);
     setRedrawState(redrawState);
     setLayout(tmpLayout);
     setInteractMgr(new InteractionManager(tmpInteractInfo));
     setRenderCfg(mapToRenderCfg(config));
     setMetric(tmpMetric);
     setAvgMetric(tmpAvgMetric);
-  }, [config]);
+  }, [config, graphCfg]);
 
   const [nbrLayout, setNbrLayout] = useState(() => new GraphLayout());
   const [nbrMetric, setNbrMetric] = useState(Empty_Layout_Metric);

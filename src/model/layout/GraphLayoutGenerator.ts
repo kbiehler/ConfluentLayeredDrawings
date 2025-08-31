@@ -14,7 +14,6 @@ import { computeScaledPositions } from "./positioning/VertexScaler";
 import { computeVerticalBundeling } from "./edges/plan/VerticalBundeling";
 import { EdgePlan } from "./edges/plan/EdgePlan";
 import { postProcessCliqueShift as postProcessBicliqueShift } from "./bicliqueCenter/PostProcessClique";
-import { EdgeDrawingAlgorithm } from "./edges/EdgeDrawingAlgorithm";
 import { InteractionInfo } from "../renderer/InteractionManager";
 import _ from "lodash";
 import { BiCliqueCfg } from "@/cfg/ConfigDtos";
@@ -26,7 +25,6 @@ import { CsvVertex } from "@/input/CsvParser";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
-  edgeAlg: EdgeDrawingAlgorithm;
   biClique: BiCliqueCfg;
   layerSpacing: FixedVerticalSpacerCfg | FixedLayerSpacerCfg;
   vertexSpacing: VertexSpacerConfig;

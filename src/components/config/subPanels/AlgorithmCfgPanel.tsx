@@ -1,6 +1,5 @@
 import React from "react";
 import { AlgorithmCfgDto } from "@/cfg/ConfigDtos";
-import { EdgeDrawingAlgorithm } from "@/model/layout/edges/EdgeDrawingAlgorithm";
 import { VertexPositionAlgorithm } from "@/model/layout/positioning/VertexPositioner";
 
 type Props = {
@@ -14,18 +13,6 @@ const AlgorithmConfigPanel: React.FC<Props> = ({ config, handleChange }) => {
       <h3>Algorithms:</h3>
       <table className="config-table">
         <tbody>
-          <tr>
-            <td>Edge Drawing:</td>
-            <td>
-              <select value={config.edgeDrawing} onChange={(e) => handleChange("edgeDrawing", e.target.value as AlgorithmCfgDto["edgeDrawing"])}>
-                {Object.values(EdgeDrawingAlgorithm).map((alg) => (
-                  <option key={alg} value={alg}>
-                    {alg}
-                  </option>
-                ))}
-              </select>
-            </td>
-          </tr>
           <tr>
             <td>Vertex Positioning</td>
             <td>
