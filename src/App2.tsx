@@ -13,7 +13,7 @@ function App() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <InputPanel graphCfg={graphCfg} setConfig={setGraphCfg} setShowGraph={setShowGraph} />
+      <InputPanel graphCfg={graphCfg} setConfig={setGraphCfg} />
       <CsvFilterPanel config={config} setConfig={setConfig} />
       <div style={{ flexShrink: 0, padding: "10px", display: "flex", gap: "10px" }}>
         <GraphsPanel config={config} graphCfg={graphCfg} />

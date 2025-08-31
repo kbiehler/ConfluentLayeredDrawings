@@ -10,21 +10,23 @@ interface DrawingProps {
   graphLayout: GraphLayout;
   renderCfg: RenderCfg;
   interactionManager: InteractionManager;
+  scale: number;
 }
 
-const GraphSvg: React.FC<DrawingProps> = ({ graphLayout: graphDrawing, renderCfg, interactionManager }) => {
+const GraphSvg: React.FC<DrawingProps> = ({ graphLayout: graphDrawing, renderCfg, interactionManager, scale }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   interactionManager.removeAllListeners("redraw");
   interactionManager.on("redraw", () => {
     console.log("redraw");
-    draw(svgRef!, graphDrawing, renderCfg, interactionManager);
+    draw(svgRef!, graphDrawing, renderCfg, interactionManager, scale);
   });
 
   useEffect(() => {
     // interactionManager.reset();
-    draw(svgRef!, graphDrawing, renderCfg, interactionManager);
-  }, [graphDrawing]);
+    console.log("redraw");
+    draw(svgRef!, graphDrawing, renderCfg, interactionManager, scale);
+  }, [graphDrawing, scale]);
 
   return (
     <div id="graph-container" style={{ display: "inline-block" }}>
@@ -37,7 +39,8 @@ function draw(
   svgRef: React.RefObject<SVGSVGElement | null>, //
   graphDrawing: GraphLayout,
   renderCfg: RenderCfg,
-  interactionManager: InteractionManager
+  interactionManager: InteractionManager,
+  scale: number
 ) {
   const svg = d3.select(svgRef.current);
   svg.selectAll("*").remove();
@@ -49,7 +52,7 @@ function draw(
 
   svg.attr("width", width + addWidth).attr("height", height + addHeight);
   //g contains actual drawing, shifted by shift of drawing + additional px
-  const g = svg.append("g").attr("transform", `translate(${xShift + xAddShift}, ${yShift + yAddShift})`);
+  const g = svg.append("g").attr("transform", `translate(${xShift + xAddShift}, ${yShift + yAddShift}) scale(${scale})`);
 
   new GraphSVGRenderer().render(
     g,

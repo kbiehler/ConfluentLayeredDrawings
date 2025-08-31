@@ -8,6 +8,7 @@ import VertexLegend from "./components/new/VertexLegend";
 import DisplayModePanel from "./components/new/DisplayModePanel";
 import { useLocalStorageState } from "./components/new/LocalStorageState";
 import InputPanel from "./components/new/InputPanel";
+import Header from "./components/new/Header";
 
 // ---------- Helpers --------------------------------------------------------
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
@@ -43,7 +44,7 @@ export default function GraphFrontendProposal() {
 
   // UI state
   const [config, setConfig] = useState(() => new ConfigDto());
-  const [graphCfg, setGraphCfg] = useState(() => new GraphCfgDto());
+  const [graphCfg, setGraphCfg] = useLocalStorageState("graphCfg", new GraphCfgDto());
   const [filters, setFilters] = useState({ search: "", degreeMin: 0, degreeMax: Infinity });
   const [configOpen, setConfigOpen] = useLocalStorageState("configOpen", true);
   const [selectedNodes, setSelectedNodes] = useState([]);
@@ -52,7 +53,7 @@ export default function GraphFrontendProposal() {
 
   // Viewport/zoom
   const graphContainerRef = useRef(null);
-  const [scale, setScale] = useState(1);
+  const [scale, setScale] = useState(0.5);
   const cols = 6;
   const gridWidth = 200 + (cols - 1) * 220;
   const rows = Math.ceil(nodes.length / cols);
@@ -132,24 +133,7 @@ export default function GraphFrontendProposal() {
   return (
     <>
       <div className="app">
-        {/* Header */}
-        <header className="header">
-          <h1>Confluent Layered Drawer</h1>
-          <div className="toolbar">
-            <button className="btn" onClick={fit}>
-              Fit
-            </button>
-            <button className="btn" onClick={() => zoom(1.1)}>
-              ＋
-            </button>
-            <button className="btn" onClick={() => zoom(0.9)}>
-              －
-            </button>
-            <button className="btn" onClick={reset}>
-              Reset
-            </button>
-          </div>
-        </header>
+        <Header fit={fit} zoom={zoom} reset={reset} />
 
         <main className="main">
           {/* Left sidebar (collapsible) */}
@@ -160,7 +144,7 @@ export default function GraphFrontendProposal() {
             </button>
 
             <div className={`sidebar-content ${sidebarOpen ? "open" : "closed"}`}>
-              <InputPanel graphCfg={graphCfg} setConfig={setGraphCfg} setShowGraph={() => {}} />
+              <InputPanel graphCfg={graphCfg} setConfig={setGraphCfg} />
 
               <div className="panel">
                 <h3>Number Filter</h3>
@@ -205,7 +189,7 @@ export default function GraphFrontendProposal() {
           {/* Center: fixed scroll canvas; zoom only affects inner <g> */}
           <section className="flex-1 min-w-0 relative bg-gray-100 dark:bg-gray-950 overflow-hidden">
             <div ref={graphContainerRef} id="graph-canvas" className="w-full h-full overflow-auto bg-white dark:bg-gray-900">
-              <GraphsPanel config={config} graphCfg={graphCfg} />
+              <GraphsPanel config={config} graphCfg={graphCfg} scale={scale} />
             </div>
             <VertexLegend />
             <DisplayModePanel displayMode={displayMode} setDisplayMode={setDisplayMode} />

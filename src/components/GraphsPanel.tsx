@@ -12,9 +12,10 @@ import { Empty_Layout_Metric } from "@/model/metrics/LayoutMetrics";
 interface GraphsPanelProps {
   config: ConfigDto;
   graphCfg: GraphCfgDto;
+  scale: number;
 }
 
-const GraphsPanel: React.FC<GraphsPanelProps> = ({ config, graphCfg }) => {
+const GraphsPanel: React.FC<GraphsPanelProps> = ({ config, graphCfg, scale }) => {
   if (graphCfg.type === "empty") {
     return null;
   }
@@ -82,11 +83,11 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config, graphCfg }) => {
     <div>
       <div style={{ flexGrow: 1 }}>
         {panelSelect === "main" ? (
-          <GraphSvg graphLayout={layout} renderCfg={renderCfg} interactionManager={interactMgr} />
+          <GraphSvg graphLayout={layout} renderCfg={renderCfg} interactionManager={interactMgr} scale={scale} />
         ) : panelSelect === "nbr" ? (
-          <GraphSvg graphLayout={nbrLayout} renderCfg={renderCfg} interactionManager={nbrInteractMgr} />
+          <GraphSvg graphLayout={nbrLayout} renderCfg={renderCfg} interactionManager={nbrInteractMgr} scale={scale} />
         ) : (
-          <GraphSvg graphLayout={implLayout} renderCfg={renderCfg} interactionManager={implInteractMgr} />
+          <GraphSvg graphLayout={implLayout} renderCfg={renderCfg} interactionManager={implInteractMgr} scale={scale} />
         )}
       </div>
     </div>
