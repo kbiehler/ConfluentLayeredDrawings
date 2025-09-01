@@ -47,9 +47,8 @@ export default function GraphFrontendProposal() {
   const [graphCfg, setGraphCfg] = useLocalStorageState("graphCfg", new GraphCfgDto());
   const [filters, setFilters] = useState({ search: "", degreeMin: 0, degreeMax: Infinity });
   const [configOpen, setConfigOpen] = useLocalStorageState("configOpen", true);
-  const [selectedNodes, setSelectedNodes] = useState([]);
-  const [displayMode, setDisplayMode] = useState("main");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useLocalStorageState("sidebarOpen", true);
+  const [displayMode, setDisplayMode] = useState<"main" | "nbr" | "impl">("main");
 
   // Viewport/zoom
   const graphContainerRef = useRef(null);
@@ -189,7 +188,7 @@ export default function GraphFrontendProposal() {
           {/* Center: fixed scroll canvas; zoom only affects inner <g> */}
           <section className="flex-1 min-w-0 relative bg-gray-100 dark:bg-gray-950 overflow-hidden">
             <div ref={graphContainerRef} id="graph-canvas" className="w-full h-full overflow-auto bg-white dark:bg-gray-900">
-              <GraphsPanel config={config} graphCfg={graphCfg} scale={scale} />
+              <GraphsPanel config={config} graphCfg={graphCfg} scale={scale} panelSelect={displayMode} setPanelSelect={setDisplayMode} />
             </div>
             <VertexLegend />
             <DisplayModePanel displayMode={displayMode} setDisplayMode={setDisplayMode} />

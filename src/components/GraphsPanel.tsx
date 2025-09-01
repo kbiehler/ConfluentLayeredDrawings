@@ -13,17 +13,19 @@ interface GraphsPanelProps {
   config: ConfigDto;
   graphCfg: GraphCfgDto;
   scale: number;
+  panelSelect: "main" | "nbr" | "impl";
+  setPanelSelect: React.Dispatch<React.SetStateAction<"main" | "nbr" | "impl">>;
 }
 
-const GraphsPanel: React.FC<GraphsPanelProps> = ({ config, graphCfg, scale }) => {
+const GraphsPanel: React.FC<GraphsPanelProps> = ({ config, graphCfg, scale, panelSelect, setPanelSelect }) => {
   if (graphCfg.type === "empty") {
     return null;
   }
+
   const [layout, setLayout] = useState(() => new GraphLayout());
   const [redrawState, setRedrawState] = useState(() => new RedrawState(new Graph()));
   const [interactMgr, setInteractMgr] = useState(() => new InteractionManager());
   const [renderCfg, setRenderCfg] = useState(() => mapToRenderCfg(config));
-  const [panelSelect, setPanelSelect] = useState<"main" | "nbr" | "impl">("main");
   const [metric, setMetric] = useState(Empty_Layout_Metric);
   const [avgMetric, setAvgMetric] = useState(Empty_Layout_Metric);
 
