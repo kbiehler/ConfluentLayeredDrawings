@@ -15,6 +15,11 @@ type Props = {
 const NumberFilterPanel: React.FC<Props> = ({ config, setConfig }) => {
   const [localConfig, setLocalConfig] = useState<ConfigDto>({ ...config });
 
+  React.useEffect(() => {
+    config.numberFilter.filterType = "all";
+    setLocalConfig({ ...config });
+  }, [config]);
+
   const handleApply = () => {
     setConfig(new ConfigDto(localConfig));
   };

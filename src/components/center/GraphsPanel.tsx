@@ -1,5 +1,5 @@
 import React from "react";
-import GraphSvg from "@/components/GraphSvg";
+import GraphSvg from "@/components/center/GraphSvg";
 import { useEffect, useState } from "react";
 import { ConfigDto, GraphCfgDto, mapToRenderCfg } from "@/cfg/ConfigDtos";
 import { GraphLayout } from "@/model/layout/GraphLayout";

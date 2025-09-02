@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ConfigDto } from "@/cfg/ConfigDtos";
-import { useLocalStorageState } from "../LocalStorageState";
+import { useLocalStorageState } from "../LocalStorageHelper";
 import { ColumnCfg, defaultColumns } from "./ColumnConfig";
 import { v4 as uuidv4 } from "uuid";
 import ColumnPanel from "./ColumnPanel";
