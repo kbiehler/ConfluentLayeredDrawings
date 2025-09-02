@@ -3,12 +3,12 @@ import "./scrollbars.css";
 import "./GraphFrontend.css";
 import GraphsPanel from "./components/GraphsPanel";
 import { ConfigDto, GraphCfgDto } from "./cfg/ConfigDtos";
-import { Vertex } from "./model/ds";
 import VertexLegend from "./components/new/VertexLegend";
 import DisplayModePanel from "./components/new/DisplayModePanel";
-import { useLocalStorageState } from "./components/new/LocalStorageState";
-import InputPanel from "./components/new/InputPanel";
-import Header from "./components/new/Header";
+import { useLocalStorageState } from "./components/LocalStorageState";
+import InputPanel from "./components/left-panel/InputPanel";
+import Header from "./components/header/Header";
+import ConfigPanel from "./components/left-panel/ConfigPanel";
 
 // ---------- Helpers --------------------------------------------------------
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
@@ -43,10 +43,9 @@ export default function GraphFrontendProposal() {
   });
 
   // UI state
-  const [config, setConfig] = useState(() => new ConfigDto());
+  const [config, setConfig] = useLocalStorageState("config", new ConfigDto());
   const [graphCfg, setGraphCfg] = useLocalStorageState("graphCfg", new GraphCfgDto());
   const [filters, setFilters] = useState({ search: "", degreeMin: 0, degreeMax: Infinity });
-  const [configOpen, setConfigOpen] = useLocalStorageState("configOpen", true);
   const [sidebarOpen, setSidebarOpen] = useLocalStorageState("sidebarOpen", true);
   const [displayMode, setDisplayMode] = useState<"main" | "nbr" | "impl">("main");
 
@@ -77,67 +76,13 @@ export default function GraphFrontendProposal() {
     el.scrollTo({ left, top, behavior: "auto" });
   }
 
-  function ConfigPanel() {
-    return (
-      <div className="panel">
-        <div className="flex items-center justify-between sticky top-0 bg-gray-50 dark:bg-gray-900 z-10">
-          <h3>Config</h3>
-          <button
-            className="text-sm px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
-            onClick={() => setConfigOpen((s) => !s)}
-            aria-expanded={configOpen}
-          >
-            {configOpen ? "Hide" : "Show"}
-          </button>
-        </div>
-        {configOpen && (
-          <div className="mt-2 space-y-2">
-            <label className="block text-xs">Layout algorithm</label>
-            <div className="relative">
-              <select className="w-full p-2 pr-10 border rounded appearance-none bg-white dark:bg-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-700">
-                <option>Force-directed (worker)</option>
-                <option>Precomputed (CSV)</option>
-                <option>Hierarchical</option>
-                <option>Random</option>
-              </select>
-              <span className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-500 dark:text-gray-300">▾</span>
-            </div>
-
-            <label className="block text-xs">Level-of-detail</label>
-            <input type="range" min="0" max="1" step="0.01" defaultValue="0.5" className="w-full accent-indigo-600 dark:accent-indigo-400" />
-
-            <label className="block text-xs">Edge bundling</label>
-            <input type="checkbox" className="accent-indigo-600 dark:accent-indigo-400" />
-
-            <label className="block text-xs">Node size by</label>
-            <div className="relative">
-              <select className="w-full p-2 pr-10 border rounded appearance-none bg-white dark:bg-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-700">
-                <option>degree</option>
-                <option>attribute value</option>
-                <option>constant</option>
-              </select>
-              <span className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-500 dark:text-gray-300">▾</span>
-            </div>
-
-            <div className="flex gap-2 mt-2">
-              <button className="px-3 py-1 rounded bg-blue-600 text-white">Apply</button>
-              <button className="px-3 py-1 rounded border border-gray-300 dark:border-gray-700">Reset</button>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
-
   return (
     <>
       <div className="app">
         <Header fit={fit} zoom={zoom} reset={reset} />
 
         <main className="main">
-          {/* Left sidebar (collapsible) */}
           <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`} aria-expanded={sidebarOpen}>
-            {/* Toggle pill always visible inside rail */}
             <button className="sidebar-toggle" title={sidebarOpen ? "Collapse" : "Expand"} onClick={() => setSidebarOpen((s) => !s)}>
               {sidebarOpen ? "⟨" : "⟩"}
             </button>
@@ -181,7 +126,7 @@ export default function GraphFrontendProposal() {
                 </button>
               </div>
 
-              <ConfigPanel />
+              <ConfigPanel config={config} setConfig={setConfig} />
             </div>
           </aside>
 
@@ -190,7 +135,7 @@ export default function GraphFrontendProposal() {
             <div ref={graphContainerRef} id="graph-canvas" className="w-full h-full overflow-auto bg-white dark:bg-gray-900">
               <GraphsPanel config={config} graphCfg={graphCfg} scale={scale} panelSelect={displayMode} setPanelSelect={setDisplayMode} />
             </div>
-            <VertexLegend />
+            <VertexLegend columnCfg={config.columnCfg} />
             <DisplayModePanel displayMode={displayMode} setDisplayMode={setDisplayMode} />
           </section>
         </main>

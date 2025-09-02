@@ -6,7 +6,7 @@ import { FixedLayerSpacerCfg } from "@/model/layout/spacing/FixedLayerSpacer";
 import { FixedVerticalSpacerCfg } from "@/model/layout/spacing/FixedVerticalSpacer";
 import { vertexSpacingCfg, VertexSpacingCfgDto } from "./VertexSpacingCfgDto";
 import { NumberFilterCfgDto } from "@/components/csv/NumberFilterPanel";
-import { Graph } from "graphlib";
+import { ColumnCfg, defaultColumns } from "@/components/left-panel/ColumnConfig";
 
 /**
  * Data Transfer Object (DTO) for configuration settings.
@@ -25,6 +25,7 @@ export class ConfigDto {
   vertexSpacingCfg: VertexSpacingCfgDto = vertexSpacingCfg;
   optimizationCfg: OptimizationCfgDto = new OptimizationCfgDto();
   numberCfg: NumberFilterCfgDto = new NumberFilterCfgDto();
+  columnCfg: ColumnCfg[] = defaultColumns;
 
   constructor(config?: Partial<ConfigDto>) {
     if (config) {
@@ -88,6 +89,7 @@ export function mapToRenderCfg(cfgDto: ConfigDto): RenderCfg {
     highlightColor: cfgDto.uiCfg.highlightColor,
     edgeColor: cfgDto.uiCfg.edgeColor,
     showCliqueCenter: cfgDto.uiCfg.showCliqueCenter,
+    columnCfg: cfgDto.columnCfg,
   };
 }
 

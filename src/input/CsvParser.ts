@@ -2,99 +2,30 @@ import Papa from "papaparse";
 import { Edge, Graph } from "@/model/ds/Graph";
 import { Vertex } from "@/model/ds";
 import { NumberFilterCfgDto } from "@/components/csv/NumberFilterPanel";
+import { ColumnCfg } from "@/components/left-panel/ColumnConfig";
 
 interface Row {
   [key: string]: string;
 }
 
 export class CsvVertex extends Vertex {
-  function = false;
-  failureMode = false;
-  failureCause = false;
-  failureDetection = false;
-  compensationProvision = false;
-  severity_number = 0;
-  probability_number = 0;
-  criticality_number = 0;
-
   constructor(label: string) {
     super(label);
   }
 
-  public isFunction(): boolean {
-    return this.function;
+  columns: string[] = [];
+
+  public getColumns(): string[] {
+    return this.columns;
   }
 
-  public isFailureMode(): boolean {
-    return this.failureMode;
-  }
-
-  public isFailureCause(): boolean {
-    return this.failureCause;
-  }
-
-  public isFailureDetection(): boolean {
-    return this.failureDetection;
-  }
-
-  public isCompensationProvision(): boolean {
-    return this.compensationProvision;
-  }
-
-  public setFunction(value: boolean): void {
-    this.function = value;
-  }
-
-  public setFailureMode(value: boolean): void {
-    this.failureMode = value;
-  }
-
-  public setFailureCause(value: boolean): void {
-    this.failureCause = value;
-  }
-
-  public setFailureDetection(value: boolean): void {
-    this.failureDetection = value;
-  }
-
-  public setCompensationProvision(value: boolean): void {
-    this.compensationProvision = value;
-  }
-
-  public setSeverityNumber(value: number): void {
-    this.severity_number = value;
-  }
-
-  public setProbabilityNumber(value: number): void {
-    this.probability_number = value;
-  }
-
-  public setCriticalityNumber(value: number): void {
-    this.criticality_number = value;
-  }
-
-  public getSeverityNumber(): number {
-    return this.severity_number;
-  }
-
-  public getProbabilityNumber(): number {
-    return this.probability_number;
-  }
-
-  public getCriticalityNumber(): number {
-    return this.criticality_number;
+  public addColumn(column: string) {
+    this.columns.push(column);
   }
 
   public copy(): Vertex {
     const copy = new CsvVertex(this.label);
-    copy.setFunction(this.function);
-    copy.setFailureMode(this.failureMode);
-    copy.setFailureCause(this.failureCause);
-    copy.setFailureDetection(this.failureDetection);
-    copy.setCompensationProvision(this.compensationProvision);
-    copy.setSeverityNumber(this.severity_number);
-    copy.setProbabilityNumber(this.probability_number);
-    copy.setCriticalityNumber(this.criticality_number);
+    copy.columns = [...this.columns];
     return copy;
   }
 }
@@ -112,7 +43,7 @@ function getOrCreate(map: Map<string, CsvVertex>, key: string): CsvVertex {
  * Parse CSV text using PapaParse and build your Graph.
  * Assumes `content` is the full CSV string (e.g., result of File.text() in the browser).
  */
-export function readCsv(content: string, cfg: NumberFilterCfgDto): Graph {
+export function readCsv(content: string, columnCfg: ColumnCfg[], cfg: NumberFilterCfgDto): Graph {
   const parsed = Papa.parse<Row>(content, {
     header: true, // first row as headers -> objects
     skipEmptyLines: true,
@@ -129,30 +60,21 @@ export function readCsv(content: string, cfg: NumberFilterCfgDto): Graph {
   const edges = new Set<Edge<CsvVertex>>();
 
   for (const r of rows) {
-    if (ignoreNumbers(r, cfg)) {
-      continue; // Skip rows based on filter criteria
+    // if (ignoreNumbers(r, cfg)) {
+    //   continue; // Skip rows based on filter criteria
+    // }
+    let prev = null;
+    for (const colCfg of columnCfg) {
+      const colValue = r[colCfg.csvName];
+      if (colValue) {
+        const vertex = getOrCreate(nodeMap, colValue);
+        vertex.addColumn(colCfg.legendName);
+        if (prev) {
+          edges.add(new Edge(prev, vertex));
+        }
+        prev = vertex;
+      }
     }
-
-    const func = getOrCreate(nodeMap, r["function"]);
-    func.setFunction(true);
-    const mode = getOrCreate(nodeMap, r["failure mode"]);
-    mode.setFailureMode(true);
-    const cause = getOrCreate(nodeMap, r["failure cause"]);
-    cause.setFailureCause(true);
-
-    cause.setSeverityNumber(parseFloat(r["severity number"]));
-    cause.setProbabilityNumber(parseFloat(r["probability number"]));
-    cause.setCriticalityNumber(parseFloat(r["criticality number"]));
-
-    const detection = getOrCreate(nodeMap, r["failure detection"]);
-    detection.setFailureDetection(true);
-    const compensation = getOrCreate(nodeMap, r["compensation provision"]);
-    compensation.setCompensationProvision(true);
-
-    edges.add(new Edge(func, mode));
-    edges.add(new Edge(mode, cause));
-    edges.add(new Edge(cause, detection));
-    edges.add(new Edge(detection, compensation));
   }
 
   const graph = new Graph<Vertex>();

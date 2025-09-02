@@ -3,14 +3,14 @@ import * as d3 from "d3";
 import { path as d3path } from "d3-path";
 import { VertexId } from "@/model/types";
 import { mergeEdgeDrawings } from "@/model/renderer/EdgeMerger";
-import { CsvVertex } from "@/input/CsvParser";
-import { CsvProp, csvPropDefs } from "@/cfg/CsvProps";
+import { ColumnCfg } from "@/components/left-panel/ColumnConfig";
 
 export interface RenderCfg {
   vertexColor: string;
   highlightColor: string;
   edgeColor: string;
   showCliqueCenter: boolean;
+  columnCfg: ColumnCfg[];
 }
 
 export class GraphSVGRenderer {
@@ -123,7 +123,7 @@ export class GraphSVGRenderer {
       const barWidth = 8; // width of the colored bar area
       const barX = rectX + rectW - barWidth; // right edge inside
 
-      const active = csvPropDefs.filter((p) => v.csvVertex != null && p.func(v.csvVertex));
+      const active = renderCfg.columnCfg.filter((colCfg) => v.csvVertex != null && v.csvVertex.columns.includes(colCfg.legendName));
 
       const n = active.length;
       if (!n) return;
@@ -146,8 +146,8 @@ export class GraphSVGRenderer {
 
       // bars
       barsG
-        .selectAll<SVGGElement, CsvProp>("rect.bar")
-        .data(active, (d) => d.key)
+        .selectAll<SVGGElement, ColumnCfg>("rect.bar")
+        .data(active, (d) => d.legendName)
         .join("rect")
         .attr("class", "bar")
         .attr("x", barX)
@@ -156,7 +156,7 @@ export class GraphSVGRenderer {
         .attr("height", segH)
         .attr("fill", (d) => d.color)
         .append("title")
-        .text((d) => d.label);
+        .text((d) => d.legendName);
 
       // left border of bar area
       barsG.append("rect").attr("x", barX).attr("y", rectY).attr("width", 1).attr("height", rectH).attr("fill", "black");

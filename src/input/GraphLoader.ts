@@ -5,8 +5,9 @@ import { generateExampleGraph } from "@/examples/ExampleGraphs";
 import { parseDotFile } from "./DotParser";
 import { readCsv } from "./CsvParser";
 import { NumberFilterCfgDto } from "@/components/csv/NumberFilterPanel";
+import { ColumnCfg } from "@/components/left-panel/ColumnConfig";
 
-export function loadFromCfg(cfg: GraphCfgDto, numberCfg: NumberFilterCfgDto): Graph<any> {
+export function loadFromCfg(cfg: GraphCfgDto, numberCfg: NumberFilterCfgDto, columnCfg: ColumnCfg[]): Graph<any> {
   if (cfg.type === "example") {
     return generateExampleGraph(cfg.example_type);
   } else if (cfg.type === "random") {
@@ -18,7 +19,7 @@ export function loadFromCfg(cfg: GraphCfgDto, numberCfg: NumberFilterCfgDto): Gr
       return parseDotFile(cfg.fileContent!);
     }
   } else if (cfg.type === "csv") {
-    return readCsv(cfg.fileContent!, numberCfg);
+    return readCsv(cfg.fileContent!, columnCfg, numberCfg);
   }
 
   throw new Error("Invalid configuration");
