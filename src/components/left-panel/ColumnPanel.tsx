@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 type Props = {
   config: ConfigDto;
-  setConfig: React.Dispatch<React.SetStateAction<ConfigDto>>
+  setConfig: React.Dispatch<React.SetStateAction<ConfigDto>>;
 };
 
 const ColumnPanel: React.FC<Props> = ({ config, setConfig }) => {
@@ -24,21 +24,14 @@ const ColumnPanel: React.FC<Props> = ({ config, setConfig }) => {
       columnCfg: prevConfig.columnCfg.map((c) => (c.id === id ? { ...c, ...patch } : c)),
     }));
 
-
   return (
-    // CSV → Legend Mapping
     <div className="mt-3">
-      <div className="font-semibold text-sm mb-2">CSV Columns:</div>
+      <div className="font-semibold text-base mb-2">CSV Columns:</div>
       <div className="space-y-2">
         {config.columnCfg.map((col) => (
           <div key={col.id} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto_auto] gap-2 items-center">
             <input className="input" placeholder="CSV column" value={col.csvName} onChange={(e) => updateLegend(col.id, { csvName: e.target.value })} />
-            <input
-              className="input"
-              placeholder="Legend label"
-              value={col.legendName}
-              onChange={(e) => updateLegend(col.id, { legendName: e.target.value })}
-            />
+            <input className="input" placeholder="Legend label" value={col.legendName} onChange={(e) => updateLegend(col.id, { legendName: e.target.value })} />
             <input
               type="color"
               className="h-10 w-10 border border-gray-300 dark:border-gray-700 rounded  mt-2 px-0.5 py-0.5"

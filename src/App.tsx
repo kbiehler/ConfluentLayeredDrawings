@@ -9,6 +9,7 @@ import { useLocalStorageState } from "./components/LocalStorageState";
 import InputPanel from "./components/left-panel/InputPanel";
 import Header from "./components/header/Header";
 import ConfigPanel from "./components/left-panel/ConfigPanel";
+import NumberFilterPanel from "./components/left-panel/NumberFilterPanel";
 
 // ---------- Helpers --------------------------------------------------------
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
@@ -89,43 +90,7 @@ export default function GraphFrontendProposal() {
 
             <div className={`sidebar-content ${sidebarOpen ? "open" : "closed"}`}>
               <InputPanel graphCfg={graphCfg} setConfig={setGraphCfg} />
-
-              <div className="panel">
-                <h3>Number Filter</h3>
-                <div className="relative">
-                  <select className="input">
-                    <option>Force-directed (worker)</option>
-                    <option>Precomputed (CSV)</option>
-                    <option>Hierarchical</option>
-                    <option>Random</option>
-                  </select>
-                </div>
-
-                <input
-                  placeholder="Search label or id"
-                  className="input"
-                  value={filters.search}
-                  onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value }))}
-                />
-                <div className="flex gap-2">
-                  <input
-                    type="number"
-                    className="input"
-                    placeholder="min deg"
-                    onChange={(e) => setFilters((f) => ({ ...f, degreeMin: Number(e.target.value || 0) }))}
-                  />
-                  <input
-                    type="number"
-                    className="input"
-                    placeholder="max deg"
-                    onChange={(e) => setFilters((f) => ({ ...f, degreeMax: Number(e.target.value || Infinity) }))}
-                  />
-                </div>
-                <button className="btn-primary" onClick={() => setFilters({ search: "", degreeMin: 0, degreeMax: Infinity })}>
-                  Clear filters
-                </button>
-              </div>
-
+              <NumberFilterPanel config={config} setConfig={setConfig} />
               <ConfigPanel config={config} setConfig={setConfig} />
             </div>
           </aside>

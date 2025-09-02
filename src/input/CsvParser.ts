@@ -1,7 +1,7 @@
 import Papa from "papaparse";
 import { Edge, Graph } from "@/model/ds/Graph";
 import { Vertex } from "@/model/ds";
-import { NumberFilterCfgDto } from "@/components/csv/NumberFilterPanel";
+import { NumberFilterDto } from "@/components/left-panel/NumberFilterPanel";
 import { ColumnCfg } from "@/components/left-panel/ColumnConfig";
 
 interface Row {
@@ -43,7 +43,7 @@ function getOrCreate(map: Map<string, CsvVertex>, key: string): CsvVertex {
  * Parse CSV text using PapaParse and build your Graph.
  * Assumes `content` is the full CSV string (e.g., result of File.text() in the browser).
  */
-export function readCsv(content: string, columnCfg: ColumnCfg[], cfg: NumberFilterCfgDto): Graph {
+export function readCsv(content: string, columnCfg: ColumnCfg[], cfg: NumberFilterDto): Graph {
   const parsed = Papa.parse<Row>(content, {
     header: true, // first row as headers -> objects
     skipEmptyLines: true,
@@ -60,9 +60,9 @@ export function readCsv(content: string, columnCfg: ColumnCfg[], cfg: NumberFilt
   const edges = new Set<Edge<CsvVertex>>();
 
   for (const r of rows) {
-    // if (ignoreNumbers(r, cfg)) {
-    //   continue; // Skip rows based on filter criteria
-    // }
+    if (ignoreNumbers(r, cfg)) {
+      continue; // Skip rows based on filter criteria
+    }
     let prev = null;
     for (const colCfg of columnCfg) {
       const colValue = r[colCfg.csvName];
@@ -106,18 +106,11 @@ export function readCsv(content: string, columnCfg: ColumnCfg[], cfg: NumberFilt
 
   return graph;
 }
-function ignoreNumbers(r: Row, cfg: NumberFilterCfgDto) {
+function ignoreNumbers(r: Row, cfg: NumberFilterDto) {
   if (cfg.filterType === "all") {
     return false; // No filtering, show all
   }
-  const relevantNumber =
-    cfg.filterType === "severity"
-      ? parseFloat(r["severity number"])
-      : cfg.filterType === "probability"
-      ? parseFloat(r["probability number"])
-      : cfg.filterType === "criticality"
-      ? parseFloat(r["criticality number"])
-      : 0;
+  const relevantNumber = parseFloat(r[cfg.filterType]) || 0;
 
   if (cfg.smallerGreaterEqual === ">=") {
     return relevantNumber < cfg.filterNumber;

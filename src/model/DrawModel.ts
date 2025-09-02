@@ -11,7 +11,7 @@ import { buildImplGraph, buildNbrGraph } from "./redraw/RedrawAlg";
 import { LayoutMetrics } from "./metrics/LayoutMetrics";
 
 export function draw(cfgDto: ConfigDto, graphCfg: GraphCfgDto): [RedrawState, GraphLayout, InteractionInfo, LayoutMetrics, LayoutMetrics] {
-  const inputG = loadFromCfg(graphCfg, cfgDto.numberCfg, cfgDto.columnCfg);
+  const inputG = loadFromCfg(graphCfg, cfgDto.numberFilter, cfgDto.columnCfg);
 
   const cfg = mapToGraphLayoutCfg(cfgDto);
   const g = convertToLayoutVertices(inputG);

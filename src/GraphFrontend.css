@@ -3,10 +3,13 @@ h1 {
     font-weight: bold;
 }
 
+
 h3 {
   font-weight: 600;   /* font-semibold */
+  font-size: 1.125rem;  /* text-lg */
   margin-bottom: 0.5rem; /* mb-2 */
 }
+
 
 
 /* GraphFrontend.css */

@@ -5,8 +5,9 @@ import { VertexPositionAlgorithm } from "@/model/layout/positioning/VertexPositi
 import { FixedLayerSpacerCfg } from "@/model/layout/spacing/FixedLayerSpacer";
 import { FixedVerticalSpacerCfg } from "@/model/layout/spacing/FixedVerticalSpacer";
 import { vertexSpacingCfg, VertexSpacingCfgDto } from "./VertexSpacingCfgDto";
-import { NumberFilterCfgDto } from "@/components/csv/NumberFilterPanel";
+import { NumberFilterDto } from "@/components/left-panel/NumberFilterPanel";
 import { ColumnCfg, defaultColumns } from "@/components/left-panel/ColumnConfig";
+import { defaultNumberFilterCfg, NumberFilterCfg } from "@/components/left-panel/NumberFilterCfgPanel";
 
 /**
  * Data Transfer Object (DTO) for configuration settings.
@@ -24,7 +25,8 @@ export class ConfigDto {
   layerSpacingCfg: LayerSpacingCfgDto = new LayerSpacingCfgDto();
   vertexSpacingCfg: VertexSpacingCfgDto = vertexSpacingCfg;
   optimizationCfg: OptimizationCfgDto = new OptimizationCfgDto();
-  numberCfg: NumberFilterCfgDto = new NumberFilterCfgDto();
+  filterCfg: NumberFilterCfg[] = defaultNumberFilterCfg; //config for the filter
+  numberFilter: NumberFilterDto = new NumberFilterDto(); //actual filter set
   columnCfg: ColumnCfg[] = defaultColumns;
 
   constructor(config?: Partial<ConfigDto>) {
