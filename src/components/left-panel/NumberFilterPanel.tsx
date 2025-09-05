@@ -1,5 +1,6 @@
 import { ConfigDto } from "@/cfg/ConfigDtos";
 import React, { useState } from "react";
+import { NumberFilterCfg } from "./NumberFilterCfgPanel";
 
 export class NumberFilterDto {
   filterType: string = "all";
@@ -8,17 +9,18 @@ export class NumberFilterDto {
 }
 
 type Props = {
+  filterCfg: NumberFilterCfg[];
   config: ConfigDto;
   setConfig: React.Dispatch<React.SetStateAction<ConfigDto>>;
 };
 
-const NumberFilterPanel: React.FC<Props> = ({ config, setConfig }) => {
+const NumberFilterPanel: React.FC<Props> = ({ filterCfg, config, setConfig }) => {
   const [localConfig, setLocalConfig] = useState<ConfigDto>({ ...config });
 
   React.useEffect(() => {
     config.numberFilter.filterType = "all";
     setLocalConfig({ ...config });
-  }, [config]);
+  }, [filterCfg]);
 
   const handleApply = () => {
     setConfig(new ConfigDto(localConfig));
@@ -42,7 +44,7 @@ const NumberFilterPanel: React.FC<Props> = ({ config, setConfig }) => {
           }
         >
           <option value="all">Show all</option>
-          {localConfig.filterCfg.map((val) => (
+          {filterCfg.map((val) => (
             <option value={val.csvName}>{val.filterName}</option>
           ))}
         </select>

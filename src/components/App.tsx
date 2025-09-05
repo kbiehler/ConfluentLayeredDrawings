@@ -10,6 +10,8 @@ import InputPanel from "./left-panel/InputPanel";
 import Header from "./header/Header";
 import ConfigPanel from "./left-panel/ConfigPanel";
 import NumberFilterPanel from "./left-panel/NumberFilterPanel";
+import { defaultNumberFilterCfg } from "./left-panel/NumberFilterCfgPanel";
+import { F } from "vitest/dist/chunks/reporters.DTtkbAtP.js";
 
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
 
@@ -20,6 +22,7 @@ export default function GraphFrontend() {
   const [graphCfg, setGraphCfg] = useLocalStorageState("graphCfg", new GraphCfgDto());
   const [sidebarOpen, setSidebarOpen] = useLocalStorageState("sidebarOpen", true);
   const [displayMode, setDisplayMode] = useState<"main" | "nbr" | "impl">("main");
+  const [filterCfg, setFilterCfg] = useLocalStorageState("filterCfg", defaultNumberFilterCfg);
 
   // Viewport/zoom
   const graphContainerRef = useRef<HTMLDivElement>(null);
@@ -47,8 +50,8 @@ export default function GraphFrontend() {
 
             <div className={`sidebar-content ${sidebarOpen ? "open" : "closed"}`}>
               <InputPanel graphCfg={graphCfg} setConfig={setGraphCfg} />
-              <NumberFilterPanel config={config} setConfig={setConfig} />
-              <ConfigPanel config={config} setConfig={setConfig} />
+              <NumberFilterPanel filterCfg={filterCfg} config={config} setConfig={setConfig} />
+              <ConfigPanel config={config} setConfig={setConfig} filterCfg={filterCfg} setFilterCfg={setFilterCfg} />
             </div>
           </aside>
 

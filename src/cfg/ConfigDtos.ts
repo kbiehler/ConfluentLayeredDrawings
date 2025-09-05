@@ -25,7 +25,6 @@ export class ConfigDto {
   layerSpacingCfg: LayerSpacingCfgDto = new LayerSpacingCfgDto();
   vertexSpacingCfg: VertexSpacingCfgDto = vertexSpacingCfg;
   optimizationCfg: OptimizationCfgDto = new OptimizationCfgDto();
-  filterCfg: NumberFilterCfg[] = defaultNumberFilterCfg; //config for the filter
   numberFilter: NumberFilterDto = new NumberFilterDto(); //actual filter set
   columnCfg: ColumnCfg[] = defaultColumns;
 

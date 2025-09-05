@@ -4,14 +4,16 @@ import { useLocalStorageState } from "../LocalStorageHelper";
 import { ColumnCfg, defaultColumns } from "./ColumnConfig";
 import { v4 as uuidv4 } from "uuid";
 import ColumnPanel from "./ColumnPanel";
-import NumberFilterCfgPanel from "./NumberFilterCfgPanel";
+import NumberFilterCfgPanel, { NumberFilterCfg } from "./NumberFilterCfgPanel";
 
 type Props = {
   config: ConfigDto;
   setConfig: (cfg: ConfigDto) => void;
+  filterCfg: NumberFilterCfg[];
+  setFilterCfg: React.Dispatch<React.SetStateAction<NumberFilterCfg[]>>;
 };
 
-const ConfigPanel: React.FC<Props> = ({ config, setConfig }) => {
+const ConfigPanel: React.FC<Props> = ({ config, setConfig, filterCfg, setFilterCfg }) => {
   const [configOpen, setConfigOpen] = useLocalStorageState("configOpen", true);
 
   const [localConfig, setLocalConfig] = useState<ConfigDto>({ ...config });
@@ -41,7 +43,7 @@ const ConfigPanel: React.FC<Props> = ({ config, setConfig }) => {
 
           <ColumnPanel config={localConfig} setConfig={setLocalConfig} />
           <Separator />
-          <NumberFilterCfgPanel config={localConfig} setConfig={setLocalConfig} />
+          <NumberFilterCfgPanel filterCfg={filterCfg} setFilterCfg={setFilterCfg} />
 
           <button className="btn-primary" onClick={handleApply}>
             Apply

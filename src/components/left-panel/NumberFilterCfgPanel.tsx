@@ -1,9 +1,8 @@
-import { ConfigDto } from "@/cfg/ConfigDtos";
 import { v4 as uuidv4 } from "uuid";
 
 type Props = {
-  config: ConfigDto;
-  setConfig: React.Dispatch<React.SetStateAction<ConfigDto>>;
+  filterCfg: NumberFilterCfg[];
+  setFilterCfg: React.Dispatch<React.SetStateAction<NumberFilterCfg[]>>;
 };
 
 export type NumberFilterCfg = { id: string; csvName: string; filterName: string };
@@ -14,28 +13,16 @@ export const defaultNumberFilterCfg: NumberFilterCfg[] = [
   { id: uuidv4(), csvName: "severity number", filterName: "Severity Number" },
 ];
 
-const NumberFilterCfgPanel: React.FC<Props> = ({ config, setConfig }) => {
-  const addFilter = () =>
-    setConfig((prevConfig) => ({
-      ...prevConfig,
-      filterCfg: [...(prevConfig.filterCfg ?? []), { id: uuidv4(), csvName: "", filterName: "", color: "#ff6347" }],
-    }));
-  const removeFilter = (id: string) =>
-    setConfig((prevConfig) => ({
-      ...prevConfig,
-      filterCfg: prevConfig.filterCfg.filter((c) => c.id !== id),
-    }));
-  const updateFilter = (id: string, patch: Partial<NumberFilterCfg>) =>
-    setConfig((prevConfig) => ({
-      ...prevConfig,
-      filterCfg: prevConfig.filterCfg.map((c) => (c.id === id ? { ...c, ...patch } : c)),
-    }));
+const NumberFilterCfgPanel: React.FC<Props> = ({ filterCfg, setFilterCfg }) => {
+  const addFilter = () => setFilterCfg([...(filterCfg ?? []), { id: uuidv4(), csvName: "", filterName: "" }]);
+  const removeFilter = (id: string) => setFilterCfg(filterCfg.filter((c) => c.id !== id));
+  const updateFilter = (id: string, patch: Partial<NumberFilterCfg>) => setFilterCfg(filterCfg.map((c) => (c.id === id ? { ...c, ...patch } : c)));
 
   return (
     <div className="mt-3">
       <div className="font-semibold text-base mb-2">Number Filters:</div>
       <div className="space-y-2">
-        {config.filterCfg.map((col) => (
+        {filterCfg.map((col) => (
           <div key={col.id} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto_auto] gap-2 items-center">
             <input className="input" placeholder="CSV column" value={col.csvName} onChange={(e) => updateFilter(col.id, { csvName: e.target.value })} />
             <input className="input" placeholder="Filter Name" value={col.filterName} onChange={(e) => updateFilter(col.id, { filterName: e.target.value })} />
