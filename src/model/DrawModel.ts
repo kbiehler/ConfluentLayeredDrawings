@@ -9,12 +9,22 @@ import { loadFromCfg } from "@/input/GraphLoader";
 import { VertexId } from "./types";
 import { buildImplGraph, buildNbrGraph } from "./redraw/RedrawAlg";
 import { LayoutMetrics } from "./metrics/LayoutMetrics";
+import InputError from "@/input/InputError";
+import { hasCycleDirected } from "./alg/CycleDetector";
 
-export function draw(cfgDto: ConfigDto, graphCfg: GraphCfgDto): [RedrawState, GraphLayout, InteractionInfo, LayoutMetrics, LayoutMetrics] {
+export function draw(cfgDto: ConfigDto, graphCfg: GraphCfgDto): [RedrawState, GraphLayout, InteractionInfo, LayoutMetrics, LayoutMetrics] | InputError {
   const inputG = loadFromCfg(graphCfg, cfgDto.numberFilter, cfgDto.columnCfg);
+  if (inputG instanceof InputError) {
+    return inputG;
+  }
 
   const cfg = mapToGraphLayoutCfg(cfgDto);
   const g = convertToLayoutVertices(inputG);
+
+  const hasCycleError = hasCycleDirected(g);
+  if (hasCycleError) {
+    return hasCycleError;
+  }
 
   let bestLayout: GraphLayout | null = null;
   let bestInteractInfo: InteractionInfo | null = null;

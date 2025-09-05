@@ -7,7 +7,6 @@ import { FixedVerticalSpacerCfg } from "@/model/layout/spacing/FixedVerticalSpac
 import { vertexSpacingCfg, VertexSpacingCfgDto } from "./VertexSpacingCfgDto";
 import { NumberFilterDto } from "@/components/left-panel/NumberFilterPanel";
 import { ColumnCfg, defaultColumns } from "@/components/left-panel/ColumnConfig";
-import { defaultNumberFilterCfg, NumberFilterCfg } from "@/components/left-panel/NumberFilterCfgPanel";
 
 /**
  * Data Transfer Object (DTO) for configuration settings.

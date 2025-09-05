@@ -42,9 +42,6 @@ export function generateLayout(g: Graph, cfg: GraphLayoutCfg): [GraphLayout, Int
   if (g instanceof BipartiteGraph) {
     layerGraph = g;
   } else {
-    if (hasCycleDirected(g)) {
-      throw new Error("Graph contains cycles, cannot generate layout");
-    }
     layerGraph = assignLayers(g);
   }
 

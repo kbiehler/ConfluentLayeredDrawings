@@ -22,6 +22,13 @@ const NumberFilterPanel: React.FC<Props> = ({ filterCfg, config, setConfig }) =>
     setLocalConfig({ ...config });
   }, [filterCfg]);
 
+  React.useEffect(() => {
+    setLocalConfig((prevLocalConfig) => ({
+      ...config,
+      numberFilter: prevLocalConfig.numberFilter,
+    }));
+  }, [config]);
+
   const handleApply = () => {
     setConfig(new ConfigDto(localConfig));
   };

@@ -3,6 +3,7 @@ import { Edge, Graph } from "@/model/ds/Graph";
 import { Vertex } from "@/model/ds";
 import { NumberFilterDto } from "@/components/left-panel/NumberFilterPanel";
 import { ColumnCfg } from "@/components/left-panel/ColumnConfig";
+import InputError from "./InputError";
 
 interface Row {
   [key: string]: string;
@@ -43,7 +44,7 @@ function getOrCreate(map: Map<string, CsvVertex>, key: string): CsvVertex {
  * Parse CSV text using PapaParse and build your Graph.
  * Assumes `content` is the full CSV string (e.g., result of File.text() in the browser).
  */
-export function readCsv(content: string, columnCfg: ColumnCfg[], cfg: NumberFilterDto): Graph {
+export function readCsv(content: string, columnCfg: ColumnCfg[], filterCfg: NumberFilterDto): Graph | InputError {
   const parsed = Papa.parse<Row>(content, {
     header: true, // first row as headers -> objects
     skipEmptyLines: true,
@@ -52,6 +53,18 @@ export function readCsv(content: string, columnCfg: ColumnCfg[], cfg: NumberFilt
 
   if (parsed.errors.length) {
     console.error("CSV parse errors:", parsed.errors);
+    return new InputError(parsed.errors.map((e) => e.message));
+  }
+
+  const csvHeaders = parsed.meta.fields || [];
+  const missingColumns = columnCfg.map((cfg) => cfg.csvName).filter((name) => !csvHeaders.includes(name));
+
+  if (missingColumns.length > 0) {
+    return new InputError(["Error parsing CSV", `Columns not found in CSV: ${missingColumns.map((col) => `"${col}"`).join(", ")}`]);
+  }
+
+  if (filterCfg.filterType !== "all" && !csvHeaders.includes(filterCfg.filterType)) {
+    return new InputError(["Error parsing CSV", `Number Filter column not found in CSV: ${filterCfg.filterType}`]);
   }
 
   const rows = parsed.data;
@@ -60,7 +73,7 @@ export function readCsv(content: string, columnCfg: ColumnCfg[], cfg: NumberFilt
   const edges = new Set<Edge<CsvVertex>>();
 
   for (const r of rows) {
-    if (ignoreNumbers(r, cfg)) {
+    if (ignoreNumbers(r, filterCfg)) {
       continue; // Skip rows based on filter criteria
     }
     let prev = null;

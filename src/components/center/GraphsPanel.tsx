@@ -8,6 +8,7 @@ import { Graph } from "@/model/ds";
 import { draw, redrawImpl, redrawNbr } from "@/model/DrawModel";
 import { RedrawState } from "@/model/redraw/RedrawState";
 import { Empty_Layout_Metric } from "@/model/metrics/LayoutMetrics";
+import InputError from "@/input/InputError";
 
 interface GraphsPanelProps {
   config: ConfigDto;
@@ -29,8 +30,18 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config, graphCfg, scale, pane
   const [metric, setMetric] = useState(Empty_Layout_Metric);
   const [avgMetric, setAvgMetric] = useState(Empty_Layout_Metric);
 
+  const [error, setError] = useState<string[]>([]);
+
   useEffect(() => {
-    const [redrawState, tmpLayout, tmpInteractInfo, tmpMetric, tmpAvgMetric] = draw(config, graphCfg);
+    const drawResult = draw(config, graphCfg);
+    if (drawResult instanceof InputError) {
+      setError(drawResult.errors);
+      return;
+    } else {
+      setError([]);
+    }
+
+    const [redrawState, tmpLayout, tmpInteractInfo, tmpMetric, tmpAvgMetric] = drawResult;
     setRedrawState(redrawState);
     setLayout(tmpLayout);
     setInteractMgr(new InteractionManager(tmpInteractInfo));
@@ -82,17 +93,29 @@ const GraphsPanel: React.FC<GraphsPanelProps> = ({ config, graphCfg, scale, pane
   }, []);
 
   return (
-    <div>
-      <div style={{ flexGrow: 1 }}>
-        {panelSelect === "main" ? (
-          <GraphSvg graphLayout={layout} renderCfg={renderCfg} interactionManager={interactMgr} scale={scale} />
-        ) : panelSelect === "nbr" ? (
-          <GraphSvg graphLayout={nbrLayout} renderCfg={renderCfg} interactionManager={nbrInteractMgr} scale={scale} />
-        ) : (
-          <GraphSvg graphLayout={implLayout} renderCfg={renderCfg} interactionManager={implInteractMgr} scale={scale} />
-        )}
-      </div>
-    </div>
+    <>
+      {error.length > 0 ? (
+        <svg width="100%" height="100%" viewBox="0 0 600 400" className="absolute inset-0">
+          {error.map((err, idx) => (
+            <text x="300" y={180 + idx * 20} textAnchor="middle" fontSize={idx === 0 ? "18" : "12"} fill="#b91c1c">
+              {err}
+            </text>
+          ))}
+        </svg>
+      ) : (
+        <div>
+          <div style={{ flexGrow: 1 }}>
+            {panelSelect === "main" ? (
+              <GraphSvg graphLayout={layout} renderCfg={renderCfg} interactionManager={interactMgr} scale={scale} />
+            ) : panelSelect === "nbr" ? (
+              <GraphSvg graphLayout={nbrLayout} renderCfg={renderCfg} interactionManager={nbrInteractMgr} scale={scale} />
+            ) : (
+              <GraphSvg graphLayout={implLayout} renderCfg={renderCfg} interactionManager={implInteractMgr} scale={scale} />
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

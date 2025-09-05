@@ -6,8 +6,9 @@ import { parseDotFile } from "./DotParser";
 import { readCsv } from "./CsvParser";
 import { NumberFilterDto } from "@/components/left-panel/NumberFilterPanel";
 import { ColumnCfg } from "@/components/left-panel/ColumnConfig";
+import InputError from "./InputError";
 
-export function loadFromCfg(cfg: GraphCfgDto, numberCfg: NumberFilterDto, columnCfg: ColumnCfg[]): Graph<any> {
+export function loadFromCfg(cfg: GraphCfgDto, numberCfg: NumberFilterDto, columnCfg: ColumnCfg[]): Graph<any> | InputError {
   if (cfg.type === "example") {
     return generateExampleGraph(cfg.example_type);
   } else if (cfg.type === "random") {
