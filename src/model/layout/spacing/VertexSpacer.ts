@@ -131,12 +131,12 @@ export class DynamicVertexSpacer extends VertexSpacer {
   ) {
     super(g, textPadding);
     this.layerToWidth = new Map<number, number>();
+    const allWidths = g.getVertices().map((v) => getTextSize(v.getLabel()).width);
+    const width = getPercentile(allWidths, show_percentage) + this.textPadding + 1; //+1 for rounding errors
     for (let i = 0; i < g.getLayerCount(); i++) {
       if (this.cliqueCenter.has(i)) {
         this.layerToWidth.set(i, 0);
       } else {
-        const allWidths = g.getVerticesInLayer(i).map((v) => getTextSize(v.getLabel()).width);
-        const width = getPercentile(allWidths, show_percentage) + this.textPadding + 1; //+1 for rounding errors
         this.layerToWidth.set(i, Math.min(Math.max(width_min, width), width_max));
       }
     }
@@ -152,6 +152,7 @@ export class DynamicVertexSpacer extends VertexSpacer {
 }
 
 function getPercentile(arr: number[], percentile: number): number {
+  if (arr.length < 25) return _.max(arr)!;
   const sorted = _.sortBy(arr);
   const index = Math.min(Math.ceil(arr.length * percentile), arr.length - 1);
   return sorted[index];

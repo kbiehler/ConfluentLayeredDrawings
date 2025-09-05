@@ -17,6 +17,6 @@ export const vertexSpacingCfg: VertexSpacingCfgDto = {
   v_height: 50,
   v_width: 250,
   width_min: 150,
-  width_max: 400,
+  width_max: 800,
   show_percentage: 0.8,
 };
