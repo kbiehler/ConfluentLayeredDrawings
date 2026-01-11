@@ -60,7 +60,7 @@ export default function GraphFrontend() {
             <div ref={graphContainerRef} id="graph-canvas" className="w-full h-full overflow-auto bg-white dark:bg-gray-900">
               <GraphsPanel config={config} graphCfg={graphCfg} scale={scale} panelSelect={displayMode} setPanelSelect={setDisplayMode} />
             </div>
-            <VertexLegend columnCfg={config.columnCfg} />
+            {/* <VertexLegend columnCfg={config.columnCfg} /> */}
             <DisplayModePanel displayMode={displayMode} setDisplayMode={setDisplayMode} />
           </section>
         </main>
