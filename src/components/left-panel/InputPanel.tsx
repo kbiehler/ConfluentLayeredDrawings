@@ -14,7 +14,7 @@ const InputPanel: React.FC<Props> = ({ graphCfg, setConfig }) => {
     reader.onload = (e) => {
       if (e.target?.result) {
         graphCfg.fileContent = e.target.result as string;
-        graphCfg.type = "csv";
+        graphCfg.type = "file";
         setConfig(new GraphCfgDto(graphCfg));
       }
     };
@@ -31,7 +31,7 @@ const InputPanel: React.FC<Props> = ({ graphCfg, setConfig }) => {
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
-    accept: { "text/csv": [".csv"] },
+    accept: { "text/dot": [".dot"] },
     multiple: false,
     noClick: true, // prevents auto-click when clicking inside dropzone
   });
@@ -47,14 +47,14 @@ const InputPanel: React.FC<Props> = ({ graphCfg, setConfig }) => {
         })}
       >
         <input {...getInputProps()} />
-        <p className="text-sm">Drag &amp; drop CSV here</p>
+        <p className="text-sm">Drag &amp; drop .dot file here</p>
         <p className="text-xs">or</p>
         <button
           type="button"
           onClick={open}
           className="mt-2 px-3 py-1 border rounded border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
         >
-          Upload CSV
+          Upload DOT
         </button>
       </div>
     </div>

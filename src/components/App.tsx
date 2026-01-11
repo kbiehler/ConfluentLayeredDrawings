@@ -50,8 +50,8 @@ export default function GraphFrontend() {
 
             <div className={`sidebar-content ${sidebarOpen ? "open" : "closed"}`}>
               <InputPanel graphCfg={graphCfg} setConfig={setGraphCfg} />
-              <NumberFilterPanel filterCfg={filterCfg} config={config} setConfig={setConfig} />
-              <ConfigPanel config={config} setConfig={setConfig} filterCfg={filterCfg} setFilterCfg={setFilterCfg} />
+              {/* <NumberFilterPanel filterCfg={filterCfg} config={config} setConfig={setConfig} /> */}
+              {/* <ConfigPanel config={config} setConfig={setConfig} filterCfg={filterCfg} setFilterCfg={setFilterCfg} /> */}
             </div>
           </aside>
 

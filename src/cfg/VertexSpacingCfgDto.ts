@@ -15,7 +15,7 @@ export const vertexSpacingCfg: VertexSpacingCfgDto = {
   type: VertexSpacerType.DYNAMIC,
   textPadding: 10,
   v_height: 50,
-  v_width: 250,
+  v_width: 0,
   width_min: 150,
   width_max: 800,
   show_percentage: 0.8,

@@ -5,9 +5,9 @@ import { VertexSpacer } from "./VertexSpacer";
 
 export class FixedVerticalSpacerCfg {
   //default values only for testing, default frontend valued set in ConfigDtos.ts
-  verticalSpacing: number = 25;
-  addVertexDist: number = 25;
-  addCenterWidth: number = 25;
+  verticalSpacing: number = 50;
+  addVertexDist: number = 50;
+  addCenterWidth: number = 50;
 }
 
 export class FixedVerticalSpacer implements LayerSpacer {

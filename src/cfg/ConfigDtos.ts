@@ -42,7 +42,7 @@ export class GraphCfgDto {
   }
 
   type: "empty" | "example" | "random" | "file" | "csv" = "example";
-  example_type: ExampleGraphs = ExampleGraphs.CENTER_2;
+  example_type: ExampleGraphs = ExampleGraphs.EPP_2;
   fileContent?: string; // Store uploaded file contents
 }
 
@@ -53,7 +53,7 @@ export class BarycenterCfgDto {
 }
 
 export class AlgorithmCfgDto {
-  vertexPositioning: VertexPositionAlgorithm = VertexPositionAlgorithm.LP;
+  vertexPositioning: VertexPositionAlgorithm = VertexPositionAlgorithm.fixed;
 }
 
 export class UiCfgDto {
