@@ -41,7 +41,7 @@ export class GraphCfgDto {
     }
   }
 
-  type: "empty" | "example" | "random" | "file" | "csv" = "example";
+  type: "empty" | "example" | "random" | "file" | "csv" = "random";
   example_type: ExampleGraphs = ExampleGraphs.EPP_2;
   fileContent?: string; // Store uploaded file contents
 }

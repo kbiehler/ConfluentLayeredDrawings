@@ -22,6 +22,7 @@ import { crossingsOfPlan } from "./metrics/Crossings";
 import { fixCenterPositions } from "./positioning/PostprocessPositioning";
 import { hasCycleDirected } from "../alg/CycleDetector";
 import { CsvVertex } from "@/input/CsvParser";
+import { cross } from "d3";
 
 export type GraphLayoutCfg = {
   vertexPosition: VertexPositionCfg;
@@ -86,6 +87,7 @@ function getLayoutMetrics(plan: EdgePlan[], vertexPositions: Map<Vertex, number>
   const totalVerticalLayer = _.sum(vertLayers);
 
   const totalCrossings = crossingsOfPlan(plan, (v) => vertexPositions.get(v)!);
+  console.log("crossings" + totalCrossings);
 
   return { totalVerticalLayer, crossings: totalCrossings, bends, ink: Math.round(ink) } as LayoutMetrics;
 }

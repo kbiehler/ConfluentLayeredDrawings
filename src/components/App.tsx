@@ -3,15 +3,11 @@ import "./scrollbars.css";
 import "./GraphFrontend.css";
 import GraphsPanel from "./center/GraphsPanel";
 import { ConfigDto, GraphCfgDto } from "../cfg/ConfigDtos";
-import VertexLegend from "./center/VertexLegend";
 import DisplayModePanel from "./center/DisplayModePanel";
 import { useLocalStorageState } from "./LocalStorageHelper";
 import InputPanel from "./left-panel/InputPanel";
 import Header from "./header/Header";
-import ConfigPanel from "./left-panel/ConfigPanel";
-import NumberFilterPanel from "./left-panel/NumberFilterPanel";
 import { defaultNumberFilterCfg } from "./left-panel/NumberFilterCfgPanel";
-import { F } from "vitest/dist/chunks/reporters.DTtkbAtP.js";
 
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
 

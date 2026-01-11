@@ -1,5 +1,6 @@
 import { Edge, Graph } from "@/model/ds";
 import { greedyFAS } from "@/model/alg/FAS";
+import * as fs from "fs";
 
 type Interval = [number, number];
 
@@ -27,7 +28,104 @@ export function verticalLayerOrdering<V, E extends Edge<V>>(vertexPosition: (v: 
   }
 
   const finalOrder = greedyFAS(crossingGraph);
+  // try all permutations (exhaustive) to find minimum possible crossings
+  const n = verticalLayers.length;
+  function permute<T>(arr: T[]): T[][] {
+    const res: T[][] = [];
+    const a = arr.slice();
+    const generate = (k: number) => {
+      if (k === a.length) {
+        res.push(a.slice());
+      } else {
+        for (let i = k; i < a.length; i++) {
+          [a[k], a[i]] = [a[i], a[k]];
+          generate(k + 1);
+          [a[k], a[i]] = [a[i], a[k]];
+        }
+      }
+    };
+    generate(0);
+    return res;
+  }
+
+  if (n <= 8) {
+    const indices = Array.from({ length: n }, (_, i) => i);
+    const perms = permute(indices);
+    let minCrossings = Infinity;
+    let bestOrderIndices: number[] = [];
+    for (const p of perms) {
+      const permutedLayers = p.map((idx) => verticalLayers[idx]);
+      const c = crossingsOfFinalOrder(vertexPosition, permutedLayers);
+      if (c < minCrossings) {
+        minCrossings = c;
+        bestOrderIndices = p.slice();
+      }
+    }
+    const greedyCrossings = crossingsOfFinalOrder(vertexPosition, finalOrder);
+    console.log("minimum crossings possible (exhaustive): " + minCrossings + " for order: " + bestOrderIndices.join(","));
+    console.log("greedy crossings: " + greedyCrossings);
+
+    // record result for later analysis: browser -> localStorage, Node -> append file
+    try {
+      const record = { ts: Date.now(), n, minCrossings, greedyCrossings };
+      if (typeof window !== "undefined" && window.localStorage) {
+        const key = "verticalLayerOrderingResults";
+        const existing = JSON.parse(window.localStorage.getItem(key) || "[]");
+        existing.push(record);
+        window.localStorage.setItem(key, JSON.stringify(existing));
+      } else {
+        // Node environment: append newline-delimited JSON
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        fs.appendFileSync("verticalLayerOrdering_results.log", JSON.stringify(record) + "\n");
+      }
+    } catch (err) {
+      // best-effort logging; ignore failures
+    }
+  } else {
+    console.log("skipping exhaustive permutation search (n > 8)");
+  }
+  console.log("crossings final order:" + crossingsOfFinalOrder(vertexPosition, finalOrder));
   return finalOrder;
+}
+
+function crossingsOfFinalOrder<V, E extends Edge<V>>(vertexPosition: (v: V) => number, finalOrder: Set<E>[]) {
+  type Item = { startY: number; endY: number; layer: number };
+  const items: Item[] = [];
+
+  finalOrder.forEach((set, layerIdx) => {
+    for (const e of set) {
+      items.push({
+        startY: vertexPosition(e.source)!,
+        endY: vertexPosition(e.target)!,
+        layer: layerIdx,
+      });
+    }
+  });
+
+  const keys = new Set<string>();
+  const between = (val: number, a: number, b: number) => Math.min(a, b) < val && val < Math.max(a, b);
+
+  for (let i = 0; i < items.length; i++) {
+    const a = items[i];
+    const aStraight = a.startY === a.endY;
+
+    for (let j = 0; j < items.length; j++) {
+      if (i === j) continue;
+      const b = items[j];
+
+      // a.startY crossing through b
+      if (between(a.startY, b.startY, b.endY) && (b.layer < a.layer || aStraight)) {
+        keys.add(`${b.layer}:${a.startY}`);
+      }
+
+      // a.endY crossing through b
+      if (between(a.endY, b.startY, b.endY) && (a.layer < b.layer || aStraight)) {
+        keys.add(`${b.layer}:${a.endY}`);
+      }
+    }
+  }
+
+  return keys.size;
 }
 
 function addCrossingEdge<V, E extends Edge<V>>(crossingsAthenB: number, crossingsBthenA: number, crossingGraph: Graph<Set<E>>, setA: Set<E>, setB: Set<E>) {
